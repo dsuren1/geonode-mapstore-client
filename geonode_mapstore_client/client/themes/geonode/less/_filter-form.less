@@ -18,6 +18,24 @@
     .gn-filter-form-divider {
         .background-color-var(@theme-vars[main-variant-bg]);
     }
+    .gn-accordion {
+        .accordion-title {
+            .border-color-var(@theme-vars[main-border-color]);
+            .background-color-var(@theme-vars[main-variant-bg]);
+        }
+        .accordion-body {
+            .accordion-items {
+                .facet {
+                    &.active {
+                        .badge {
+                            .background-color-var(@theme-vars[badge-variant-color]);
+                            .color-var(@theme-vars[main-bg]);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 // **************
@@ -54,6 +72,15 @@
             .form-group{
                 margin-bottom: 0.5rem;
             }
+            .accordion-items {
+                .form-group{
+                    margin-bottom: 0;
+                }
+                .checkbox {
+                    margin-bottom: 0;
+                    margin-top: 0;
+                }
+            }
         }
     }
     .gn-filter-form-title {
@@ -81,13 +108,50 @@
     margin-left: auto;
 }
 
-.gn-sub-filter-items.checkbox {
-    
-    &:first-of-type {
-        margin-top: 5px;
-    }
+.gn-sub-filter-items {
+    .checkbox {
 
-    &:last-child {
-        margin-bottom: 0;
+        &:first-of-type {
+            margin-top: 5px;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.gn-accordion {
+    .accordion-title {
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 4px;
+        button {
+            border: none;
+            background: none;
+            box-shadow: none;
+        }
+    }
+    .accordion-body {
+        padding: 12px;
+        .accordion-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            .facet {
+                cursor: pointer;
+                &.active {
+                    span {
+                        font-weight: bold;
+                    }
+                }
+                span {
+                    margin-right: 4px;
+                }
+            }
+        }
     }
 }
