@@ -9,7 +9,16 @@
 // **************
 // Theme
 // **************
-
+.gn-facet-style() {
+    .facet {
+        &.active {
+           > .badge {
+               .background-color-var(@theme-vars[badge-variant-color]);
+               .color-var(@theme-vars[main-bg]);
+           }
+       }
+   }
+}
 #gn-components-theme(@theme-vars) {
     .gn-filter-form {
         .color-var(@theme-vars[main-color]);
@@ -25,13 +34,9 @@
         }
         .accordion-body {
             .accordion-items {
-                .facet {
-                    &.active {
-                        .badge {
-                            .background-color-var(@theme-vars[badge-variant-color]);
-                            .color-var(@theme-vars[main-bg]);
-                        }
-                    }
+                .gn-facet-style();
+                .gn-sub-filter-items {
+                    .gn-facet-style();
                 }
             }
         }
@@ -112,11 +117,24 @@
     .checkbox {
 
         &:first-of-type {
-            margin-top: 5px;
+            margin-top: 0.3rem;
         }
 
         &:last-child {
             margin-bottom: 0;
+        }
+    }
+    .facet {
+        margin: 0.3rem;
+        margin-left: 1rem;
+        cursor: pointer;
+        &.active {
+            > span {
+                font-weight: bold;
+            }
+        }
+        span {
+            margin-right: 0.25rem;
         }
     }
 }
@@ -125,10 +143,10 @@
     .accordion-title {
         display: flex;
         align-items: center;
-        padding: 4px;
-        border-width: 1px;
+        padding: 0.25rem;
+        border-width: 0.08rem;
         border-style: solid;
-        border-radius: 4px;
+        border-radius: 0.25rem;
         button {
             border: none;
             background: none;
@@ -136,20 +154,20 @@
         }
     }
     .accordion-body {
-        padding: 12px;
+        padding: 0.6rem;
         .accordion-items {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 0.3rem;
             .facet {
                 cursor: pointer;
                 &.active {
-                    span {
+                    > span {
                         font-weight: bold;
                     }
                 }
                 span {
-                    margin-right: 4px;
+                    margin-right: 0.25rem;
                 }
             }
         }

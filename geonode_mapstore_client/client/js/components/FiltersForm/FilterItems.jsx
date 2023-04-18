@@ -7,6 +7,7 @@
  */
 import React from 'react';
 import castArray from 'lodash/castArray';
+import isNil from 'lodash/isNil';
 import PropTypes from 'prop-types';
 import { FormGroup, Checkbox } from 'react-bootstrap';
 import ReactSelect from 'react-select';
@@ -103,7 +104,8 @@ function FilterItems({
                         return (
                             <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
                                 <Message msgId={item.labelId}/>
-                                {item.count && <Badge>{item.count}</Badge>}
+                                {!isNil(item.count) && <Badge>{item.count}</Badge>}
+                                {item.items && filterChild()}
                             </div>
                         );
                     };
