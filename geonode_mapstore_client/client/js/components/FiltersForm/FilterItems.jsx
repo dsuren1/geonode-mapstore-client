@@ -100,12 +100,12 @@ function FilterItems({
                 if (field.type === 'filter') {
                     const customFilters = castArray(values.f || []);
                     const isFacet = (item) => item.style === 'facet';
-                    const renderFacet = ({item, active, onChangeFacet}) => {
+                    const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
                         return (
                             <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
                                 <Message msgId={item.labelId}/>
                                 {!isNil(item.count) && <Badge>{item.count}</Badge>}
-                                {item.items && filterChild()}
+                                {item.items && renderChild && renderChild()}
                             </div>
                         );
                     };
@@ -153,8 +153,12 @@ function FilterItems({
                         });
                     };
                     return isFacet(field)
-                        ? renderFacet({item: field, active, onChangeFacet: onChangeFilterParent})
-                        : (
+                        ? renderFacet({
+                            item: field,
+                            active,
+                            onChangeFacet: onChangeFilterParent,
+                            renderChild: filterChild
+                        }) : (
                             <FormGroup key={field.id} controlId={'gn-radio-filter-' + field.id}>
                                 <Checkbox
                                     type="checkbox"
