@@ -102,10 +102,15 @@ function FilterItems({
                     const isFacet = (item) => item.style === 'facet';
                     const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
                         return (
-                            <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
-                                <Message msgId={item.labelId}/>
-                                {!isNil(item.count) && <Badge>{item.count}</Badge>}
-                                {item.items && renderChild && renderChild()}
+                            <div className="gn-facet-wrapper">
+                                <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
+                                    <Message msgId={item.labelId}/>
+                                    {!isNil(item.count) && <Badge>{item.count}</Badge>}
+
+                                </div>
+                                <div className="facet-children">
+                                    {item.items && renderChild && renderChild()}
+                                </div>
                             </div>
                         );
                     };

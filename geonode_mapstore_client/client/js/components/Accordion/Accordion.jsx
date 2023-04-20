@@ -30,8 +30,8 @@ const Accordion = ({
     };
     return (
         <div className={'gn-accordion'}>
-            <div className="accordion-title">
-                <Button onClick={onClick}>
+            <div className="accordion-title" onClick={onClick}>
+                <Button>
                     <FaIcon name={`chevron-${isExpanded ? "down" : "right"}`}/>
                 </Button>
                 {titleId ? <Message msgId={titleId}/> : title}
