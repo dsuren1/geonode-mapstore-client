@@ -26,19 +26,28 @@ const getDateRangeValue = (startValue, endValue, format) => {
     }
     return moment(startValue ? startValue : endValue).format(format);
 };
+const isEmptyValue = (value) => (value?.length === 0 || value === 'None' || !value);
+const isStyleLabel = (style) => style === "label";
+const isFieldLabelOnly = ({style, value}) => isEmptyValue(value) && isStyleLabel(style);
 
 const DetailInfoFieldLabel = ({ field }) => {
-    return (<>{field.labelId ? <Message msgId={field.labelId} /> : field.label}</>);
+    const label = field.labelId ? <Message msgId={field.labelId} /> : field.label;
+    return isStyleLabel(field.style) && field.href
+        ? (<a href={field.href} target={field.target}>{label}</a>)
+        : label;
 };
 
-function DetailsInfoField({
-    field,
-    children
-}) {
+function DetailsInfoField({ field, children }) {
     const values = castArray(field.value);
-    return (
+    const isLinkLabel = isFieldLabelOnly(field);
+    const detailInfoFieldLabel = (
+        <div className={`gn-details-info-label${isLinkLabel ? '-link' : ''}`}>
+            <DetailInfoFieldLabel field={field} />
+        </div>
+    );
+    return isLinkLabel ? detailInfoFieldLabel : (
         <div className="gn-details-info-row">
-            <div className="gn-details-info-label"><DetailInfoFieldLabel field={field} /></div>
+            {detailInfoFieldLabel}
             <div className="gn-details-info-value">{children(values)}</div>
         </div>
     );
@@ -125,10 +134,8 @@ function DetailsInfoFields({ fields, formatHref }) {
 }
 
 const parseTabItems = (items) => {
-    return (items || []).filter(({ value }) => {
-        if (value?.length === 0
-        || value === 'None'
-        || !value) {
+    return (items || []).filter(({value, style}) => {
+        if (isEmptyValue(value) && !isStyleLabel(style)) {
             return false;
         }
         return true;
