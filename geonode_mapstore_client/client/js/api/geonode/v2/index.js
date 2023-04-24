@@ -870,6 +870,7 @@ export default {
     getEndpoints,
     getResources,
     getResourceByPk,
+    getLinkedResourcesByPk,
     getResourceByUuid,
     createGeoApp,
     getGeoAppByPk,
