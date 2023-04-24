@@ -320,7 +320,8 @@
             "supplementalInformation": "Supplemental information",
             "abstract": "Abstract",
             "readMore": "Read more",
-            "readLess": "Read less"
+            "readLess": "Read less",
+            "relatedResources": "Linked Resources"
         }
     }
 }

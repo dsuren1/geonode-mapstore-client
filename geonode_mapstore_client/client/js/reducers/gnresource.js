@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
 */
 
-import {isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import {
     RESOURCE_LOADING,
     SET_RESOURCE,
@@ -68,11 +68,12 @@ function gnresource(state = defaultState, action) {
     }
     case SET_RESOURCE: {
         const { data, ...resource } = action.data || {};
+        const resourceId = state.data?.pk;
         return {
             ...state,
             error: null,
             initialResource: { ...action.data },
-            data: resource,
+            ...(!isEqual(resourceId, resource.pk) && {data: resource}),
             loading: false,
             isNew: false
         };

@@ -12,6 +12,7 @@ import moment from 'moment';
 import castArray from 'lodash/castArray';
 import Button from '@js/components/Button';
 import { Tabs, Tab } from "react-bootstrap";
+import DetailsRelatedResources from '@js/components/DetailsPanel/DetailsRelatedResources';
 
 const replaceTemplateString = (properties, str) => {
     return Object.keys(properties).reduce((updatedStr, key) => {
@@ -124,6 +125,12 @@ function DetailsInfoFields({ fields, formatHref }) {
     </div>);
 }
 
+const tabTypes = {
+    'attributes': null,
+    'related-resources': DetailsRelatedResources,
+    'tab': DetailsInfoFields
+};
+
 const parseTabItems = (items) => {
     return (items || []).filter(({ value }) => {
         if (value?.length === 0
@@ -134,14 +141,21 @@ const parseTabItems = (items) => {
         return true;
     });
 };
+const isDefaultTabType = (type) => type === 'tab';
 
 function DetailsInfo({
     tabs = [],
-    formatHref
+    formatHref,
+    types
 }) {
     const filteredTabs = tabs
-        .map((tab) => ({ ...tab, items: parseTabItems(tab?.items) }))
-        .filter(tab => tab?.items?.length > 0);
+        .map((tab) =>
+            ({
+                ...tab,
+                items: isDefaultTabType(tab.type) ? parseTabItems(tab?.items) : tab?.items,
+                Component: tabTypes[tab.type] || tabTypes.tab
+            }))
+        .filter(tab => tab?.items?.length > 0 );
     const selectedTabId = filteredTabs?.[0]?.id;
     return (
         <Tabs
@@ -149,9 +163,9 @@ function DetailsInfo({
             bsStyle="pills"
             className="gn-details-info tabs-underline"
         >
-            {filteredTabs.map((tab, idx) => (
+            {filteredTabs.map(({Component, ...tab}, idx) => (
                 <Tab key={idx} eventKey={tab?.id} title={<DetailInfoFieldLabel field={tab} />}>
-                    <DetailsInfoFields fields={tab?.items} formatHref={formatHref} />
+                    <Component fields={tab?.items} formatHref={formatHref} types={types} />
                 </Tab>
             ))}
         </Tabs>

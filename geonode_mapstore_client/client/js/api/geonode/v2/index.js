@@ -306,6 +306,11 @@ export const getResourceByPk = (pk) => {
         .then(({ data }) => data.resource);
 };
 
+export const getLinkedResourcesByPk = (pk) => {
+    return axios.get(parseDevHostname(`${endpoints[RESOURCES]}/${pk}/linked_resources`))
+        .then(({ data }) => data.resources ?? []);
+};
+
 export const getResourceByUuid = (uuid) => {
     return axios.get(parseDevHostname(`${endpoints[RESOURCES]}`), {
         params: {

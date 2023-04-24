@@ -761,6 +761,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
@@ -1616,6 +1622,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
@@ -2247,6 +2259,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
@@ -2536,6 +2554,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
@@ -2743,6 +2767,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
@@ -3243,6 +3273,12 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "related-resources",
+                            "id": "related",
+                            "labelId": "gnviewer.relatedResources",
+                            "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
                         }
                     ]
                 }
