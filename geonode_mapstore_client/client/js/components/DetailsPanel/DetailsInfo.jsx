@@ -40,15 +40,10 @@ const DetailInfoFieldLabel = ({ field }) => {
 function DetailsInfoField({ field, children }) {
     const values = castArray(field.value);
     const isLinkLabel = isFieldLabelOnly(field);
-    const detailInfoFieldLabel = (
-        <div className={`gn-details-info-label${isLinkLabel ? '-link' : ''}`}>
-            <DetailInfoFieldLabel field={field} />
-        </div>
-    );
-    return isLinkLabel ? detailInfoFieldLabel : (
+    return (
         <div className="gn-details-info-row">
-            {detailInfoFieldLabel}
-            <div className="gn-details-info-value">{children(values)}</div>
+            <div className={`gn-details-info-label${isLinkLabel ? '-link' : ''}`}><DetailInfoFieldLabel field={field} /></div>
+            {!isLinkLabel && <div className="gn-details-info-value">{children(values)}</div>}
         </div>
     );
 }
