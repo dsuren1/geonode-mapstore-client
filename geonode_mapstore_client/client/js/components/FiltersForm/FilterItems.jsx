@@ -108,9 +108,7 @@ function FilterItems({
                                     {!isNil(item.count) && <Badge>{item.count}</Badge>}
 
                                 </div>
-                                <div className="facet-children">
-                                    {item.items && renderChild && renderChild()}
-                                </div>
+                                {item.items && renderChild && <div className="facet-children">{renderChild()}</div>}
                             </div>
                         );
                     };
