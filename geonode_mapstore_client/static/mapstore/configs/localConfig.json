@@ -770,7 +770,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
@@ -1638,7 +1638,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
@@ -2282,7 +2282,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
@@ -2584,7 +2584,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
@@ -2804,7 +2804,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"
@@ -3317,7 +3317,7 @@
                             ]
                         },
                         {
-                            "type": "related-resources",
+                            "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.relatedResources",
                             "items": "{context.get(state('gnResourceData'), 'linkedResources')}"

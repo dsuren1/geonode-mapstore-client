@@ -307,7 +307,12 @@ export const getResourceByPk = (pk) => {
 };
 
 export const getLinkedResourcesByPk = (pk) => {
-    return axios.get(parseDevHostname(`${endpoints[RESOURCES]}/${pk}/linked_resources`))
+    return axios.get(parseDevHostname(`${endpoints[RESOURCES]}/${pk}/linked_resources`), {
+        params: {
+            'page': 1,
+            'page_size': 99999
+        }
+    })
         .then(({ data }) => data.resources ?? []);
 };
 

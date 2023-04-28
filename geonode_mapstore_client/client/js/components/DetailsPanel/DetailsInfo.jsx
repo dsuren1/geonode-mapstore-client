@@ -5,14 +5,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import React, { useState } from 'react';
-import Message from '@mapstore/framework/components/I18N/Message';
-import moment from 'moment';
 import castArray from 'lodash/castArray';
-import Button from '@js/components/Button';
+import moment from 'moment';
 import { Tabs, Tab } from "react-bootstrap";
-import DetailsRelatedResources from '@js/components/DetailsPanel/DetailsRelatedResources';
+
+import Button from '@js/components/Button';
+import DetailsLinkedResources from '@js/components/DetailsPanel/DetailsLinkedResources';
+import Message from '@mapstore/framework/components/I18N/Message';
 
 const replaceTemplateString = (properties, str) => {
     return Object.keys(properties).reduce((updatedStr, key) => {
@@ -42,8 +42,8 @@ function DetailsInfoField({ field, children }) {
     const values = castArray(field.value);
     const isLinkLabel = isFieldLabelOnly(field);
     return (
-        <div className="gn-details-info-row">
-            <div className={`gn-details-info-label${isLinkLabel ? '-link' : ''}`}><DetailInfoFieldLabel field={field} /></div>
+        <div className={`gn-details-info-row${isLinkLabel ? ' link' : ''}`}>
+            <div className={`gn-details-info-label`}><DetailInfoFieldLabel field={field} /></div>
             {!isLinkLabel && <div className="gn-details-info-value">{children(values)}</div>}
         </div>
     );
@@ -130,8 +130,7 @@ function DetailsInfoFields({ fields, formatHref }) {
 }
 
 const tabTypes = {
-    'attributes': null,
-    'related-resources': DetailsRelatedResources,
+    'linked-resources': DetailsLinkedResources,
     'tab': DetailsInfoFields
 };
 
@@ -148,7 +147,7 @@ const isDefaultTabType = (type) => type === 'tab';
 function DetailsInfo({
     tabs = [],
     formatHref,
-    types
+    resourceTypesInfo
 }) {
     const filteredTabs = tabs
         .map((tab) =>
@@ -167,7 +166,7 @@ function DetailsInfo({
         >
             {filteredTabs.map(({Component, ...tab}, idx) => (
                 <Tab key={idx} eventKey={tab?.id} title={<DetailInfoFieldLabel field={tab} />}>
-                    <Component fields={tab?.items} formatHref={formatHref} types={types} />
+                    <Component fields={tab?.items} formatHref={formatHref} resourceTypesInfo={resourceTypesInfo} />
                 </Tab>
             ))}
         </Tabs>

@@ -5,20 +5,18 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import FaIcon from '@js/components/FaIcon';
 
-
-const DetailsRelatedResources = ({
+const DetailsLinkedResources = ({
     fields,
-    types
+    resourceTypesInfo
 }) => {
     return (
         fields.map((field, key) => {
-            const {icon} = types[field.resource_type] ?? {};
+            const {icon} = resourceTypesInfo[field.resource_type] ?? {};
             return (
                 <div key={key} className="gn-details-info-fields">
                     <div className="gn-details-info-row linked-resources">
@@ -33,14 +31,14 @@ const DetailsRelatedResources = ({
     );
 };
 
-DetailsRelatedResources.propTypes = {
+DetailsLinkedResources.propTypes = {
     fields: PropTypes.array,
-    types: PropTypes.object
+    resourceTypesInfo: PropTypes.object
 };
 
-DetailsRelatedResources.defaultProps = {
+DetailsLinkedResources.defaultProps = {
     fields: [],
-    types: {}
+    resourceTypesInfo: {}
 };
 
-export default DetailsRelatedResources;
+export default DetailsLinkedResources;

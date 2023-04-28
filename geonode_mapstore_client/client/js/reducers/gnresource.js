@@ -7,6 +7,8 @@
 */
 
 import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+
 import {
     RESOURCE_LOADING,
     SET_RESOURCE,
@@ -29,7 +31,6 @@ import {
     RESET_GEO_LIMITS,
     ENABLE_MAP_THUMBNAIL_VIEWER
 } from '@js/actions/gnresource';
-
 import {
     cleanCompactPermissions,
     getGeoLimitsFromCompactPermissions
@@ -68,12 +69,16 @@ function gnresource(state = defaultState, action) {
     }
     case SET_RESOURCE: {
         const { data, ...resource } = action.data || {};
-        const resourceId = state.data?.pk;
-        return {
-            ...state,
+        let updatedResource = {...resource};
+        const linkedResources = state.data?.linkedResources;
+        if (!isEmpty(linkedResources) && updatedResource.pk === state.data?.pk) {
+            updatedResource.linkedResources = linkedResources;
+        }
+
+        return {...state,
             error: null,
             initialResource: { ...action.data },
-            ...(!isEqual(resourceId, resource.pk) && {data: resource}),
+            data: updatedResource,
             loading: false,
             isNew: false
         };
