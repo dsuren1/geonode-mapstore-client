@@ -322,7 +322,7 @@
             "abstract": "Abstract",
             "readMore": "Read more",
             "readLess": "Read less",
-            "relatedResources": "Linked Resources"
+            "linkedResources": "Linked Resources"
         }
     }
 }

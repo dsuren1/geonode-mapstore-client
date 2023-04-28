@@ -320,7 +320,8 @@
             "viewFullMetadata": "Ver metadatos completos",
             "abstract": "Resumen",
             "readMore": "Leer más",
-            "readLess": "Leer menos"
+            "readLess": "Leer menos",
+            "linkedResources": "Recursos vinculados"
         }
     }
 }
