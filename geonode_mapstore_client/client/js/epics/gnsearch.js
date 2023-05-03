@@ -12,10 +12,9 @@ import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import {
     getResources,
-    getResourceByPk,
-    getDocumentByPk,
     getFeaturedResources,
-    getResourceByUuid
+    getResourceByUuid,
+    getResourceByTypeAndByPk
 } from '@js/api/geonode/v2';
 import {
     SEARCH_RESOURCES,
@@ -287,7 +286,7 @@ export const gnsSelectResourceEpic = (action$, store) =>
             const resources = state.gnsearch?.resources || [];
             const selectedResource = resources.find(({ pk, resource_type: resourceType}) =>
                 pk === action.pk && action.ctype === resourceType);
-            return Observable.defer(() => action.ctype !== 'document' ? getResourceByPk(action.pk) : getDocumentByPk(action.pk))
+            return Observable.defer(() => getResourceByTypeAndByPk(action.ctype, action.pk))
                 .switchMap((resource) => {
                     return Observable.of(setResource({
                         ...resource,
