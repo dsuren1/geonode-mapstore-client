@@ -711,13 +711,13 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
                 const {type, style} =  _formItems[indexToReplace];
                 const _facetItems = facetItems
                     ?.filter(f => f.type === facet)
-                    ?.map(({name, key, label, localized_label: labelId} = {}) => ({
+                    ?.map(({name, key, label: labelId} = {}) => ({
                         name,
                         key,
                         id: name,
                         type,
                         style,
-                        labelId: labelId || label,
+                        labelId,
                         loadItems: () => getFacetItemsByFacetName({name, style, filterKey: key})
                     }));
                 if (_facetItems?.length) {

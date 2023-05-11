@@ -893,10 +893,10 @@ export const getFacetItems = () => {
 
 export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}) => {
     return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`).then(({data}) => {
-        return get(data, "topics.items", []).map(({localized_label: labelId, label, key, count} = {})=> ({
+        return get(data, "topics.items", []).map(({label: labelId, key, count} = {})=> ({
             id: String(key),
             type: "filter",
-            labelId: labelId || label,
+            labelId,
             count,
             filterKey,
             style
