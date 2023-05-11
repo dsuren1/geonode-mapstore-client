@@ -334,13 +334,12 @@ function ResourcesGrid({
                 {
                     id: 'dataset',
                     labelId: 'gnhome.datasets',
-                    type: 'accordion',
+                    type: 'filter',
                     items: [
                         {
                             id: 'store-vector',
                             labelId: 'gnhome.vector',
-                            type: 'filter',
-                            style: 'facet'
+                            type: 'filter'
                         },
                         {
                             id: 'store-raster',
