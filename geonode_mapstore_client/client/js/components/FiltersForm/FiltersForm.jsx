@@ -142,7 +142,8 @@ FilterForm.defaultProps = {
 };
 
 const arePropsEqual = (prevProps, nextProps) => {
-    return isEqual( prevProps.query, nextProps.query );
+    return isEqual(prevProps.query, nextProps.query)
+        && isEqual(prevProps.fields, nextProps.fields);
 };
 
 

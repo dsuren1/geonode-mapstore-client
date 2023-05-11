@@ -98,13 +98,14 @@ function FilterItems({
                     return <div key={field.id} className="gn-filter-form-link"><a href={field.href}>{field.labelId && <Message msgId={field.labelId} /> || field.label}</a></div>;
                 }
                 if (field.type === 'filter') {
-                    const customFilters = castArray(values.f || []);
+                    const filterKey = field.filterKey || "f";
+                    const customFilters = castArray( values[filterKey] || []);
                     const isFacet = (item) => item.style === 'facet';
                     const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
                         return (
                             <div className="gn-facet-wrapper">
                                 <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
-                                    <Message msgId={item.labelId}/>
+                                    {item.labelId ? <Message msgId={item.labelId}/> : <span>{item.label}</span>}
                                     {!isNil(item.count) && <Badge>{item.count}</Badge>}
 
                                 </div>
@@ -150,7 +151,7 @@ function FilterItems({
                     ];
                     const onChangeFilterParent = () => {
                         onChange({
-                            f: active
+                            [filterKey]: active
                                 ? customFilters.filter(value => !parentFilterIds.includes(value))
                                 : [...customFilters, field.id]
                         });
@@ -174,21 +175,23 @@ function FilterItems({
                             </FormGroup>
                         );
                 }
-                if (field.type === 'accordion') {
+                if (field.type === 'accordion' && !field.facet && field.id) {
                     const key = `${id}-${field.id}`;
                     return (<Accordion
                         key={key}
                         titleId={field.labelId}
                         identifier={key}
-                        content={<div className={'accordion-items'}>
+                        loadItems={field.loadItems}
+                        items={field.items}
+                        content={(accordionItems) =>(<div className={'accordion-items'}>
                             <FilterItems
                                 id={id}
-                                items={field.items}
+                                items={accordionItems}
                                 suggestionsRequestTypes={suggestionsRequestTypes}
                                 values={values}
                                 onChange={onChange}
                             />
-                        </div>}
+                        </div>)}
                     />);
                 }
                 return null;

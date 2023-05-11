@@ -43,10 +43,10 @@ import resourceServiceEpics from '@js/epics/resourceservice';
 import favoriteEpics from '@js/epics/favorite';
 import DetailsPanel from '@js/components/DetailsPanel';
 import { processingDownload } from '@js/selectors/resourceservice';
-import { resourceHasPermission } from '@js/utils/ResourceUtils';
-import { downloadResource, setFavoriteResource } from '@js/actions/gnresource';
+import {resourceHasPermission, updateFilterFormItemsWithFacet} from '@js/utils/ResourceUtils';
+import {downloadResource, getFacetItems, setFavoriteResource} from '@js/actions/gnresource';
 import FiltersForm from '@js/components/FiltersForm';
-import { getCategories, getRegions, getOwners, getKeywords } from '@js/api/geonode/v2';
+import {getCategories, getRegions, getOwners, getKeywords} from '@js/api/geonode/v2';
 import usePluginItems from '@js/hooks/usePluginItems';
 import { ProcessTypes } from '@js/utils/ResourceServiceUtils';
 import { replace } from 'connected-react-router';
@@ -334,12 +334,13 @@ function ResourcesGrid({
                 {
                     id: 'dataset',
                     labelId: 'gnhome.datasets',
-                    type: 'filter',
+                    type: 'accordion',
                     items: [
                         {
                             id: 'store-vector',
                             labelId: 'gnhome.vector',
-                            type: 'filter'
+                            type: 'filter',
+                            style: 'facet'
                         },
                         {
                             id: 'store-raster',
@@ -407,6 +408,11 @@ function ResourcesGrid({
             placeholderId: 'gnhome.ownersPlaceholder',
             type: 'select',
             suggestionsRequestKey: 'owners'
+        },
+        {
+            type: "accordion",
+            style: "facet",
+            facet: "thesaurus"
         }
     ],
     pagePath = '',
@@ -435,19 +441,31 @@ function ResourcesGrid({
     onReplaceLocation,
     error,
     enableGeoNodeCardsMenuItems,
-    detailsTabs = []
+    detailsTabs = [],
+    onGetFacetItems,
+    filterFacetItems
 }, context) {
 
     const [cardLayoutStyle, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', 'grid');
+    const [filtersFormItemsState, setFiltersFormItemsState] = useState(filtersFormItems);
+
+    useEffect(() => {
+        if (filtersFormItemsState?.length) {
+            const updatedFilterFormItems = updateFilterFormItemsWithFacet(
+                filtersFormItemsState,
+                filterFacetItems
+            );
+            setFiltersFormItemsState(updatedFilterFormItems);
+        }
+    }, [filterFacetItems]);
+
     const isPaginated = pagination !== undefined
         ? pagination
-        : cardLayoutStyle === 'grid'
-            ? false
-            : true;
+        : cardLayoutStyle !== 'grid';
     const customCardsMenuItems = enableGeoNodeCardsMenuItems ? getConfigProp('geoNodeCardsMenuItems') || [] : [];
     const parsedConfig = parsePluginConfigExpressions(monitoredState, {
         menuItems: [...customCardsMenuItems, ...menuItems],
-        filtersFormItems,
+        filtersFormItemsState,
         extent,
         order,
         detailsTabs
@@ -483,6 +501,15 @@ function ResourcesGrid({
     const [_showFilterForm, setShowFilterForm] = useState(false);
     const showDetail = !isEmpty(resource);
     const showFilterForm = _showFilterForm && !showDetail;
+
+    useEffect(() => {
+        // Trigger facet item fetch on form open
+        // and facet present on filterFormItems
+        showFilterForm
+        && filtersFormItemsState.length
+        && filtersFormItemsState.some(f => f.facet)
+        && onGetFacetItems();
+    }, [showFilterForm]);
 
     const handleShowFilterForm = (show) => {
         if (show && disableFilters) {
@@ -714,7 +741,7 @@ function ResourcesGrid({
                         <FiltersForm
                             key="gn-filter-form"
                             id="gn-filter-form"
-                            fields={parsedConfig.filtersFormItems}
+                            fields={parsedConfig.filtersFormItemsState}
                             extentProps={parsedConfig.extent}
                             suggestionsRequestTypes={suggestionsRequestTypes}
                             query={query}
@@ -765,8 +792,9 @@ const ResourcesGridPlugin = connect(
         state => state?.router?.location,
         state => state?.gnresource?.data || null,
         state => getMonitoredState(state, getConfigProp('monitorState')),
-        state => state?.gnsearch?.error
-    ], (params, user, totalResources, loading, location, resource, monitoredState, error) => ({
+        state => state?.gnsearch?.error,
+        state => state?.gnresource?.facetItems
+    ], (params, user, totalResources, loading, location, resource, monitoredState, error, filterFacetItems) => ({
         params,
         user,
         totalResources,
@@ -774,12 +802,14 @@ const ResourcesGridPlugin = connect(
         location,
         resource,
         monitoredState,
-        error
+        error,
+        filterFacetItems
     })),
     {
         onSearch: searchResources,
         onInit: setSearchConfig,
-        onReplaceLocation: replace
+        onReplaceLocation: replace,
+        onGetFacetItems: getFacetItems
     }
 )(withResizeDetector(ResourcesGrid));
 

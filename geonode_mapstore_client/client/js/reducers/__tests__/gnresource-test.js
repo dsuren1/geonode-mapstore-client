@@ -18,7 +18,8 @@ import {
     setResourcePermissions,
     editThumbnailResource,
     setResourceThumbnail,
-    enableMapThumbnailViewer
+    enableMapThumbnailViewer,
+    setFacetItems
 } from '@js/actions/gnresource';
 
 describe('gnresource reducer', () => {
@@ -124,6 +125,14 @@ describe('gnresource reducer', () => {
 
         expect(state).toEqual({
             showMapThumbnail: true
+        });
+    });
+    it('should test setFacetItems', () => {
+        const facetItems = ["1", "2"];
+        const state = gnresource({}, setFacetItems(facetItems));
+
+        expect(state).toEqual({
+            facetItems
         });
     });
 });

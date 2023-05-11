@@ -19,7 +19,8 @@ import {
     getMapByPk,
     getCompactPermissionsByPk,
     setResourceThumbnail,
-    getLinkedResourcesByPk
+    getLinkedResourcesByPk,
+    getFacetItems
 } from '@js/api/geonode/v2';
 import { configureMap } from '@mapstore/framework/actions/config';
 import { mapSelector } from '@mapstore/framework/selectors/map';
@@ -48,7 +49,7 @@ import {
     updateResourceProperties,
     SET_RESOURCE_THUMBNAIL,
     updateResource,
-    SET_RESOURCE
+    SET_RESOURCE, GET_FACET_ITEMS, setFacetItems
 } from '@js/actions/gnresource';
 
 import {
@@ -518,11 +519,27 @@ export const gnGetLinkedResources = (action$, store) =>
             )
         );
 
+/**
+ * Get facet filter items
+ */
+export const gnGetFacetItems = (action$) =>
+    action$.ofType(GET_FACET_ITEMS)
+        .switchMap(() =>
+            Observable.defer(() =>
+                getFacetItems()
+            ).switchMap((facetItems) =>
+                Observable.of(
+                    setFacetItems(facetItems)
+                )
+            )
+        );
+
 export default {
     gnViewerRequestNewResourceConfig,
     gnViewerRequestResourceConfig,
     gnViewerSetNewResourceThumbnail,
     gnGetLinkedResources,
+    gnGetFacetItems,
     closeInfoPanelOnMapClick,
     closeOpenPanels
 };

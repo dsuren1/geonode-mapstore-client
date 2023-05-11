@@ -29,7 +29,8 @@ import {
     SET_RESOURCE_COMPACT_PERMISSIONS,
     UPDATE_RESOURCE_COMPACT_PERMISSIONS,
     RESET_GEO_LIMITS,
-    ENABLE_MAP_THUMBNAIL_VIEWER
+    ENABLE_MAP_THUMBNAIL_VIEWER,
+    SET_FACET_ITEMS
 } from '@js/actions/gnresource';
 import {
     cleanCompactPermissions,
@@ -214,6 +215,11 @@ function gnresource(state = defaultState, action) {
             };
         }
         return state;
+    case SET_FACET_ITEMS:
+        return {
+            ...state,
+            facetItems: action.facetItems
+        };
     default:
         return state;
     }

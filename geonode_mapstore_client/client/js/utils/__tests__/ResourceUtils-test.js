@@ -25,7 +25,8 @@ import {
     cleanUrl,
     parseUploadFiles,
     getResourceTypesInfo,
-    ResourceTypes
+    ResourceTypes,
+    updateFilterFormItemsWithFacet
 } from '../ResourceUtils';
 
 describe('Test Resource Utils', () => {
@@ -912,6 +913,38 @@ describe('Test Resource Utils', () => {
             expect(canPreviewed(resource)).toBeTruthy();
             expect(name).toBe('Dashboard');
             expect(formatMetadataUrl(resource)).toBe('/apps/100/metadata');
+        });
+    });
+    describe('Test updateFilterFormItemsWithFacet', () => {
+        it('test with no facet items', () => {
+            const formItems = ["1", "2"];
+            const items = updateFilterFormItemsWithFacet(formItems);
+            expect(items).toEqual(formItems);
+        });
+        it('test with no facet item in filter form items', () => {
+            const formItems = [{name: "1"}, {name: "2"}];
+            const items = updateFilterFormItemsWithFacet(formItems);
+            expect(items).toEqual(formItems);
+        });
+        it('test with facet item and filter form items', () => {
+            const formItems = [{name: "1"}, {style: "facet", type: "accordion", facet: "thesaurus"}];
+            const facetItems = {name: "some-name", key: "filterkey", label: "label1", type: "thesaurus"};
+            const items = updateFilterFormItemsWithFacet(formItems, [facetItems]);
+            expect(items.length).toBe(2);
+            expect(items[1].name).toBe(facetItems.name);
+            expect(items[1].key).toBe(facetItems.key);
+            expect(items[1].id).toBe(facetItems.name);
+            expect(items[1].type).toBe("accordion");
+            expect(items[1].style).toBe("facet");
+            expect(items[1].labelId).toBe("label1");
+            expect(items[1].loadItems).toBeTruthy();
+        });
+        it('test with facet item by no matching facet', () => {
+            const formItems = [{name: "1"}, {style: "facet", type: "accordion", facet: "thesaurus"}];
+            const facetItems = {name: "some-name", key: "filterkey", label: "label1", type: "owner"};
+            const items = updateFilterFormItemsWithFacet(formItems, [facetItems]);
+            expect(items.length).toBe(2);
+            expect(items).toEqual(formItems);
         });
     });
 });

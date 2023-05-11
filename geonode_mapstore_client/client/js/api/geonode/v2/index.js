@@ -45,7 +45,8 @@ let endpoints = {
     'groups': '/api/v2/groups',
     'uploads': '/api/v2/uploads',
     'status': '/api/v2/resource-service/execution-status',
-    'exectionRequest': '/api/v2/executionrequest'
+    'exectionRequest': '/api/v2/executionrequest',
+    'facets': '/api/v2/facets'
 };
 
 const RESOURCES = 'resources';
@@ -63,6 +64,7 @@ const GROUPS = 'groups';
 const UPLOADS = 'uploads';
 const STATUS = 'status';
 const EXECUTIONREQUEST = 'exectionRequest';
+const FACETS = 'facets';
 
 function addCountToLabel(name, count) {
     return `${name} (${count || 0})`;
@@ -882,6 +884,25 @@ export const getResourceByTypeAndByPk = (type, pk) => {
         return getResourceByPk(pk);
     }
 };
+
+export const getFacetItems = () => {
+    return axios.get(parseDevHostname(endpoints[FACETS]))
+        .then(({data} = {}) => data.facets || [])
+        .catch(() => []);
+};
+
+export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}) => {
+    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`).then(({data}) => {
+        return get(data, "topics.items", []).map(({localized_label: labelId, label, key, count} = {})=> ({
+            id: String(key),
+            type: "filter",
+            labelId: labelId || label,
+            count,
+            filterKey,
+            style
+        }));
+    });
+};
 export default {
     getEndpoints,
     getResources,
@@ -922,5 +943,7 @@ export default {
     uploadDocument,
     getExecutionStatus,
     deleteExecutionRequest,
-    getResourceByTypeAndByPk
+    getResourceByTypeAndByPk,
+    getFacetItems,
+    getFacetItemsByFacetName
 };

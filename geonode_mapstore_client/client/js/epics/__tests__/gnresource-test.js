@@ -10,8 +10,19 @@ import expect from 'expect';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '@mapstore/framework/libs/ajax';
 import { testEpic } from '@mapstore/framework/epics/__tests__/epicTestUtils';
-import { gnViewerSetNewResourceThumbnail, closeInfoPanelOnMapClick, gnGetLinkedResources } from '@js/epics/gnresource';
-import { setResourceThumbnail, UPDATE_RESOURCE_PROPERTIES, UPDATE_SINGLE_RESOURCE, setResource } from '@js/actions/gnresource';
+import {
+    gnViewerSetNewResourceThumbnail,
+    closeInfoPanelOnMapClick,
+    gnGetLinkedResources,
+    gnGetFacetItems
+} from '@js/epics/gnresource';
+import {
+    setResourceThumbnail,
+    UPDATE_RESOURCE_PROPERTIES,
+    UPDATE_SINGLE_RESOURCE,
+    setResource,
+    getFacetItems, SET_FACET_ITEMS
+} from '@js/actions/gnresource';
 import { clickOnMap } from '@mapstore/framework/actions/map';
 import { SET_CONTROL_PROPERTY } from '@mapstore/framework/actions/controls';
 import {
@@ -157,5 +168,30 @@ describe('gnsave epics', () => {
             testState
         );
     });
+    it('gnGetFacetItems', (done) => {
+        const NUM_ACTIONS = 1;
+        const testState = {
+            gnresource: {}
+        };
+        const facets = ["1", "2"];
+        mockAxios.onGet().reply(() => [200, {facets}]);
 
+        testEpic(
+            gnGetFacetItems,
+            NUM_ACTIONS,
+            getFacetItems(),
+            (actions) => {
+                try {
+                    expect(actions.map(({ type }) => type))
+                        .toEqual([
+                            SET_FACET_ITEMS
+                        ]);
+                } catch (e) {
+                    done(e);
+                }
+                done();
+            },
+            testState
+        );
+    });
 });

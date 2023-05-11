@@ -16,6 +16,7 @@ import { bboxToPolygon } from '@js/utils/CoordinatesUtils';
 import { uniqBy, orderBy, isString, isObject, pick, difference } from 'lodash';
 import { excludeGoogleBackground, extractTileMatrixFromSources } from '@mapstore/framework/utils/LayersUtils';
 import { determineResourceType } from '@js/utils/FileUtils';
+import { getFacetItemsByFacetName } from '@js/api/geonode/v2';
 
 /**
 * @module utils/ResourceUtils
@@ -698,4 +699,32 @@ export const parseUploadFiles = (data) => {
 
 export const getResourceImageSource = (image) => {
     return image ? image : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADICAIAAABZHvsFAAAACXBIWXMAAC4jAAAuIwF4pT92AAABiklEQVR42u3SAQ0AAAjDMMC/5+MAAaSVsKyTFHwxEmBoMDQYGgyNocHQYGgwNBgaQ4OhwdBgaDA0hgZDg6HB0GBoDA2GBkODocHQGBoMDYYGQ4OhMTQYGgwNhgZDY2gwNBgaDI2hwdBgaDA0GBpDg6HB0GBoMDSGBkODocHQYGgMDYYGQ4OhwdAYGgwNhgZDg6ExNBgaDA2GBkNjaDA0GBoMDYbG0GBoMDQYGkODocHQYGgwNIYGQ4OhwdBgaAwNhgZDg6HB0BgaDA2GBkODoTE0GBoMDYYGQ2NoMDQYGgwNhsbQYGgwNBgaQ4OhwdBgaDA0hgZDg6HB0GBoDA2GBkODocHQGBoMDYYGQ4OhMTQYGgwNhgZDY2gwNBgaDA2GxtBgaDA0GBoMjaHB0GBoMDSGBkODocHQYGgMDYYGQ4OhwdAYGgwNhgZDg6ExNBgaDA2GBkNjaDA0GBoMDYbG0GBoMDQYGgyNocHQYGgwNIYGQ4OhwdBgaAwNhgZDg6HB0BgaDA2GBkPDbQH4OQSN0W8qegAAAABJRU5ErkJggg==';
+};
+
+export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
+    let _formItems = [...formItems];
+    const facetList = _formItems?.filter(f => !!f.facet)?.map(f => f.facet);
+    if (facetList.length) {
+        facetList.forEach(facet => {
+            const indexToReplace = _formItems?.findIndex(f => f.facet === facet);
+            if (indexToReplace !== -1) {
+                const {type, style} =  _formItems[indexToReplace];
+                const _facetItems = facetItems
+                    ?.filter(f => f.type === facet)
+                    ?.map(({name, key, label, localized_label: labelId} = {}) => ({
+                        name,
+                        key,
+                        id: name,
+                        type,
+                        style,
+                        labelId: labelId || label,
+                        loadItems: () => getFacetItemsByFacetName({name, style, filterKey: key})
+                    }));
+                if (_facetItems?.length) {
+                    _formItems.splice(indexToReplace, 1, ..._facetItems);
+                }
+            }
+        });
+    }
+    return _formItems;
 };

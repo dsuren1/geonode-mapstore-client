@@ -34,6 +34,8 @@ export const ENABLE_MAP_THUMBNAIL_VIEWER = 'GEONODE_ENABLE_MAP_THUMBNAIL_VIEWER'
 export const DOWNLOAD_RESOURCE = 'GEONODE_DOWNLOAD_RESOURCE';
 export const DOWNLOAD_COMPLETE = 'GEONODE_DOWNLOAD_COMPLETE';
 export const UPDATE_SINGLE_RESOURCE = 'GEONODE_UPDATE_SINGLE_RESOURCE';
+export const GET_FACET_ITEMS = 'GEONODE:GET_FACET_ITEMS';
+export const SET_FACET_ITEMS = 'GEONODE:SET_FACET_ITEMS';
 
 
 /**
@@ -307,5 +309,17 @@ export function downloadComplete(resource) {
     return {
         type: DOWNLOAD_COMPLETE,
         resource
+    };
+}
+
+export function getFacetItems() {
+    return {
+        type: GET_FACET_ITEMS
+    };
+}
+export function setFacetItems(facetItems) {
+    return {
+        type: SET_FACET_ITEMS,
+        facetItems
     };
 }
