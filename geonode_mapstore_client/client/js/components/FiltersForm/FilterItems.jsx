@@ -13,7 +13,6 @@ import { FormGroup, Checkbox } from 'react-bootstrap';
 import ReactSelect from 'react-select';
 
 import Accordion from "@js/components/Accordion";
-import Badge from "@js/components/Badge";
 import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll';
 import { getFilterLabelById } from '@js/utils/SearchUtils';
 import Message from '@mapstore/framework/components/I18N/Message';
