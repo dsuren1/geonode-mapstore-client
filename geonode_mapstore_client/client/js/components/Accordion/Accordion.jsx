@@ -14,6 +14,7 @@ import FaIcon from "@js/components/FaIcon";
 import useLocalStorage from "@js/hooks/useLocalStorage";
 import Message from "@mapstore/framework/components/I18N/Message";
 import Spinner from "@js/components/Spinner";
+import useIsMounted from "@js/hooks/useIsMounted";
 
 const Accordion = ({
     title,
@@ -23,6 +24,7 @@ const Accordion = ({
     loadItems,
     items
 }) => {
+    const isMounted = useIsMounted();
     const [accordionsExpanded, setAccordionsExpanded] = useLocalStorage('accordionsExpanded', []);
     const [accordionItems, setAccordionItems] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -38,8 +40,8 @@ const Accordion = ({
             if (isExpanded) {
                 setLoading(true);
                 loadItems().then((_items) =>{
-                    setAccordionItems(_items);
-                }).finally(()=> setLoading(false));
+                    isMounted(() =>setAccordionItems(_items));
+                }).finally(()=> isMounted(()=>setLoading(false)));
             }
         } else {
             setAccordionItems(items);
