@@ -106,7 +106,7 @@ function FilterItems({
                             <div className="gn-facet-wrapper">
                                 <div key={item.id} className={`facet${active ? " active" : ""}`} onClick={onChangeFacet}>
                                     {item.labelId ? <Message msgId={item.labelId}/> : <span>{item.label}</span>}
-                                    {!isNil(item.count) && <Badge>{item.count}</Badge>}
+                                    {!isNil(item.count) && <span>{`(${item.count})`}</span>}
 
                                 </div>
                                 {item.items && renderChild && <div className="facet-children">{renderChild()}</div>}

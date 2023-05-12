@@ -21,35 +21,28 @@
     }
 
     .gn-accordion {
+        .border-color-var(@theme-vars[main-border-color]);
         .accordion-title {
-            .border-color-var(@theme-vars[main-border-color]);
-            .background-color-var(@theme-vars[accordion-bg]);
-
             &:hover {
-                .background-color-var(@theme-vars[accordion-hover-bg]);
+                .background-color-var(@theme-vars[main-hover-bg]);
             }
         }
-    }
-
-    .gn-facet-wrapper {
-        .border-bottom-color-var(@theme-vars[main-border-color]);
-
-        .facet {
-            &.active {
-                >.badge {
-                    .background-color-var(@theme-vars[badge-primary-bg]);
-                    .color-var(@theme-vars[badge-primary-color]);
+        .gn-facet-wrapper {
+            .facet {
+                &.active {
+                    .background-color-var(@theme-vars[facet-bg]);
+                    .color-var(@theme-vars[main-bg]);
+                }
+                &:hover:not(&.active) {
+                    .background-color-var(@theme-vars[main-hover-bg]);
+                    .color-var(@theme-vars[main-color]);
+                    .facet-children {
+                        .background-color-var(@theme-vars[main-bg]);
+                        .color-var(@theme-vars[main-color]);
+                    }
                 }
             }
 
-        }
-
-        &:hover {
-            .background-color-var(@theme-vars[main-hover-bg]);
-
-            .facet-children {
-                .background-color-var(@theme-vars[main-bg]);
-            }
         }
     }
 }
@@ -196,6 +189,9 @@
 
 .gn-accordion {
     margin-bottom: 0.5rem;
+    border-width: 0.08rem;
+    border-style: solid;
+    border-radius: 0.25rem;
     .gn-spinner {
         margin: 0.6rem;
     }
@@ -203,10 +199,8 @@
         display: flex;
         align-items: center;
         padding: 0.25rem;
-        border-width: 0.08rem;
-        border-style: solid;
-        border-radius: 0.25rem;
         cursor: pointer;
+        font-weight: 600;
 
         button {
             border: none;
@@ -223,9 +217,28 @@
         .accordion-items {
             display: flex;
             flex-direction: column;
-            padding-left: 0.6rem;
+            padding: 0.2rem 0.8rem 0.6rem 0.8rem;
+
             .form-group {
                 padding-top: 0.6rem;
+            }
+            .gn-facet-wrapper {
+                border: none;
+                padding-bottom: 0.1rem;
+                background: inherit;
+                .facet {
+                    max-width: fit-content;
+                    &.active {
+                        &:hover {
+                            > span {
+                                font-weight: 600;
+                            }
+                        }
+                        > span {
+                            font-weight: normal;
+                        }
+                    }
+                }
             }
         }
     }
