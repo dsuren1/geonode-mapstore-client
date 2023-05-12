@@ -16,7 +16,6 @@ import { bboxToPolygon } from '@js/utils/CoordinatesUtils';
 import { uniqBy, orderBy, isString, isObject, pick, difference } from 'lodash';
 import { excludeGoogleBackground, extractTileMatrixFromSources } from '@mapstore/framework/utils/LayersUtils';
 import { determineResourceType } from '@js/utils/FileUtils';
-import { getFacetItemsByFacetName } from '@js/api/geonode/v2';
 
 /**
 * @module utils/ResourceUtils
@@ -711,14 +710,14 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
                 const {type, style} =  _formItems[indexToReplace];
                 const _facetItems = facetItems
                     ?.filter(f => f.type === facet)
-                    ?.map(({name, key, label: labelId} = {}) => ({
+                    ?.map(({name, key, label: labelId, loadItems} = {}) => ({
                         name,
                         key,
                         id: name,
                         type,
                         style,
                         labelId,
-                        loadItems: () => getFacetItemsByFacetName({name, style, filterKey: key})
+                        loadItems: () => loadItems({name, style, filterKey: key})
                     }));
                 if (_facetItems?.length) {
                     _formItems.splice(indexToReplace, 1, ..._facetItems);

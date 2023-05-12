@@ -885,12 +885,6 @@ export const getResourceByTypeAndByPk = (type, pk) => {
     }
 };
 
-export const getFacetItems = () => {
-    return axios.get(parseDevHostname(endpoints[FACETS]))
-        .then(({data} = {}) => data.facets || [])
-        .catch(() => []);
-};
-
 export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}) => {
     return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`).then(({data}) => {
         return get(data, "topics.items", []).map(({label: labelId, key, count} = {})=> ({
@@ -903,6 +897,18 @@ export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}) =>
         }));
     });
 };
+
+export const getFacetItems = () => {
+    return axios
+        .get(parseDevHostname(endpoints[FACETS]))
+        .then(({ data } = {}) =>
+            data?.facets?.map((facet) => ({
+                ...facet,
+                loadItems: getFacetItemsByFacetName
+            })) || []
+        ).catch(() => []);
+};
+
 export default {
     getEndpoints,
     getResources,
