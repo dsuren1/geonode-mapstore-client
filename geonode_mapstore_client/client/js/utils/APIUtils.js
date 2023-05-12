@@ -7,6 +7,7 @@
  */
 
 import url from 'url';
+import queryString from "query-string";
 
 /**
 * Utilities for api requests
@@ -46,6 +47,17 @@ export const getApiToken = () => {
     return geoNodePageConfig.apikey || null;
 };
 
+/**
+ * Params serializer to remove square brackets
+ * from params with array value
+ * @param {Object} params
+ * @returns {Object} updated params
+ */
+export const paramsSerializer = (params) => {
+    return queryString.stringify(params, { arrayFormat: 'brackets' });
+};
+
 export default {
-    parseDevHostname
+    parseDevHostname,
+    paramsSerializer
 };

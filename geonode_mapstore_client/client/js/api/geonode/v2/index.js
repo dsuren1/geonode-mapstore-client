@@ -9,7 +9,8 @@
 import axios from '@mapstore/framework/libs/ajax';
 import {
     parseDevHostname,
-    getApiToken
+    getApiToken,
+    paramsSerializer
 } from '@js/utils/APIUtils';
 import merge from 'lodash/merge';
 import mergeWith from 'lodash/mergeWith';
@@ -162,7 +163,8 @@ export const getResources = ({
             page_size: pageSize,
             'filter{metadata_only}': false, // exclude resources such as services
             include: ['executions']
-        }
+        },
+        paramsSerializer
     })
         .then(({ data }) => {
             return {
