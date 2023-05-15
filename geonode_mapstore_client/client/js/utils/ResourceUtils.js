@@ -318,6 +318,16 @@ export const getMetadataDetailUrl = (resource) => {
     return (getMetadataUrl(resource)) ? getMetadataUrl(resource) + '_detail' : '';
 };
 
+export const getTemporalExtent = (resource) => {
+    if (resource
+        && resource.temporal_extent_start
+        && resource.temporal_extent_end
+    ) {
+        return `${resource.temporal_extent_start}-${resource.temporal_extent_end}`;
+    }
+    return '';
+};
+
 export const getResourceStatuses = (resource) => {
     const { processes } = resource || {};
     const isProcessing = processes

@@ -25,6 +25,7 @@ import {
     cleanUrl,
     parseUploadFiles,
     getResourceTypesInfo,
+    getTemporalExtent,
     ResourceTypes
 } from '../ResourceUtils';
 
@@ -912,6 +913,14 @@ describe('Test Resource Utils', () => {
             expect(canPreviewed(resource)).toBeTruthy();
             expect(name).toBe('Dashboard');
             expect(formatMetadataUrl(resource)).toBe('/apps/100/metadata');
+        });
+    });
+    describe('Test getTemporalExtent', () => {
+        it('test getTemporalExtent - valid', () => {
+            expect(getTemporalExtent({temporal_extent_start: "1", temporal_extent_end: "2"})).toBe("1-2");
+        });
+        it('test getTemporalExtent - empty', () => {
+            expect(getTemporalExtent({})).toBe('');
         });
     });
 });

@@ -761,6 +761,11 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 },
                                 {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
+                                },
+                                {
                                     "type": "link",
                                     "style": "label",
                                     "labelId": "gnviewer.viewFullMetadata",
@@ -1636,6 +1641,11 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 },
                                 {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
+                                },
+                                {
                                     "type": "link",
                                     "style": "label",
                                     "labelId": "gnviewer.viewFullMetadata",
@@ -2280,6 +2290,11 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 },
                                 {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
+                                },
+                                {
                                     "type": "link",
                                     "style": "label",
                                     "labelId": "gnviewer.viewFullMetadata",
@@ -2582,6 +2597,11 @@
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
                                 },
                                 {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
+                                },
+                                {
                                     "type": "link",
                                     "style": "label",
                                     "labelId": "gnviewer.viewFullMetadata",
@@ -2800,6 +2820,11 @@
                                     "type": "html",
                                     "labelId": "gnviewer.supplementalInformation",
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
+                                },
+                                {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
                                 },
                                 {
                                     "type": "link",
@@ -3313,6 +3338,11 @@
                                     "type": "html",
                                     "labelId": "gnviewer.supplementalInformation",
                                     "value": "{context.get(state('gnResourceData'), 'supplemental_information')}"
+                                },
+                                {
+                                    "type": "text",
+                                    "labelId": "gnviewer.temporalExtent",
+                                    "value": "{context.getTemporalExtent(state('gnResourceData'))}"
                                 },
                                 {
                                     "type": "link",
