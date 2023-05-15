@@ -9,7 +9,6 @@
 import {
     getMetadataUrl,
     getMetadataDetailUrl,
-    getTemporalExtent,
     resourceHasPermission,
     canCopyResource
 } from '@js/utils/ResourceUtils';
@@ -19,7 +18,6 @@ export const getPluginsContext = () => ({
     get,
     getMetadataUrl,
     getMetadataDetailUrl,
-    getTemporalExtent,
     resourceHasPermission,
     canCopyResource,
     userHasPermission: (user, perm) => user?.perms?.includes(perm),
