@@ -181,16 +181,17 @@ function FilterItems({
                         titleId={field.labelId}
                         identifier={key}
                         loadItems={field.loadItems}
+                        emptyMsgId={field.emptyMsgId}
                         items={field.items}
-                        content={(accordionItems) =>(<div className={'accordion-items'}>
+                        content={(accordionItems) =>(
                             <FilterItems
                                 id={id}
                                 items={accordionItems}
                                 suggestionsRequestTypes={suggestionsRequestTypes}
                                 values={values}
                                 onChange={onChange}
-                            />
-                        </div>)}
+                            />)
+                        }
                     />);
                 }
                 return null;

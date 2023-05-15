@@ -411,7 +411,8 @@ function ResourcesGrid({
         {
             type: "accordion",
             style: "facet",
-            facet: "thesaurus"
+            facet: "thesaurus",
+            emptyMsgId: "gnhome.facet.empty.thesaurus"
         }
     ],
     pagePath = '',

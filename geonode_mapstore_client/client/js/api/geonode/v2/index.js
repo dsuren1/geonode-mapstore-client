@@ -71,26 +71,6 @@ function addCountToLabel(name, count) {
     return `${name} (${count || 0})`;
 }
 
-// some fields such as search_fields does not support the array notation `key[]=value1&key[]=value2`
-// this function will parse all values included array in the `key=value1&key=value2` format
-function addQueryString(requestUrl, params) {
-    if (!params) {
-        return requestUrl;
-    }
-    const queryString = Object.keys(params)
-        .reduce((str, key, idx) => {
-            const start = idx === 0 ? '?' : '&';
-            const values = castArray(params[key]);
-            if (values.length > 1) {
-                return str + values.reduce((valStr, value, jdx) => {
-                    return valStr + (jdx === 0 ? start : '&') + key + '=' + value;
-                }, '');
-            }
-            return str + start + key + '=' + values[0];
-        }, '');
-    return `${requestUrl}${queryString}`;
-}
-
 export const setEndpoints = (data) => {
     endpoints = { ...endpoints, ...data };
 };
@@ -149,21 +129,21 @@ export const getResources = ({
     const customQuery = customFilters
         .filter(({ id }) => castArray(f || []).indexOf(id) !== -1)
         .reduce((acc, filter) => mergeCustomQuery(acc, filter.query || {}), {}) || {};
-
-    return axios.get(parseDevHostname(
-        addQueryString(endpoints[RESOURCES], q && {
+    const _mergeCustomQueryParams = mergeCustomQuery(params, customQuery);
+    const _params = {
+        ..._mergeCustomQueryParams,
+        ...(q && {
             search: q,
             search_fields: ['title', 'abstract']
-        })
-    ), {
-        params: {
-            ...mergeCustomQuery(params, customQuery),
-            ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
-            page,
-            page_size: pageSize,
-            'filter{metadata_only}': false, // exclude resources such as services
-            include: ['executions']
-        },
+        }),
+        ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
+        page,
+        page_size: pageSize,
+        'filter{metadata_only}': false, // exclude resources such as services
+        include: ['executions']
+    };
+    return axios.get(parseDevHostname(endpoints[RESOURCES]), {
+        params: _params,
         paramsSerializer
     })
         .then(({ data }) => {
@@ -187,19 +167,19 @@ export const getMaps = ({
 }) => {
     return axios
         .get(
-            parseDevHostname(
-                addQueryString(endpoints[MAPS], q && {
-                    search: q,
-                    search_fields: ['title', 'abstract']
-                })
-            ), {
+            parseDevHostname(endpoints[MAPS]), {
                 // axios will format query params array to `key[]=value1&key[]=value2`
                 params: {
                     ...params,
+                    ...(q && {
+                        search: q,
+                        search_fields: ['title', 'abstract']
+                    }),
                     ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
                     page,
                     page_size: pageSize
-                }
+                },
+                paramsSerializer
             })
         .then(({ data }) => {
             return {
@@ -222,19 +202,19 @@ export const getDatasets = ({
 }) => {
     return axios
         .get(
-            parseDevHostname(
-                addQueryString(endpoints[DATASETS], q && {
-                    search: q,
-                    search_fields: ['title', 'abstract']
-                })
-            ), {
+            parseDevHostname(endpoints[DATASETS]), {
                 // axios will format query params array to `key[]=value1&key[]=value2`
                 params: {
                     ...params,
+                    ...(q && {
+                        search: q,
+                        search_fields: ['title', 'abstract']
+                    }),
                     ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
                     page,
                     page_size: pageSize
-                }
+                },
+                paramsSerializer
             })
         .then(({ data }) => {
             return {
@@ -258,20 +238,19 @@ export const getDocumentsByDocType = (docType = 'image', {
 
     return axios
         .get(
-            parseDevHostname(
-                addQueryString(endpoints[DOCUMENTS], q && {
-                    search: q,
-                    search_fields: ['title', 'abstract']
-                })
-            ), {
-                // axios will format query params array to `key[]=value1&key[]=value2`
+            parseDevHostname(endpoints[DOCUMENTS]), {
                 params: {
                     ...params,
+                    ...(q && {
+                        search: q,
+                        search_fields: ['title', 'abstract']
+                    }),
                     ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
                     'filter{subtype}': [docType],
                     page,
                     page_size: pageSize
-                }
+                },
+                paramsSerializer
             })
         .then(({ data }) => {
             return {
@@ -390,18 +369,18 @@ export const getUsers = ({
     ...params
 } = {}) => {
     return axios.get(
-        parseDevHostname(
-            addQueryString(endpoints[USERS], q && {
-                search: q,
-                search_fields: ['username', 'first_name', 'last_name']
-            })
-        ),
+        parseDevHostname(endpoints[USERS]),
         {
             params: {
                 ...params,
+                ...(q && {
+                    search: q,
+                    search_fields: ['username', 'first_name', 'last_name']
+                }),
                 page,
                 page_size: pageSize
-            }
+            },
+            paramsSerializer
         })
         .then(({ data }) => {
             return {
@@ -419,18 +398,18 @@ export const getGroups = ({
     ...params
 } = {}) => {
     return axios.get(
-        parseDevHostname(
-            addQueryString(endpoints[GROUPS], q && {
-                search: q,
-                search_fields: ['title', 'slug']
-            })
-        ),
+        parseDevHostname(endpoints[GROUPS]),
         {
             params: {
                 ...params,
+                ...(q && {
+                    search: q,
+                    search_fields: ['title', 'slug']
+                }),
                 page,
                 page_size: pageSize
-            }
+            },
+            paramsSerializer
         })
         .then(({ data }) => {
             return {
@@ -887,16 +866,23 @@ export const getResourceByTypeAndByPk = (type, pk) => {
     }
 };
 
-export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}) => {
-    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`).then(({data}) => {
-        return get(data, "topics.items", []).map(({label: labelId, key, count} = {})=> ({
-            id: String(key),
-            type: "filter",
-            labelId,
-            count,
-            filterKey,
-            style
-        }));
+export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}, params) => {
+    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`, {params}).then(({data}) => {
+        const {page: _page = 0, items = [], total, page_size: size} = data?.topics ?? {};
+        const page = Number(_page);
+        const isNextPageAvailable = (Math.ceil(Number(total) / Number(size)) - (page + 1)) !== 0;
+        return {
+            page,
+            isNextPageAvailable,
+            items: items.map(({label: labelId, key, count} = {})=> ({
+                id: String(key),
+                type: "filter",
+                labelId,
+                count,
+                filterKey,
+                style
+            }))
+        };
     });
 };
 

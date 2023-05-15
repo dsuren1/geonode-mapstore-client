@@ -8,6 +8,7 @@
 
 import url from 'url';
 import queryString from "query-string";
+import isEmpty from "lodash/isEmpty";
 
 /**
 * Utilities for api requests
@@ -48,13 +49,21 @@ export const getApiToken = () => {
 };
 
 /**
- * Params serializer to remove square brackets
- * from params with array value
+ * Params serializer to include/exclude square brackets
+ * for params with array value
  * @param {Object} params
  * @returns {Object} updated params
  */
 export const paramsSerializer = (params) => {
-    return queryString.stringify(params, { arrayFormat: 'brackets' });
+    const {include, exclude, ...rest} = params ?? {}; // Update bracket params (if any)
+    let queryParams = '';
+    if (!isEmpty(include) || !isEmpty(exclude)) {
+        queryParams = queryString.stringify({include, exclude}, { arrayFormat: 'bracket'});
+    }
+    if (!isEmpty(rest)) {
+        queryParams = (isEmpty(queryParams) ? '' : `${queryParams}&`) + queryString.stringify(rest);
+    }
+    return queryParams;
 };
 
 export default {

@@ -707,7 +707,7 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
         facetList.forEach(facet => {
             const indexToReplace = _formItems?.findIndex(f => f.facet === facet);
             if (indexToReplace !== -1) {
-                const {type, style} =  _formItems[indexToReplace];
+                const {type, style, emptyMsgId} =  _formItems[indexToReplace];
                 const _facetItems = facetItems
                     ?.filter(f => f.type === facet)
                     ?.map(({name, key, label: labelId, loadItems} = {}) => ({
@@ -716,8 +716,9 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
                         id: name,
                         type,
                         style,
+                        emptyMsgId,
                         labelId,
-                        loadItems: () => loadItems({name, style, filterKey: key})
+                        loadItems: (params) => loadItems({name, style, filterKey: key}, params)
                     }));
                 if (_facetItems?.length) {
                     _formItems.splice(indexToReplace, 1, ..._facetItems);

@@ -166,7 +166,7 @@
     border-bottom-style: solid;
 
     .facet {
-        padding: 0.4rem 0.2rem;
+        padding: 0.1rem 0.3rem;
         cursor: pointer;
 
         &.active {
@@ -206,7 +206,7 @@
             border: none;
             background: none;
             box-shadow: none;
-
+            pointer-events: inherit;
             &:active:focus {
                 background: none;
             }
@@ -218,7 +218,8 @@
             display: flex;
             flex-direction: column;
             padding: 0.2rem 0.8rem 0.6rem 0.8rem;
-
+            max-height: 200px;
+            overflow-y: auto;
             .form-group {
                 padding-top: 0.6rem;
             }
@@ -229,11 +230,6 @@
                 .facet {
                     max-width: fit-content;
                     &.active {
-                        &:hover {
-                            > span {
-                                font-weight: 600;
-                            }
-                        }
                         > span {
                             font-weight: normal;
                         }

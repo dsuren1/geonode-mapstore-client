@@ -134,7 +134,13 @@
             "permissionsMissing": "You don't have permission to view or download the resource",
             "filter": "Filter",
             "noPreview": "A preview is not available for this resource",
-            "na": "N/A"
+            "na": "N/A",
+            "facet": {
+                "empty":{
+                    "thesaurus": "There aren't resources with keywords from this thesaurus"
+                }
+            },
+            "emptyAccordion": "No items to display"
         },
         "viewer": {
             "document": {
