@@ -866,22 +866,26 @@ export const getResourceByTypeAndByPk = (type, pk) => {
     }
 };
 
-export const getFacetItemsByFacetName = ({name: facetName, style, filterKey}, params) => {
-    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`, {params}).then(({data}) => {
+export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, { config, ...params }) => {
+    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`, { ...config, params }).then(({data}) => {
         const {page: _page = 0, items = [], total, page_size: size} = data?.topics ?? {};
         const page = Number(_page);
         const isNextPageAvailable = (Math.ceil(Number(total) / Number(size)) - (page + 1)) !== 0;
         return {
             page,
             isNextPageAvailable,
-            items: items.map(({label: labelId, key, count} = {})=> ({
-                id: String(key),
-                type: "filter",
-                labelId,
-                count,
-                filterKey,
-                style
-            }))
+            items: items.map(({label, is_localized: isLocalized, key, count} = {})=> {
+                const item = {
+                    id: String(key),
+                    type: "filter",
+                    ...(isLocalized ? { label } : { labelId: label }),
+                    count,
+                    filterKey,
+                    style
+                };
+                setFilterById(filterKey + key, item);
+                return item;
+            })
         };
     });
 };
