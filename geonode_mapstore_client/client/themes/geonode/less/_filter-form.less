@@ -30,6 +30,8 @@
     .gn-accordion {
         .border-color-var(@theme-vars[main-border-color]);
         .accordion-title {
+            .color-var(@theme-vars[main-color]);
+            .background-color-var(@theme-vars[main-bg]);
             &:hover {
                 .background-color-var(@theme-vars[main-hover-bg]);
             }
@@ -223,6 +225,7 @@
         .accordion-title-label {
             flex: 1;
             display: flex;
+            padding-right: 1rem;
         }
         button {
             display: block;
