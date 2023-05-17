@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import uniq from 'lodash/uniq';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from "prop-types";
@@ -16,49 +16,42 @@ import useLocalStorage from "@js/hooks/useLocalStorage";
 import Message from "@mapstore/framework/components/I18N/Message";
 import Spinner from "@js/components/Spinner";
 import useIsMounted from "@js/hooks/useIsMounted";
-import useInfiniteScroll from "@js/hooks/useInfiniteScroll";
+
+const AccordionTitle = ({
+    expanded,
+    onClick,
+    loading,
+    children
+}) => {
+
+    return (
+        <div className="accordion-title" onClick={onClick}>
+            <div className="accordion-title-label">
+                {children}
+                <Button onClick={onClick} style={{ display: 'block', width: 0, height: 0, overflow: 'hidden', opacity: 0, padding: 0, margin: 0 }}/>
+            </div>
+            {loading
+                ? <Spinner/>
+                : <FaIcon name={`caret-${expanded ? "down" : "left"}`}/>
+            }
+        </div>
+    );
+};
 
 const Accordion = ({
     title,
     titleId,
-    emptyMsgId,
+    noItemsMsgId,
     identifier,
     content,
     loadItems,
     items
 }) => {
     const isMounted = useIsMounted();
-    const scrollContainer = useRef();
 
     const [accordionsExpanded, setAccordionsExpanded] = useLocalStorage('accordionsExpanded', []);
-    const [accordionItems, setAccordionItems] = useState([]);
+    const [accordionItems, setAccordionItems] = useState(items);
     const [loading, setLoading] = useState(false);
-    const [isScrollEnd, setScrollEnd] = useState(false);
-    const [isNextPageAvailable, setIsNextPageAvailable] = useState(false);
-    const [page, setPage] = useState(0);
-
-    const onLoadItems = () => {
-        setLoading(true);
-        loadItems({page})
-            .then((res) => {
-                isMounted(() => {
-                    setAccordionItems(accordionItems.concat(res.items));
-                    setIsNextPageAvailable(res.isNextPageAvailable);
-                    res.isNextPageAvailable && setPage(page + 1);
-                });
-            })
-            .finally(()=>
-                isMounted(()=> setLoading(false))
-            );
-    };
-
-    useInfiniteScroll({
-        scrollContainer: scrollContainer.current,
-        shouldScroll: () => !loading && isNextPageAvailable,
-        onLoad: () => {
-            onLoadItems();
-        }
-    });
 
     const isExpanded = accordionsExpanded.includes(identifier);
 
@@ -69,41 +62,37 @@ const Accordion = ({
         setAccordionsExpanded(expandedList);
     };
 
-    const resetState = () => {
-        setAccordionItems([]);
-        setPage(0);
-        setScrollEnd(false);
-        setIsNextPageAvailable(false);
-    };
     useEffect(()=>{
         if (loadItems && typeof loadItems === 'function') {
             if (isExpanded && !loading) {
-                onLoadItems();
-            } else {
-                resetState();
+                setLoading(true);
+                loadItems({ page_size: 999999 })
+                    .then((response) =>{
+                        isMounted(() => setAccordionItems(response.items));
+                    })
+                    .finally(()=> isMounted(() => setLoading(false)));
             }
-        } else {
-            setAccordionItems(items);
         }
-    }, [loadItems, items, isExpanded, isScrollEnd]);
+    }, [isExpanded]);
 
     return (
         <div className={'gn-accordion'}>
-            <div className="accordion-title" onClick={onClick}>
-                <Button>
-                    <FaIcon name={`chevron-${isExpanded ? "down" : "right"}`}/>
-                </Button>
+            <AccordionTitle
+                expanded={isExpanded}
+                onClick={onClick}
+                loading={loading}
+            >
                 {titleId ? <Message msgId={titleId}/> : title}
-            </div>
-            {isExpanded && <div className="accordion-body">
-                <div className={'accordion-items'} ref={scrollContainer}>
-                    {isEmpty(accordionItems) && !loading
-                        ? <Message msgId={emptyMsgId}/>
-                        : content(accordionItems)
-                    }
-                    {loading && <Spinner/>}
+            </AccordionTitle>
+            {isExpanded ? <div className="accordion-body">
+                <div className={'accordion-items'}>
+                    {!isEmpty(accordionItems)
+                        ? content(accordionItems)
+                        : !loading
+                            ? <Message msgId={noItemsMsgId}/>
+                            : null}
                 </div>
-            </div>}
+            </div> : null}
         </div>
     );
 };
@@ -121,6 +110,6 @@ Accordion.defaultProps = {
     title: null,
     identifier: "",
     content: null,
-    emptyMsgId: "gnhome.emptyAccordion"
+    noItemsMsgId: "gnhome.emptyAccordion"
 };
 export default Accordion;
