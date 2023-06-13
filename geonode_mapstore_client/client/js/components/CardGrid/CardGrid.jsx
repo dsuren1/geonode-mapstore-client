@@ -85,7 +85,8 @@ const Cards = withResizeDetector(({
         };
     return (
         <ul
-            style={cardLayoutStyle === 'list' ? {} : containerStyle}
+            className={'gn-card-list'}
+            style={{...(cardLayoutStyle === 'list' ? {} : containerStyle)}}
         >
             {resources.map((resource, idx) => {
                 const { isProcessing } = getResourceStatuses(resource);
@@ -134,7 +135,8 @@ const InfiniteScrollCardGrid = ({
     scrollContainer,
     downloading,
     getDetailHref,
-    cardLayoutStyle
+    cardLayoutStyle,
+    cardStyle
 }) => {
 
     useInfiniteScroll({
@@ -172,6 +174,7 @@ const InfiniteScrollCardGrid = ({
                             buildHrefByTemplate={buildHrefByTemplate}
                             downloading={downloading}
                             cardLayoutStyle={cardLayoutStyle}
+                            cardStyle={cardStyle}
                         />
                         <div className="gn-card-grid-pagination">
                             {loading && <Spinner animation="border" role="status">
