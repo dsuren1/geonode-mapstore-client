@@ -11,9 +11,9 @@ import Spinner from '@js/components/Spinner';
 import HTML from '@mapstore/framework/components/I18N/HTML';
 import FaIcon from '@js/components/FaIcon';
 import ResourceCard from '@js/components/ResourceCard';
-import { withResizeDetector } from 'react-resize-detector';
+import {withResizeDetector} from 'react-resize-detector';
 import useInfiniteScroll from '@js/hooks/useInfiniteScroll';
-import { getResourceStatuses } from '@js/utils/ResourceUtils';
+import {getResourceStatuses} from '@js/utils/ResourceUtils';
 import MainLoader from '@js/components/MainLoader';
 
 const Cards = withResizeDetector(({
@@ -42,8 +42,7 @@ const Cards = withResizeDetector(({
     const isSingleCard = count === 0 || count === 1;
 
     const gridLayoutSpace = (idx) => {
-
-        const gridSpace = isSingleCard
+        return isSingleCard
             ? {
                 width: width - margin,
                 margin: ulPadding
@@ -53,8 +52,6 @@ const Cards = withResizeDetector(({
                 marginRight: (idx + 1) % count === 0 ? 0 : margin,
                 marginTop: margin
             };
-
-        return gridSpace;
     };
 
     const listLayoutSpace = {
@@ -135,8 +132,7 @@ const InfiniteScrollCardGrid = ({
     scrollContainer,
     downloading,
     getDetailHref,
-    cardLayoutStyle,
-    cardStyle
+    cardLayoutStyle
 }) => {
 
     useInfiniteScroll({
@@ -174,7 +170,6 @@ const InfiniteScrollCardGrid = ({
                             buildHrefByTemplate={buildHrefByTemplate}
                             downloading={downloading}
                             cardLayoutStyle={cardLayoutStyle}
-                            cardStyle={cardStyle}
                         />
                         <div className="gn-card-grid-pagination">
                             {loading && <Spinner animation="border" role="status">

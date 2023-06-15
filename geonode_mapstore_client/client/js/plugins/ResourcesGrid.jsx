@@ -164,8 +164,9 @@ function PaginationCustom({
   * @prop {string} filterPagePath sets path for filters page when filter button is clicked
   * @prop {array} resourceCardActionsOrder order in which `cfg.items` will be rendered
   * @prop {boolean} enableGeoNodeCardsMenuItems Provides a config to allow for card menu items to be enabled/disabled.
+  * @prop {boolean} panel when enabled, the component render the list of resources, filters and details preview inside a panel
   * @prop {string} cardLayoutStyle when specified, the card layout option is forced and the button to toggle card layout is hidden
-  * @prop {string} defaultLayoutCardsStyle default layout card style. One of 'list'|'grid'
+  * @prop {string} defaultCardLayoutStyle default layout card style. One of 'list'|'grid'
   * @prop {array} detailsTabs array of tab object representing the structure of the displayed info properties (see tabs in {@link module:DetailViewer})
   * @example
   * {
@@ -433,7 +434,7 @@ function ResourcesGrid({
     pageSize = 24,
     panel,
     cardLayoutStyle = null,
-    defaultLayoutCardsStyle = 'grid',
+    defaultCardLayoutStyle = 'grid',
     resource,
     width,
     height,
@@ -463,7 +464,8 @@ function ResourcesGrid({
     facets
 }, context) {
 
-    const [cardLayoutStyleState, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', cardLayoutStyle || defaultLayoutCardsStyle);
+    const [_cardLayoutStyleState, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', defaultCardLayoutStyle);
+    const cardLayoutStyleState = cardLayoutStyle || _cardLayoutStyleState; // Force style when `cardLayoutStyle` is configured
 
     const isPaginated = pagination !== undefined
         ? pagination
