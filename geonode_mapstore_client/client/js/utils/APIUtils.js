@@ -34,7 +34,7 @@ export const getGeoNodeConfig = (path = '', defaultValue = undefined) => {
  * @module utils/APIUtils
  */
 export const getGeoNodeLocalConfig = (path = '', defaultValue = undefined) => {
-    const localConfig = getGeoNodeConfig('localConfig') ?? {};
+    const localConfig = getGeoNodeConfig('localConfig', {});
     if (!isEmpty(path)) {
         return get(localConfig, path, defaultValue);
     }
