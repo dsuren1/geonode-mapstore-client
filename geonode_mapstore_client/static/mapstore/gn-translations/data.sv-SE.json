@@ -263,6 +263,8 @@
             "invalidUploadMessageErrorTooltip": "The upload process failed. Please check the validity of the file and try to upload it again",
             "completeUpload": "Complete upload",
             "selectFiles": "Select files...",
+            "addUrl": "Add URL...",
+            "duplicateUrl": "URL is already present in the list of uploads",
             "supportedFiles": "Supported file extensions",
             "unsupportedFiles": "Files not supported for the upload",
             "upload": "Upload",

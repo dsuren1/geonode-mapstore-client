@@ -270,6 +270,8 @@
             "invalidUploadMessageErrorTooltip": "Der Upload-Vorgang ist fehlgeschlagen. Bitte überprüfen Sie die Gültigkeit der Datei und versuchen Sie erneut, sie hochzuladen",
             "completeUpload": "Schließen Sie den Upload ab",
             "selectFiles": "Dateien auswählen...",
+            "addUrl": "URL hinzufügen...",
+            "duplicateUrl": "Die URL ist bereits in der Liste der Uploads vorhanden",
             "supportedFiles": "Unterstützte Dateierweiterungen",
             "unsupportedFiles": "Für den Upload nicht unterstützte Dateien",
             "upload": "Hochladen",

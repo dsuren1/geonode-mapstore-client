@@ -45,6 +45,13 @@
     .gn-upload-card-error-message {
         .color-var(@theme-vars[danger]);
     }
+    .gn-upload-card-bottom {
+        &.extension {
+            span {
+                .color-var(@theme-vars[danger]);
+            }
+        }
+    }
 }
 
 // **************
@@ -80,7 +87,7 @@
             padding: 3rem;
         }
     }
-    
+
 }
 
 .gn-upload-list {
@@ -99,9 +106,20 @@
         overflow: auto;
     }
     .gn-upload-list-header {
+        &.document {
+            display: flex;
+            .add-url {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
         .btn {
             width: 100%;
             text-align: left;
+            > span {
+                margin-left: 0.25rem;
+            }
         }
         border-bottom-width: 1px;
         border-bottom-style: solid;
@@ -157,8 +175,6 @@
 
     ul {
         display: flex;
-        padding: 0.5rem;
-        padding-top: 0;
         flex-wrap: wrap;
         li + li {
             margin-left: 0.25rem;
@@ -179,7 +195,7 @@
     .gn-upload-processing-header {
         margin: 1.0rem;
     }
-    
+
     .gn-upload-processing-list {
         flex: 1;
         position: relative;
@@ -201,7 +217,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 0.5rem;
+    padding: 0 0.5rem 0.5rem;
+    &.extension {
+        flex-direction: column;
+        align-items: flex-start;
+        .Select {
+            &.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+            }
+        }
+        > span {
+            font-size: 0.7rem;
+        }
+    }
 }
 
 .gn-disabled-upload {
