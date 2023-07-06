@@ -13,6 +13,7 @@ import { createSelector } from 'reselect';
 import uniqBy from 'lodash/uniqBy';
 import omit from 'lodash/omit';
 import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import uuidv1 from 'uuid/v1';
 
 import { uploadDocument } from '@js/api/geonode/v2';
@@ -73,23 +74,33 @@ function UploadList({
         setUnsupported(unsupportedFiles);
     }
 
+    const onUnsupportedUrl = (unsupportedUrls) => {
+        setUnsupported(unsupported
+            ?.filter(({file} = {})=> file)
+            ?.concat(
+                uniqBy(unsupportedUrls
+                    ?.filter(({ supported } = {}) => !isNil(supported) && !supported)
+                    ?.map(({docUrl} = {}) => ({url: {name: docUrl}})), 'url.name')
+            ));
+    };
+
     const handleAddUrl = (docUrls) => {
+        let _uploadUrls = [...uploadUrls];
+        const emptyBaseName = 'empty-url';
         if (isEmpty(docUrls)) {
-            const emptyBaseName = 'empty-url';
             if (!uploadUrls.some(doc => doc.baseName === emptyBaseName || isEmpty(doc.docUrl))) {
-                setUploadUrls(
-                    uploadUrls.concat({
-                        docUrl: '',
-                        extension: '',
-                        baseName: emptyBaseName
-                    })
-                );
+                _uploadUrls = _uploadUrls.concat({
+                    docUrl: '',
+                    extension: '',
+                    baseName: emptyBaseName
+                });
+                setUploadUrls(_uploadUrls);
             }
         }
         let _waitingUploads = {...waitingUploads};
-        const _uploadUrls = docUrls
-            .filter(({ supported }) => supported)
-            .reduce((acc, documentUrl) => {
+        const waitingUploadUrls = docUrls
+            ?.filter(({ supported }) => supported)
+            ?.reduce((acc, documentUrl) => {
                 const { extension, baseName, docUrl } = documentUrl;
                 return {
                     ...acc,
@@ -100,8 +111,9 @@ function UploadList({
                     }
                 };
             }, {});
-        _waitingUploads = {..._waitingUploads, ..._uploadUrls};
+        _waitingUploads = {..._waitingUploads, ...waitingUploadUrls};
         updateWaitingUploads(_waitingUploads);
+        onUnsupportedUrl((isEmpty(docUrls) ? uploadUrls : docUrls));
     };
 
     const documentUploadProgress = (fileName) => (progress) => {
@@ -112,6 +124,10 @@ function UploadList({
     const removeFile = (waiting, name) => {
         const uploadFiles = omit(waiting, name);
         updateWaitingUploads(uploadFiles);
+    };
+
+    const removeUrl = (onRemove) => {
+        onRemove(onUnsupportedUrl);
     };
 
     const onSuccessfulUpload = (successfulUploads) => {
@@ -215,6 +231,7 @@ function UploadList({
             abortAll={handleCancelAllUploads}
             setUploadUrls={setUploadUrls}
             uploadUrls={uploadUrls}
+            onRemoveUrl={removeUrl}
         >
             {children}
         </UploadContainer>

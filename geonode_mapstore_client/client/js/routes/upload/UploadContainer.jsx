@@ -49,7 +49,8 @@ function UploadContainer({
     abort,
     abortAll,
     setUploadUrls,
-    uploadUrls
+    uploadUrls,
+    onRemoveUrl
 }) {
 
     const inputFile = useRef();
@@ -159,6 +160,7 @@ function UploadContainer({
                                                 onAbort={abort}
                                                 setUploadUrls={setUploadUrls}
                                                 uploadUrls={uploadUrls}
+                                                onRemoveUrl={onRemoveUrl}
                                             />
                                         </li>
                                     );
@@ -182,7 +184,7 @@ function UploadContainer({
                         )}
                         <div className="gn-upload-list-footer">
                             {unsupported.length > 0 ? <Alert bsStyle="danger">
-                                <Message msgId="gnviewer.unsupportedFiles" />: {unsupported.map(({ file }) => file?.name).join(', ')}
+                                <Message msgId="gnviewer.unsupportedFiles" />: {unsupported.map(({ file, url } = {}) => (file?.name || url?.name)).join(', ')}
                             </Alert> : null}
                             {(waitingUploadNames.length > 0 && getExceedingFileSize(waitingUploadNames, maxAllowedSize)) ?
                                 <ButtonWithTooltip noTooltipWhenDisabled tooltip={<Message msgId="gnviewer.exceedingFileMsg" msgParams={{ limit: maxAllowedSize }} />} >

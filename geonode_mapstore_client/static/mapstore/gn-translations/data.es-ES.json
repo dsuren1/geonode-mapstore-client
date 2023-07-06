@@ -271,6 +271,7 @@
             "selectFiles": "Seleccionar archivos...",
             "addUrl": "Agregar URL...",
             "duplicateUrl": "La URL ya está presente en la lista de subidas",
+            "unsupportedUrlExtension": "La extensión no es compatible",
             "supportedFiles": "Extensiones de archivo admitidas",
             "unsupportedFiles": "Archivos no admitidos para la carga",
             "upload": "Subir",

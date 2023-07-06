@@ -9,6 +9,7 @@
 import React from "react";
 import Select from "react-select";
 import isEmpty from "lodash/isEmpty";
+import isNil from "lodash/isNil";
 
 import FaIcon from "@js/components/FaIcon";
 import Button from "@js/components/Button";
@@ -24,20 +25,25 @@ export default ({
     loading,
     progress,
     index,
+    supported,
     uploadUrls,
     setUploadUrls,
     onAddUrl,
     onRemove,
-    onAbort
+    onAbort,
+    onRemoveUrl
 } = {}) => {
+
     const _supportedLabels = supportedLabels?.split(',')
         ?.map(label => label.trim())
         ?.map(label => ({value: label, label})) ?? [];
-    const isDuplicate = (documentUrls = uploadUrls, _docUrl = docUrl) => {
+
+    const isDuplicateUrl = (documentUrls = uploadUrls, _docUrl = docUrl) => {
         const urls = documentUrls.map(d => d.docUrl);
         const hasSameUrl = urls?.filter(doc => doc === _docUrl)?.length > 1;
         return hasSameUrl && urls.indexOf(docUrl) !== index;
     };
+
     const onChange = (event) => {
         const {value, name} = event.target ?? {};
         let documentUrls = [...uploadUrls];
@@ -49,17 +55,13 @@ export default ({
                 fileName = data.fileName;
                 ext = data.ext;
             }
-            const supported = !isEmpty(value) && _supportedLabels.some(({label}) => label === ext);
+            let supportedUrl = !isEmpty(value) && _supportedLabels.some(({label}) => label === ext);
             documentUrls[index] = {
                 ...documentUrls[index],
                 [name]: value,
                 baseName: fileName,
-                supported,
-                ...(ext && supported && {extension: ext})
-            };
-            documentUrls[index] =  {
-                ...documentUrls[index],
-                supported: documentUrls[index].supported && !isDuplicate(documentUrls, documentUrls[index]?.docUrl)
+                supported: supportedUrl && !isDuplicateUrl(documentUrls, documentUrls[index]?.docUrl),
+                extension: ext
             };
         } else {
             documentUrls[index] = {
@@ -73,8 +75,13 @@ export default ({
     };
 
     const onClickRemove = () => {
-        !isDuplicate(uploadUrls) && onRemove(baseName);
-        setUploadUrls(uploadUrls.filter((_, docIndex) => docIndex !== index));
+        onRemoveUrl((onUnsupportedUrl) => {
+            !isDuplicateUrl(uploadUrls) && onRemove(baseName);
+            const filteredUploadUrls = uploadUrls.filter((_, docIndex) => docIndex !== index);
+            setUploadUrls(filteredUploadUrls);
+            onUnsupportedUrl(filteredUploadUrls);
+        });
+
     };
 
     const hasExtensionInUrl = () => {
@@ -82,21 +89,30 @@ export default ({
         return !isEmpty(ext);
     };
 
+    const isNotSupported = () => !isNil(supported) && !supported;
+
     return (
-        <div className={"gn-upload-card"}>
+        <div className={"gn-upload-card gn-upload-url"}>
             <div className="gn-upload-card-header">
-                <input className={"form-control"} name={"docUrl"} value={docUrl || ""} onChange={(e) => onChange(e)}/>
-                {onRemove
-                    ? (!loading || !(progress?.[baseName])) ? <Button size="xs" onClick={onClickRemove}>
-                        <FaIcon name="trash" />
-                    </Button> : <Button size="xs" onClick={() => onAbort(baseName)}>
-                        <FaIcon name="stop" />
-                    </Button>
-                    : null}
+                <div className="gn-upload-input">
+                    <input className={"form-control"} name={"docUrl"} value={docUrl || ""} onChange={(e) => onChange(e)}/>
+                    {isNotSupported() && <div className="gn-upload-error-inline"><FaIcon name="exclamation" /></div>}
+                    {onRemove
+                        ? (!loading || !(progress?.[baseName]))
+                            ? <Button size="xs" onClick={onClickRemove}>
+                                <FaIcon name="trash" />
+                            </Button> : <Button size="xs" onClick={() => onAbort(baseName)}>
+                                <FaIcon name="stop" />
+                            </Button>
+                        : null
+                    }
+                </div>
+                <div className="gn-upload-error-inline">
+                    {isDuplicateUrl() && <Message msgId={"gnviewer.duplicateUrl"} />}
+                </div>
             </div>
-            <div className={"gn-upload-card-bottom extension"}>
+            <div className={"gn-upload-card-bottom"}>
                 <Select
-                    style={{width: 80}}
                     className={`${isEmpty(docUrl) || !isValidURL(docUrl) || hasExtensionInUrl() ? 'disabled' : ''}`}
                     clearable={false}
                     placeholder={"ext"}
@@ -104,7 +120,9 @@ export default ({
                     value={extension}
                     onChange={(option) => onChange({ target: {...option, name: 'extension'} || {} })}
                 />
-                {isDuplicate() && <Message msgId={"gnviewer.duplicateUrl"} />}
+                <div className="gn-upload-error-inline">
+                    {isNotSupported() && <Message msgId={"gnviewer.unsupportedUrlExtension"} />}
+                </div>
             </div>
             {loading && progress && progress?.[baseName] && <div style={{ position: 'relative' }}>
                 <div
