@@ -107,10 +107,14 @@ export default ({
                         : null
                     }
                 </div>
-                <div className="gn-upload-error-inline">
-                    {isDuplicateUrl() && <Message msgId={"gnviewer.duplicateUrl"} />}
-                </div>
             </div>
+            {(isDuplicateUrl() || isNotSupported()) && <div className="gn-upload-card-body">
+                <div className="text-danger">
+                    <Message msgId={isNotSupported()
+                        ? 'gnviewer.unsupportedUrlExtension'
+                        : 'gnviewer.duplicateUrl'} />
+                </div>
+            </div>}
             <div className={"gn-upload-card-bottom"}>
                 <Select
                     className={`${isEmpty(docUrl) || !isValidURL(docUrl) || hasExtensionInUrl() ? 'disabled' : ''}`}
@@ -120,9 +124,6 @@ export default ({
                     value={extension}
                     onChange={(option) => onChange({ target: {...option, name: 'extension'} || {} })}
                 />
-                <div className="gn-upload-error-inline">
-                    {isNotSupported() && <Message msgId={"gnviewer.unsupportedUrlExtension"} />}
-                </div>
             </div>
             {loading && progress && progress?.[baseName] && <div style={{ position: 'relative' }}>
                 <div

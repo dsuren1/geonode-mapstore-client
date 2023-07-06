@@ -50,6 +50,18 @@
             .color-var(@theme-vars[danger]);
         }
     }
+    .gn-upload-card {
+        &.gn-upload-url {
+            .gn-upload-card-bottom {
+                .Select {
+                    .Select-value-label {
+                        .color-var(@theme-vars[badge-color]);
+                        .background-color-var(@theme-vars[badge-bg]);
+                    }
+                }
+            }
+        }
+    }
 }
 
 // **************
@@ -165,24 +177,31 @@
             align-items: flex-start;
             .Select {
                 .Select-control {
-                    width: 4.68rem;
-                    height: 1.56rem;
-                    border-radius: 1.25rem;
-                    .Select-multi-value-wrapper {
-                        height: inherit;
-                        .Select-value, .Select-placeholder {
-                            line-height: 1.56rem;
-                        }
-                        .Select-input {
-                            input {
-                                height: 0.625rem;
-                            }
-                        }
-                    }
+                    width: 70px;
+                    border-left: none;
+                    border-top: none;
+                    border-right: none;
                 }
-                &.disabled {
-                    opacity: 0.5;
-                    pointer-events: none;
+                .Select-menu-outer {
+                    width: auto;
+                    font-size: 0.7rem;
+                    font-weight: normal;
+                    line-height: 0.8rem;
+                }
+                input {
+                    max-width: 30px;
+                }
+                .Select-placeholder,
+                .Select-value {
+                    padding-left: 0;
+                    padding-right: 0.25rem;
+                }
+                .Select-value-label {
+                    padding: 3px 7px;
+                    border-radius: 10px;
+                    font-size: 0.7rem;
+                    font-weight: normal;
+                    line-height: 0.8rem;
                 }
             }
         }   
@@ -265,10 +284,4 @@
 
 .gn-failed-upload {
     display: inline-block;
-}
-
-.gn-upload-error-inline {
-    > span {
-        font-size: 0.7rem;
-    }
 }
