@@ -176,6 +176,10 @@
             flex-direction: column;
             align-items: flex-start;
             .Select {
+                &.disabled {
+                    opacity: 0.5;
+                    pointer-events: none;
+                }
                 .Select-control {
                     width: 70px;
                     border-left: none;
@@ -193,8 +197,10 @@
                 }
                 .Select-placeholder,
                 .Select-value {
-                    padding-left: 0;
-                    padding-right: 0.25rem;
+                    padding: 0 0.25rem;
+                }
+                .Select-input {
+                    padding-left: 0.25rem;
                 }
                 .Select-value-label {
                     padding: 3px 7px;

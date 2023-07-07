@@ -273,7 +273,7 @@
             "completeUpload": "Completa il caricamento",
             "selectFiles": "Seleziona file...",
             "addUrl": "Aggiungi URL...",
-            "duplicateUrl": "L'URL è già presente nell'elenco dei caricamenti",
+            "duplicateUrl": "Questo URL è già presente nell'elenco dei caricamenti",
             "unsupportedUrlExtension": "Extension is not supported",
             "supportedFiles": "L'estensione non è supportata",
             "unsupportedFiles": "File non supportati per il caricamento",
