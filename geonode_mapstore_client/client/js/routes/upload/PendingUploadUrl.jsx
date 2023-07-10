@@ -117,7 +117,7 @@ export default ({
             </div>}
             <div className={"gn-upload-card-bottom"}>
                 <Select
-                    className={`${isEmpty(docUrl) || !isValidURL(docUrl) || hasExtensionInUrl() ? 'disabled' : ''}`}
+                    disabled={isEmpty(docUrl) || !isValidURL(docUrl) || hasExtensionInUrl()}
                     clearable={false}
                     placeholder={"ext"}
                     options={_supportedLabels}

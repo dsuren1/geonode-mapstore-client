@@ -176,9 +176,11 @@
             flex-direction: column;
             align-items: flex-start;
             .Select {
-                &.disabled {
-                    opacity: 0.5;
-                    pointer-events: none;
+                &.is-disabled {
+                    .Select-control {
+                        background: transparent;
+                        cursor: not-allowed;
+                    }
                 }
                 .Select-control {
                     width: 70px;
