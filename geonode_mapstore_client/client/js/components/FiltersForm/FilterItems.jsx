@@ -80,7 +80,6 @@ function ExtentFilterWithDebounce({
 }
 function FilterItem({
     id,
-    suggestionsRequestTypes,
     values,
     onChange,
     extentProps,
@@ -176,22 +175,15 @@ function FilterItem({
             label,
             placeholderId,
             description,
-            options,
-            suggestionsRequestKey
+            options
         } = field;
-        const key = `${id}-${formId || suggestionsRequestKey}`;
-        const filterKey = suggestionsRequestKey
-            ? suggestionsRequestTypes[suggestionsRequestKey]?.filterKey
-            : `filter{${formId}.in}`;
+        const key = `${id}-${formId}`;
+        const filterKey = `filter{${formId}.in}`;
 
-        const currentValues = castArray(suggestionsRequestKey
-            ? values[suggestionsRequestTypes[suggestionsRequestKey]?.filterKey] || []
-            : values[filterKey] || []);
+        const currentValues = values[filterKey] || [];
 
-        const optionsProp = suggestionsRequestKey
-            ? { loadOptions: suggestionsRequestTypes[suggestionsRequestKey]?.loadOptions }
-            : { options: options.map(option => ({ value: option, label: option })) };
-        const Select = suggestionsRequestKey ? SelectInfiniteScroll : SelectSync;
+        const optionsProp = { options: options.map(option => ({ value: option, label: option })) };
+        const Select = SelectSync;
         return (
             <FormGroup
                 controlId={key}
@@ -223,7 +215,6 @@ function FilterItem({
             <FilterItems
                 id={id}
                 items={field.items}
-                suggestionsRequestTypes={suggestionsRequestTypes}
                 values={values}
                 onChange={onChange}
             />
@@ -320,7 +311,6 @@ function FilterItem({
                 <FilterItems
                     id={id}
                     items={accordionItems}
-                    suggestionsRequestTypes={suggestionsRequestTypes}
                     values={values}
                     onChange={onChange}
                 />)
@@ -343,14 +333,12 @@ function FilterItems({ items, ...props }) {
 FilterItems.defaultProps = {
     id: PropTypes.string,
     items: PropTypes.array,
-    suggestionsRequestTypes: PropTypes.object,
     values: PropTypes.object,
     onChange: PropTypes.func
 };
 
 FilterItems.defaultProps = {
     items: [],
-    suggestionsRequestTypes: {},
     values: {},
     onChange: () => {}
 };

@@ -112,9 +112,10 @@ export function setSearchConfig(config) {
 }
 
 
-export function getFacetItems() {
+export function getFacetItems(query) {
     return {
-        type: GET_FACET_ITEMS
+        type: GET_FACET_ITEMS,
+        query
     };
 }
 export function setFacetItems(facetItems) {

@@ -21,11 +21,11 @@ import { Glyphicon } from 'react-bootstrap';
 
 /**
  * FilterForm component allows to configure a list of field that can be used to apply filter on the page
- * @name FilterForm
+ * @name FiltersForm
  * @memberof components
  * @prop {string} id the thumbnail is scaled based on the following configuration
  */
-function FilterForm({
+function FiltersForm({
     id,
     style,
     styleContainerForm,
@@ -36,7 +36,6 @@ function FilterForm({
     onClose,
     onClear,
     extentProps,
-    suggestionsRequestTypes,
     timeDebounce,
     onGetFacets
 }) {
@@ -51,8 +50,8 @@ function FilterForm({
     }
 
     useEffect(() => {
-        if (filterFormItemsContainFacet(fieldsProp) && fieldsProp && onGetFacets) {
-            onGetFacets();
+        if (fieldsProp && filterFormItemsContainFacet(fieldsProp) && onGetFacets) {
+            onGetFacets(query);
         }
     }, []);
 
@@ -92,7 +91,6 @@ function FilterForm({
                         <FilterItems
                             id={id}
                             items={fields}
-                            suggestionsRequestTypes={suggestionsRequestTypes}
                             values={query}
                             extentProps={{ ...extentProps, timeDebounce }}
                             onChange={handleFieldChange}
@@ -104,7 +102,7 @@ function FilterForm({
     );
 }
 
-FilterForm.defaultProps = {
+FiltersForm.defaultProps = {
     id: PropTypes.string,
     style: PropTypes.object,
     styleContainerForm: PropTypes.object,
@@ -114,20 +112,18 @@ FilterForm.defaultProps = {
     onClose: PropTypes.func,
     onClear: PropTypes.func,
     extentProps: PropTypes.object,
-    suggestionsRequestTypes: PropTypes.object,
     submitOnChangeField: PropTypes.bool,
     timeDebounce: PropTypes.number,
     formParams: PropTypes.object
 
 };
 
-FilterForm.defaultProps = {
+FiltersForm.defaultProps = {
     query: {},
     fields: [],
     onChange: () => {},
     onClose: () => {},
     onClear: () => {},
-    suggestionsRequestTypes: {},
     submitOnChangeField: true,
     timeDebounce: 500,
     formParams: {}
@@ -140,4 +136,4 @@ const arePropsEqual = (prevProps, nextProps) => {
 };
 
 
-export default memo(FilterForm, arePropsEqual);
+export default memo(FiltersForm, arePropsEqual);

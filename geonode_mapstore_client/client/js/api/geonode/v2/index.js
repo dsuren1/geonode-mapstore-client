@@ -618,140 +618,6 @@ export const getFeaturedResources = (page = 1, page_size =  4) => {
     }).then(({data}) => data);
 };
 
-export const getCategories = ({ q, includes, page, pageSize, config, ...params }, filterKey = 'categories') => {
-    return axios.get(parseDevHostname(`${endpoints[CATEGORIES]}`), {
-        ...config,
-        params: {
-            page_size: pageSize || 9999,
-            page,
-            ...params,
-            ...(includes && {'filter{identifier.in}': includes}),
-            ...(q && { 'filter{identifier.icontains}': q }),
-            with_resources: "True"
-        }
-    })
-        .then(({ data }) => {
-            const results = (data?.categories || [])
-                .map((result) => {
-                    const selectOption = {
-                        value: result.identifier,
-                        label: addCountToLabel(result.gn_description || result.gn_description_en, result.count)
-                    };
-                    const category = {
-                        ...result,
-                        selectOption
-                    };
-                    setFilterById(filterKey + result.identifier, category);
-                    return category;
-                });
-            return {
-                results,
-                total: data.total,
-                isNextPageAvailable: !!data.links.next
-            };
-        });
-};
-
-export const getRegions = ({ q, includes, page, pageSize, config, ...params }, filterKey = 'regions') => {
-    return axios.get(parseDevHostname(`${endpoints[REGIONS]}`), {
-        ...config,
-        params: {
-            page_size: pageSize || 9999,
-            page,
-            ...params,
-            ...(includes && {'filter{name.in}': includes}),
-            ...(q && { 'filter{name.icontains}': q }),
-            with_resources: "True"
-        }
-    })
-        .then(({ data }) => {
-            const results = (data?.regions || [])
-                .map((result) => {
-                    const selectOption = {
-                        value: result.name,
-                        label: addCountToLabel(result.name, result.count)
-                    };
-                    const region = {
-                        ...result,
-                        selectOption
-                    };
-                    setFilterById(filterKey + result.name, region);
-                    return region;
-                });
-            return {
-                results,
-                total: data.total,
-                isNextPageAvailable: !!data.links.next
-            };
-        });
-};
-
-export const getOwners = ({ q, includes, page, pageSize, config, ...params }, filterKey = 'owners') => {
-    return axios.get(parseDevHostname(`${endpoints[OWNERS]}`), {
-        ...config,
-        params: {
-            page_size: pageSize || 9999,
-            page,
-            ...params,
-            ...(includes && {'filter{username.in}': includes}),
-            ...(q && { 'filter{username.icontains}': q })
-        }
-    })
-        .then(({ data }) => {
-            const results = (data?.owners || [])
-                .map((result) => {
-                    const selectOption = {
-                        value: result.username,
-                        label: addCountToLabel(result.username, result.count)
-                    };
-                    const owner = {
-                        ...result,
-                        selectOption
-                    };
-                    setFilterById(filterKey + result.username, owner);
-                    return owner;
-                });
-            return {
-                results,
-                total: data.total,
-                isNextPageAvailable: !!data.links.next
-            };
-        });
-};
-
-export const getKeywords = ({ q, includes, page, pageSize, config, ...params }, filterKey =  'keywords') => {
-    return axios.get(parseDevHostname(`${endpoints[KEYWORDS]}`), {
-        ...config,
-        params: {
-            page_size: pageSize || 9999,
-            page,
-            ...params,
-            ...(includes && {'filter{slug.in}': includes}),
-            ...(q && { 'filter{slug.icontains}': q })
-        }
-    })
-        .then(({ data }) => {
-            const results = (data?.keywords || [])
-                .map((result) => {
-                    const selectOption = {
-                        value: result.slug,
-                        label: addCountToLabel(result.slug, result.count)
-                    };
-                    const keyword = {
-                        ...result,
-                        selectOption
-                    };
-                    setFilterById(filterKey + result.slug, keyword);
-                    return keyword;
-                });
-            return {
-                results,
-                total: data.total,
-                isNextPageAvailable: !!data.links.next
-            };
-        });
-};
-
 export const getCompactPermissionsByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[RESOURCES]}/${pk}/permissions`))
         .then(({ data }) => data);
@@ -926,9 +792,16 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, 
     });
 };
 
-export const getFacetItems = () => {
+export const getFacetTopicByKey = (facet, key) => {
     return axios
-        .get(parseDevHostname(endpoints[FACETS]))
+        .get(parseDevHostname(endpoints[FACETS] + `/${facet}/topics`), {params: {key}})
+        .then(({ data } = {}) => data?.topics);
+};
+
+export const getFacetItems = (query) => {
+    const params = (configs) => ({include_config: true, include_topics: true, ...configs});
+    return axios
+        .get(parseDevHostname(endpoints[FACETS]), {params: params(query)})
         .then(({ data } = {}) =>
             data?.facets?.map((facet) => ({
                 ...facet,
@@ -962,10 +835,6 @@ export default {
     updateMap,
     getMapByPk,
     getMapsByPk,
-    getCategories,
-    getRegions,
-    getOwners,
-    getKeywords,
     getCompactPermissionsByPk,
     updateCompactPermissionsByPk,
     deleteResource,
@@ -981,5 +850,6 @@ export default {
     deleteExecutionRequest,
     getResourceByTypeAndByPk,
     getFacetItems,
-    getFacetItemsByFacetName
+    getFacetItemsByFacetName,
+    getFacetTopicByKey
 };

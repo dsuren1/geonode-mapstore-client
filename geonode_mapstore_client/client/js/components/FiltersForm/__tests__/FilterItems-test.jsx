@@ -53,8 +53,7 @@ describe('FilterItems component', () => {
                 "suggestionsRequestKey": "resourceTypes"
             }
         ];
-        const suggestionsRequestTypes = { resourceTypes: { loadOptions: () => new Promise(resolve => resolve([])) }};
-        ReactDOM.render( <FilterItems items={items} suggestionsRequestTypes={suggestionsRequestTypes}/>, document.getElementById("container"));
+        ReactDOM.render( <FilterItems items={items}/>, document.getElementById("container"));
         const filterItemsSelectNode = document.querySelector('.Select');
         expect(filterItemsSelectNode).toBeTruthy();
     });
