@@ -12,6 +12,7 @@ import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import pick from 'lodash/pick';
 import get from 'lodash/get';
+import castArray from 'lodash/castArray';
 import {
     getResources,
     getFeaturedResources,
@@ -29,6 +30,7 @@ import {
     UPDATE_FEATURED_RESOURCES,
     requestResource,
     GET_FACET_ITEMS,
+    getFacetItems as getFacetItemsAction,
     setFacetItems
 } from '@js/actions/gnsearch';
 import {
@@ -237,12 +239,12 @@ export const gnsSearchResourcesOnLocationChangeEpic = (action$, store) =>
                 if (shouldNotRequest) {
                     return Observable.empty();
                 }
-                return requestResourcesObservable({
+                return Observable.of(getFacetItemsAction(currentParams)).concat(requestResourcesObservable({
                     params,
                     pageSize,
                     reset: true,
                     location
-                }, store);
+                }, store));
             }
 
             let page;
@@ -258,12 +260,12 @@ export const gnsSearchResourcesOnLocationChangeEpic = (action$, store) =>
                 page = resetSearch ? 1 : currentPage;
             }
             const params = { ...currentParams, page };
-            return requestResourcesObservable({
+            return Observable.of(getFacetItemsAction(currentParams)).concat(requestResourcesObservable({
                 params,
                 pageSize,
                 reset: resetSearch,
                 location
-            }, store);
+            }, store));
         });
 
 export const gnsRequestResourceOnLocationChange = (action$, store) =>
@@ -359,10 +361,11 @@ export const gnWatchStopCopyProcessOnSearch = (action$, store) =>
 /**
  * Get facet filter items
  */
-export const gnGetFacetItems = (action$) =>
+export const gnGetFacetItems = (action$, {getState = () => {}}) =>
     action$.ofType(GET_FACET_ITEMS)
-        .switchMap(({query} = {}) =>
-            Observable.defer(() =>getFacetItems(query))
+        .switchMap(({query} = {}) =>{
+            const customFilters = getCustomMenuFilters(getState());
+            return Observable.defer(() =>getFacetItems(query, customFilters))
                 .switchMap((facets = []) =>{
                     const topicQuery = pick(query, Object.keys(query).filter(q => facets.map(f => f.filter).includes(q)));
                     const facetNames = facets
@@ -376,29 +379,31 @@ export const gnGetFacetItems = (action$) =>
                             ).switchMap((topics)=> {
                                 facets?.forEach((facet) => {
                                     const filterkey = facet.filter;
-                                    const filterValue = query?.[facet.filter];
-                                    const filterObj = get(facet, 'topics.items', []).find(({key} = {}) => {
-                                        return key === (typeof key === "string" ? filterValue : Number(filterValue));
+                                    const filterValues = castArray(query?.[facet.filter]);
+                                    filterValues.forEach(filterValue => {
+                                        const filterObj = get(facet, 'topics.items', []).find(({key} = {}) => {
+                                            return key === (typeof key === "string" ? filterValue : Number(filterValue));
+                                        });
+                                        if (filterObj) {
+                                            setFilterById(filterkey + filterObj.key, filterObj);
+                                        } else if (filterValue) {
+                                            (topics ?? [])
+                                                ?.reduce((a, t) => t?.items?.concat(a), [])
+                                                .map((item) => {
+                                                    const itemObj = item.key === (typeof item.key === "string" ? filterValue : Number(filterValue))
+                                                        ? item : undefined;
+                                                    if (itemObj) {
+                                                        setFilterById(filterkey + itemObj.key, {...itemObj, count: 0});
+                                                    }
+                                                });
+                                        }
                                     });
-                                    if (filterObj) {
-                                        setFilterById(filterkey + filterObj.key, filterObj);
-                                    } else if (filterValue) {
-                                        (topics ?? [])
-                                            ?.reduce((a, t) => t?.items?.concat(a), [])
-                                            .map((item) => {
-                                                const itemObj = item.key === (typeof item.key === "string" ? filterValue : Number(filterValue))
-                                                    ? item : undefined;
-                                                if (itemObj) {
-                                                    setFilterById(filterkey + itemObj.key, {...itemObj, count: 0});
-                                                }
-                                            });
-                                    }
                                 });
                                 return Observable.empty();
                             }) : Observable.empty()
                     ).concat(Observable.of(setFacetItems(facets)));
-                })
-        );
+                });
+        });
 
 export default {
     gnsSearchResourcesEpic,

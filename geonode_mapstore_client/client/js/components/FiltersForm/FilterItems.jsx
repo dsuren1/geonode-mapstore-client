@@ -149,6 +149,7 @@ function FilterItem({
                     }}
                     loadOptions={({ q, ...params }) => field.loadItems({
                         ...params,
+                        ...values, // filter queries
                         ...(q && { topic_contains: q }),
                         page: params.page - 1
                     })
@@ -305,7 +306,7 @@ function FilterItem({
         return (<Accordion
             title={field.labelId ? getMessageById(messages, field.labelId) : field.label}
             identifier={key}
-            loadItems={field.loadItems}
+            loadItems={(params) => field.loadItems({...params, ...values})}
             items={field.items}
             content={(accordionItems) => (
                 <FilterItems

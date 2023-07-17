@@ -20,6 +20,7 @@ import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
 import castArray from 'lodash/castArray';
+import omit from 'lodash/omit';
 import get from 'lodash/get';
 import { getUserInfo } from '@js/api/geonode/user';
 import { setFilterById } from '@js/utils/SearchUtils';
@@ -59,19 +60,11 @@ const MAPS = 'maps';
 const GEOAPPS = 'geoapps';
 const USERS = 'users';
 const RESOURCE_TYPES = 'resource_types';
-const OWNERS = 'owners';
-const REGIONS = 'regions';
-const CATEGORIES = 'categories';
-const KEYWORDS = 'keywords';
 const GROUPS = 'groups';
 const UPLOADS = 'uploads';
 const STATUS = 'status';
 const EXECUTIONREQUEST = 'exectionRequest';
 const FACETS = 'facets';
-
-function addCountToLabel(name, count) {
-    return `${name} (${count || 0})`;
-}
 
 export const setEndpoints = (data) => {
     endpoints = { ...endpoints, ...data };
@@ -118,7 +111,14 @@ function mergeCustomQuery(params, customQuery) {
     }
     return params;
 }
-
+const getQueryParams = (params, customFilters) => {
+    const customQuery = customFilters
+        .filter(({ id }) => castArray(params?.f ?? []).indexOf(id) !== -1)
+        .reduce((acc, filter) => mergeCustomQuery(acc, filter.query || {}), {}) || {};
+    return {
+        ...mergeCustomQuery(omit(params, "f"), customQuery)
+    };
+};
 export const getResources = ({
     q,
     pageSize = 20,
@@ -128,13 +128,8 @@ export const getResources = ({
     customFilters = [],
     ...params
 }) => {
-
-    const customQuery = customFilters
-        .filter(({ id }) => castArray(f || []).indexOf(id) !== -1)
-        .reduce((acc, filter) => mergeCustomQuery(acc, filter.query || {}), {}) || {};
-    const _mergeCustomQueryParams = mergeCustomQuery(params, customQuery);
     const _params = {
-        ..._mergeCustomQueryParams,
+        ...getQueryParams({...params, f}, customFilters),
         ...(q && {
             search: q,
             search_fields: ['title', 'abstract']
@@ -768,8 +763,13 @@ export const getResourceByTypeAndByPk = (type, pk) => {
     }
 };
 
-export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, { config, ...params }) => {
-    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`, { ...config, params }).then(({data}) => {
+export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, { config, ...params }, customFilters) => {
+    return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`,
+        { ...config,
+            params: getQueryParams(params, customFilters),
+            paramsSerializer
+        }
+    ).then(({data}) => {
         const {page: _page = 0, items = [], total, page_size: size} = data?.topics ?? {};
         const page = Number(_page);
         const isNextPageAvailable = (Math.ceil(Number(total) / Number(size)) - (page + 1)) !== 0;
@@ -794,18 +794,25 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, 
 
 export const getFacetTopicByKey = (facet, key) => {
     return axios
-        .get(parseDevHostname(endpoints[FACETS] + `/${facet}/topics`), {params: {key}})
+        .get(parseDevHostname(endpoints[FACETS] + `/${facet}/topics`), {params: {key}, paramsSerializer})
         .then(({ data } = {}) => data?.topics);
 };
 
-export const getFacetItems = (query) => {
-    const params = (configs) => ({include_config: true, include_topics: true, ...configs});
+export const getFacetItems = (query, customFilters) => {
     return axios
-        .get(parseDevHostname(endpoints[FACETS]), {params: params(query)})
-        .then(({ data } = {}) =>
+        .get(parseDevHostname(endpoints[FACETS]),
+            {
+                params: {
+                    include_config: true,
+                    include_topics: true,
+                    ...getQueryParams(query, customFilters)
+                },
+                paramsSerializer
+            }
+        ).then(({ data } = {}) =>
             data?.facets?.map((facet) => ({
                 ...facet,
-                loadItems: getFacetItemsByFacetName
+                loadItems: (...args) => getFacetItemsByFacetName(...args, customFilters)
             })) || []
         ).catch(() => []);
 };
