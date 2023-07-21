@@ -31,7 +31,7 @@ import { withResizeDetector } from 'react-resize-detector';
 import { userSelector } from '@mapstore/framework/selectors/security';
 import ConnectedCardGrid from '@js/plugins/resourcesgrid/ConnectedCardGrid';
 import { getTotalResources, getFacetsItems } from '@js/selectors/search';
-import { searchResources, setSearchConfig, getFacetItems } from '@js/actions/gnsearch';
+import { searchResources, setSearchConfig, getFacetItems, setFilters as setFiltersAction } from '@js/actions/gnsearch';
 
 import gnsearch from '@js/reducers/gnsearch';
 import gnresource from '@js/reducers/gnresource';
@@ -433,7 +433,9 @@ function ResourcesGrid({
     enableGeoNodeCardsMenuItems,
     detailsTabs = [],
     onGetFacets,
-    facets
+    facets,
+    filters,
+    setFilters
 }, context) {
 
     const [_cardLayoutStyleState, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', defaultCardLayoutStyle);
@@ -638,6 +640,8 @@ function ResourcesGrid({
                     onClose={handleShowFilterForm.bind(null, false)}
                     onClear={handleClear}
                     onGetFacets={onGetFacets}
+                    filters={filters}
+                    setFilters={setFilters}
                 />}
             </div>
         </div>
@@ -783,8 +787,9 @@ const ResourcesGridPlugin = connect(
         state => state?.gnresource?.data || null,
         state => getMonitoredState(state, getConfigProp('monitorState')),
         state => state?.gnsearch?.error,
-        getFacetsItems
-    ], (params, user, totalResources, loading, location, resource, monitoredState, error, facets) => ({
+        getFacetsItems,
+        state => state?.gnsearch?.filters
+    ], (params, user, totalResources, loading, location, resource, monitoredState, error, facets, filters) => ({
         params,
         user,
         totalResources,
@@ -793,13 +798,15 @@ const ResourcesGridPlugin = connect(
         resource,
         monitoredState,
         error,
-        facets
+        facets,
+        filters
     })),
     {
         onSearch: searchResources,
         onInit: setSearchConfig,
         onReplaceLocation: replace,
-        onGetFacets: getFacetItems
+        onGetFacets: getFacetItems,
+        setFilters: setFiltersAction
     }
 )(withResizeDetector(ResourcesGrid));
 

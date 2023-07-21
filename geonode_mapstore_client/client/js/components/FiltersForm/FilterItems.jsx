@@ -15,7 +15,6 @@ import ReactSelect from 'react-select';
 
 import Accordion from "@js/components/Accordion";
 import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll';
-import { getFilterLabelById, getFilterById } from '@js/utils/SearchUtils';
 import localizedProps from '@mapstore/framework/components/misc/enhancers/localizedProps';
 import withDebounceOnCallback from '@mapstore/framework/components/misc/enhancers/withDebounceOnCallback';
 import { getMessageById } from '@mapstore/framework/utils/LocaleUtils';
@@ -29,6 +28,9 @@ function InputControl({ onChange, value, debounceTime, ...props }) {
 const InputControlWithDebounce = withDebounceOnCallback('onChange', 'value')(InputControl);
 
 const SelectSync = localizedProps('placeholder')(ReactSelect);
+
+// TEMP WORKAROUND FOR labelId "global". It picks up an object value from translation causing app crash
+const replaceGlobal = (labelId) => labelId === "global" ? "Global" : labelId;
 
 function Facet({
     item,
@@ -84,7 +86,8 @@ function FilterItem({
     onChange,
     extentProps,
     timeDebounce,
-    field
+    field,
+    filters
 }, { messages }) {
 
 
@@ -127,6 +130,7 @@ function FilterItem({
         const getLabelValue = (item) => item.labelId
             ? `${getMessageById(messages, item.labelId)} (${item.count})`
             : `${item.label || ''} (${item.count})`;
+        const getFilterById = (value) => filters?.[filterKey + value];
         return (
             <FormGroup
                 controlId={field.id}
@@ -134,12 +138,13 @@ function FilterItem({
                 <label><strong>{field.labelId ? getMessageById(messages, field.labelId) : field.label}</strong></label>
                 <SelectInfiniteScroll
                     value={currentValues.map((value) => {
-                        const selectedFilter = getFilterById(filterKey, value);
+                        const selectedFilter = getFilterById(value);
                         return {
                             value,
                             label: selectedFilter ? getLabelValue(selectedFilter) : value
                         };
                     })}
+                    onSelec
                     multi
                     placeholder={field.placeholderId}
                     onChange={(selected) => {
@@ -183,15 +188,15 @@ function FilterItem({
 
         const currentValues = values[filterKey] || [];
 
-        const optionsProp = { options: options.map(option => ({ value: option, label: option })) };
-        const Select = SelectSync;
+        const optionsProp = { options: options?.map(option => ({ value: option, label: option })) };
+        const getFilterLabelById = (value) => filters?.[filterKey + value]?.selectOption?.label || filters?.[filterKey + value]?.label;
         return (
             <FormGroup
                 controlId={key}
             >
                 <label><strong>{labelId ? getMessageById(messages, labelId) : label}</strong></label>
-                <Select
-                    value={currentValues.map((value) => ({ value, label: getFilterLabelById(filterKey, value) || value }))}
+                <SelectSync
+                    value={currentValues.map((value) => ({ value, label: getFilterLabelById(value) || value }))}
                     multi
                     placeholder={placeholderId}
                     onChange={(selected) => {
@@ -235,7 +240,7 @@ function FilterItem({
         const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
             return (
                 <div className="gn-facet-wrapper">
-                    <Facet label={item.labelId ? getMessageById(messages, item.labelId) : <span>{item.label}</span>} item={item} active={active} onChange={onChangeFacet}/>
+                    <Facet label={item.labelId ? getMessageById(messages, replaceGlobal(item.labelId)) : <span>{item.label}</span>} item={item} active={active} onChange={onChangeFacet}/>
                     {item.items && renderChild && <div className="facet-children">{renderChild()}</div>}
                 </div>
             );
@@ -261,7 +266,8 @@ function FilterItem({
                                 value={getFilterValue(item)}
                                 onChange={onChangeFilter}
                             >
-                                {item.labelId ? getMessageById(messages, item.labelId) : item.label}
+                                {item.labelId ? getMessageById(messages, replaceGlobal(item.labelId)) : item.label}
+                                {!isNil(item.count) && <span className="facet-count">{`(${item.count})`}</span>}
                             </Checkbox>
                         }
                     </div>
@@ -295,7 +301,8 @@ function FilterItem({
                         checked={!!active}
                         value={getFilterValue(field)}
                         onChange={onChangeFilterParent}>
-                        {field.labelId ? getMessageById(messages, field.labelId) : field.label}
+                        {field.labelId ? getMessageById(messages, replaceGlobal(field.labelId)) : field.label}
+                        {!isNil(field.count) && <span className="facet-count">{`(${field.count})`}</span>}
                         {filterChild()}
                     </Checkbox>
                 </FormGroup>
@@ -304,6 +311,7 @@ function FilterItem({
     if (field.type === 'accordion' && !field.facet && field.id) {
         const key = `${id}-${field.id}`;
         return (<Accordion
+            monitorState={values}
             title={field.labelId ? getMessageById(messages, field.labelId) : field.label}
             identifier={key}
             loadItems={(params) => field.loadItems({...params, ...values})}

@@ -49,8 +49,7 @@ describe('FilterItems component', () => {
             {
                 "labelId": "gnhome.resourceTypes",
                 "placeholderId": "gnhome.resourceTypesPlaceholder",
-                "type": "select",
-                "suggestionsRequestKey": "resourceTypes"
+                "type": "select"
             }
         ];
         ReactDOM.render( <FilterItems items={items}/>, document.getElementById("container"));
@@ -112,6 +111,7 @@ describe('FilterItems component', () => {
                     "type": "accordion",
                     "id": "accordion",
                     "labelId": "gnhome.accordion",
+                    "loadItems": () => Promise.resolve(),
                     "items": [
                         {
                             "type": "filter",
@@ -140,6 +140,7 @@ describe('FilterItems component', () => {
                     "type": "accordion",
                     "id": "accordion",
                     "labelId": "gnhome.accordion",
+                    "loadItems": () => Promise.resolve(),
                     "items": [
                         {
                             "type": "filter",

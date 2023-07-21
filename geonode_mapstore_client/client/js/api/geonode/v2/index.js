@@ -22,8 +22,10 @@ import isObject from 'lodash/isObject';
 import castArray from 'lodash/castArray';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
+import pick from 'lodash/pick';
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import { getUserInfo } from '@js/api/geonode/user';
-import { setFilterById } from '@js/utils/SearchUtils';
 import { ResourceTypes, availableResourceTypes, setAvailableResourceTypes } from '@js/utils/ResourceUtils';
 import { getConfigProp } from '@mapstore/framework/utils/ConfigUtils';
 import { mergeConfigsPatch } from '@mapstore/patcher';
@@ -111,7 +113,7 @@ function mergeCustomQuery(params, customQuery) {
     }
     return params;
 }
-const getQueryParams = (params, customFilters) => {
+export const getQueryParams = (params, customFilters) => {
     const customQuery = customFilters
         .filter(({ id }) => castArray(params?.f ?? []).indexOf(id) !== -1)
         .reduce((acc, filter) => mergeCustomQuery(acc, filter.query || {}), {}) || {};
@@ -763,21 +765,31 @@ export const getResourceByTypeAndByPk = (type, pk) => {
     }
 };
 
-export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, { config, ...params }, customFilters) => {
+export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, filters, setFilters}, { config, ...params }, customFilters) => {
     return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`,
         { ...config,
             params: getQueryParams(params, customFilters),
             paramsSerializer
         }
     ).then(({data}) => {
-        const {page: _page = 0, items = [], total, page_size: size} = data?.topics ?? {};
+        const {page: _page = 0, items: _items = [], total, page_size: size} = data?.topics ?? {};
         const page = Number(_page);
         const isNextPageAvailable = (Math.ceil(Number(total) / Number(size)) - (page + 1)) !== 0;
-        return {
-            page,
-            isNextPageAvailable,
-            items: items.map(({label, is_localized: isLocalized, key, count} = {})=> {
-                const item = {
+
+        // Add filter values as item even when count is 0
+        const filtersPresent = Object.values(pick(filters, Object.keys(filters)?.filter(filter => filter?.includes(data?.filter))));
+
+        const items = isEmpty(_items) && !isEmpty(filtersPresent)
+            ? filtersPresent.map(item => ({
+                ...item,
+                type: "filter",
+                count: 0,
+                filterKey: item.filterKey ?? filterKey,
+                filterValue: isNil(item.filterValue) ? item.key : item.filterValue,
+                style
+            }))
+            : _items.map(({label, is_localized: isLocalized, key, count} = {})=> {
+                return {
                     type: "filter",
                     ...(isLocalized ? { label } : { labelId: label }),
                     count,
@@ -785,29 +797,32 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey }, 
                     filterValue: String(key),
                     style
                 };
-                setFilterById(filterKey + key, item);
-                return item;
-            })
+            });
+
+        // Update filters
+        setFilters(items.map(item => ({[item.filterKey + item.filterValue]: item})).reduce((f, c) => ({...f, ...c}), {}));
+
+        return {
+            page,
+            isNextPageAvailable,
+            items
         };
     });
 };
 
-export const getFacetTopicByKey = (facet, key) => {
+export const getFacetsByKey = (facet, filterParams) => {
     return axios
-        .get(parseDevHostname(endpoints[FACETS] + `/${facet}/topics`), {params: {key}, paramsSerializer})
+        .get(parseDevHostname(endpoints[FACETS] + `/${facet}`), {params: {...filterParams}, paramsSerializer})
         .then(({ data } = {}) => data?.topics);
 };
 
-export const getFacetItems = (query, customFilters) => {
+export const getFacetItems = (customFilters) => {
     return axios
         .get(parseDevHostname(endpoints[FACETS]),
             {
                 params: {
-                    include_config: true,
-                    include_topics: true,
-                    ...getQueryParams(query, customFilters)
-                },
-                paramsSerializer
+                    include_config: true
+                }
             }
         ).then(({ data } = {}) =>
             data?.facets?.map((facet) => ({
@@ -857,6 +872,5 @@ export default {
     deleteExecutionRequest,
     getResourceByTypeAndByPk,
     getFacetItems,
-    getFacetItemsByFacetName,
-    getFacetTopicByKey
+    getFacetItemsByFacetName
 };

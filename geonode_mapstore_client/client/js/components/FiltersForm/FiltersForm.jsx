@@ -37,7 +37,9 @@ function FiltersForm({
     onClear,
     extentProps,
     timeDebounce,
-    onGetFacets
+    onGetFacets,
+    filters,
+    setFilters
 }) {
 
     const [fields, setFields] = useState([]);
@@ -46,14 +48,14 @@ function FiltersForm({
     if (!isEqual(fieldsProp, prevFieldsProp) || !isEqual(facets, prevFacets)) {
         setPrevFieldsProp(fieldsProp);
         setPrevFacets(facets);
-        setFields(updateFilterFormItemsWithFacet(fieldsProp, facets));
+        setFields(updateFilterFormItemsWithFacet({formItems: fieldsProp, facetItems: facets, filters, setFilters}));
     }
 
     useEffect(() => {
-        if (fieldsProp && filterFormItemsContainFacet(fieldsProp) && onGetFacets) {
+        if (fieldsProp && onGetFacets && filterFormItemsContainFacet(fieldsProp) && isEmpty(facets)) {
             onGetFacets(query);
         }
-    }, []);
+    }, [facets]);
 
     const handleFieldChange = (newParam) => {
         onChange(newParam);
@@ -94,6 +96,7 @@ function FiltersForm({
                             values={query}
                             extentProps={{ ...extentProps, timeDebounce }}
                             onChange={handleFieldChange}
+                            filters={filters}
                         />
                     </form>
                 </div>
@@ -132,7 +135,8 @@ FiltersForm.defaultProps = {
 const arePropsEqual = (prevProps, nextProps) => {
     return isEqual(prevProps.query, nextProps.query)
         && isEqual(prevProps.fields, nextProps.fields)
-        && isEqual(prevProps.facets, nextProps.facets);
+        && isEqual(prevProps.facets, nextProps.facets)
+        && isEqual(prevProps.filters, nextProps.filters);
 };
 
 

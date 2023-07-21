@@ -11,14 +11,6 @@ import castArray from 'lodash/castArray';
 import omit from 'lodash/omit';
 import uuid from 'uuid/v1';
 
-let filters = {};
-
-export const setFilterById = (id, value) => {
-    filters[id] = value;
-};
-export const getFilterLabelById = (filterKey = '', id) => filters?.[filterKey + id]?.selectOption?.label || filters?.[filterKey + id]?.label;
-export const getFilterById = (filterKey = '', id) => filters?.[filterKey + id];
-
 export const hashLocationToHref = ({
     location,
     pathname,
@@ -85,7 +77,7 @@ export const filterFormItemsContainFacet = (formItems) => {
     return formItems.some(formItem => formItem.items ? filterFormItemsContainFacet(formItem.items) : !!formItem.facet);
 };
 
-export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
+export const updateFilterFormItemsWithFacet = ({formItems, facetItems, filters, setFilters}) => {
     return formItems.reduce((acc, formItem) => {
         if (!!formItem.facet) {
             const filteredFacetItems = (facetItems || [])
@@ -105,7 +97,7 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
                             type,
                             style,
                             ...(isLocalized ? { labelId: label } : { label }),
-                            loadItems: (params) => loadItems({ name, style, filterKey }, params)
+                            loadItems: (params) => loadItems({ name, style, filterKey, filters, setFilters }, params)
                         };
                     })
             ];
@@ -116,7 +108,7 @@ export const updateFilterFormItemsWithFacet = (formItems, facetItems) => {
                 {
                     ...formItem,
                     uuid: formItem.uuid || uuid(),
-                    items: updateFilterFormItemsWithFacet(formItem.items, facetItems)
+                    items: updateFilterFormItemsWithFacet({formItems: formItem.items, facetItems, filters, setFilters})
                 }
             ];
         }
