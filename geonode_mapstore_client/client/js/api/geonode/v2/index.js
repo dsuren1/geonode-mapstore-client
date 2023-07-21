@@ -785,7 +785,7 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, fi
                 type: "filter",
                 count: 0,
                 filterKey: item.filterKey ?? filterKey,
-                filterValue: isNil(item.filterValue) ? item.key : item.filterValue,
+                filterValue: isNil(item.filterValue) ? String(item.key) : String(item.filterValue),
                 style
             }))
             : _items.map(({label, is_localized: isLocalized, key, count} = {})=> {
