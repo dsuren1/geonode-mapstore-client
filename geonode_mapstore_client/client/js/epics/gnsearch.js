@@ -12,7 +12,6 @@ import isEmpty from 'lodash/isEmpty';
 import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import pick from 'lodash/pick';
-import castArray from 'lodash/castArray';
 import {
     getResources,
     getFeaturedResources,
@@ -385,21 +384,16 @@ export const gnSetFacetFilter = (action$, {getState = () => {}}) =>
                 facetNames.map(({facet, key} = {}) => Observable.defer(() => getFacetsByKey(facet, {...queries, key})))
             ).switchMap((topics) => {
                 let filters = {};
-                facets?.forEach((facet) => {
-                    const filterkey = facet.filter;
-                    if (query?.[facet.filter]) {
-                        const filterValues = castArray(query?.[facet.filter]);
-                        filterValues.forEach(filterValue => {
-                            (topics ?? [])
-                                ?.reduce((a, t) => t?.items?.concat(a), [])
-                                ?.forEach((item) => {
-                                    const itemObj = isKeyPresent(item.key, filterValue) && item;
-                                    if (!isEmpty(itemObj)) {
-                                        filters[filterkey + itemObj.key] = {...itemObj, count: itemObj.count || 0};
-                                    }
-                                });
-                        });
-                    }
+                const updatedTopics = (topics ?? [])?.reduce((a, t) => t?.items?.concat(a), []);
+                const facetFilters = facets?.map((facet) => ({filter: facet.filter, value: query?.[facet.filter]}))?.filter(f => !isEmpty(f.value));
+
+                facetFilters.forEach(({filter, value} = {}) => {
+                    updatedTopics?.forEach((item) => {
+                        const itemObj = isKeyPresent(item.key, value) && item;
+                        if (!isEmpty(itemObj)) {
+                            filters[filter + itemObj.key] = {...itemObj, count: itemObj.count || 0};
+                        }
+                    });
                 });
                 return Observable.of(setFilters(filters));
             }).concat(!isEmpty(stateFacetItems) ? Observable.empty() : Observable.of(setFacetItems(facets)));

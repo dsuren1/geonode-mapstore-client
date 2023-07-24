@@ -77,7 +77,7 @@ export const filterFormItemsContainFacet = (formItems) => {
     return formItems.some(formItem => formItem.items ? filterFormItemsContainFacet(formItem.items) : !!formItem.facet);
 };
 
-export const updateFilterFormItemsWithFacet = ({formItems, facetItems, filters, setFilters}) => {
+export const updateFilterFormItemsWithFacet = ({formItems, facetItems}) => {
     return formItems.reduce((acc, formItem) => {
         if (!!formItem.facet) {
             const filteredFacetItems = (facetItems || [])
@@ -97,7 +97,7 @@ export const updateFilterFormItemsWithFacet = ({formItems, facetItems, filters, 
                             type,
                             style,
                             ...(isLocalized ? { labelId: label } : { label }),
-                            loadItems: (params) => loadItems({ name, style, filterKey, filters, setFilters }, params)
+                            loadItems: (params, filters, setFilters) => loadItems({ name, style, filterKey, filters, setFilters }, params)
                         };
                     })
             ];
@@ -108,7 +108,7 @@ export const updateFilterFormItemsWithFacet = ({formItems, facetItems, filters, 
                 {
                     ...formItem,
                     uuid: formItem.uuid || uuid(),
-                    items: updateFilterFormItemsWithFacet({formItems: formItem.items, facetItems, filters, setFilters})
+                    items: updateFilterFormItemsWithFacet({formItems: formItem.items, facetItems})
                 }
             ];
         }

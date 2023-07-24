@@ -46,7 +46,7 @@ const Accordion = ({
     content,
     loadItems,
     items,
-    monitorState
+    query
 }) => {
     const isMounted = useIsMounted();
 
@@ -74,7 +74,7 @@ const Accordion = ({
                     .finally(()=> isMounted(() => setLoading(false)));
             }
         }
-    }, [isExpanded, monitorState]);
+    }, [isExpanded, query]);
 
     return (
         <div className={'gn-accordion'}>
@@ -105,7 +105,7 @@ Accordion.propTypes = {
     content: PropTypes.func,
     loadItems: PropTypes.func,
     items: PropTypes.array,
-    monitorState: PropTypes.object
+    query: PropTypes.object
 };
 
 Accordion.defaultProps = {

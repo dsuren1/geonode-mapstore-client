@@ -48,7 +48,7 @@ function FiltersForm({
     if (!isEqual(fieldsProp, prevFieldsProp) || !isEqual(facets, prevFacets)) {
         setPrevFieldsProp(fieldsProp);
         setPrevFacets(facets);
-        setFields(updateFilterFormItemsWithFacet({formItems: fieldsProp, facetItems: facets, filters, setFilters}));
+        setFields(updateFilterFormItemsWithFacet({formItems: fieldsProp, facetItems: facets}));
     }
 
     useEffect(() => {
@@ -97,6 +97,7 @@ function FiltersForm({
                             extentProps={{ ...extentProps, timeDebounce }}
                             onChange={handleFieldChange}
                             filters={filters}
+                            setFilters={setFilters}
                         />
                     </form>
                 </div>

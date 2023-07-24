@@ -766,9 +766,10 @@ export const getResourceByTypeAndByPk = (type, pk) => {
 };
 
 export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, filters, setFilters}, { config, ...params }, customFilters) => {
+    const updatedParams = getQueryParams(params, customFilters);
     return axios.get(`${parseDevHostname(endpoints[FACETS])}/${facetName}`,
         { ...config,
-            params: getQueryParams(params, customFilters),
+            params: updatedParams,
             paramsSerializer
         }
     ).then(({data}) => {
@@ -777,11 +778,12 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, fi
         const isNextPageAvailable = (Math.ceil(Number(total) / Number(size)) - (page + 1)) !== 0;
 
         // Add filter values as item even when count is 0
-        const filtersPresent = Object.values(pick(filters, Object.keys(filters)?.filter(filter => filter?.includes(data?.filter))));
+        const filterKeys = Object.keys(updatedParams)?.map(key => `${key}${updatedParams[key]}`)?.filter(param => param?.includes(data?.filter));
+        const filtersPresent = Object.values(pick(filters, filterKeys));
 
         const items = isEmpty(_items) && !isEmpty(filtersPresent)
             ? filtersPresent.map(item => ({
-                ...item,
+                ...(item.labelId ? {labelId: item.labelId} : {label: item.label}),
                 type: "filter",
                 count: 0,
                 filterKey: item.filterKey ?? filterKey,
@@ -791,7 +793,7 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, fi
             : _items.map(({label, is_localized: isLocalized, key, count} = {})=> {
                 return {
                     type: "filter",
-                    ...(isLocalized ? { label } : { labelId: label }),
+                    ...(!isNil(isLocalized) && !isLocalized ? { labelId: label } : { label }), // TODO remove when api send isLocalized for all facets response
                     count,
                     filterKey,
                     filterValue: String(key),
@@ -800,7 +802,7 @@ export const getFacetItemsByFacetName = ({ name: facetName, style, filterKey, fi
             });
 
         // Update filters
-        setFilters(items.map(item => ({[item.filterKey + item.filterValue]: item})).reduce((f, c) => ({...f, ...c}), {}));
+        setFilters(items.map((item) => ({[item.filterKey + item.filterValue]: item})).reduce((f, c) => ({...f, ...c}), {}));
 
         return {
             page,

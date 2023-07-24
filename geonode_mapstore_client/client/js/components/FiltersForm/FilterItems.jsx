@@ -29,9 +29,6 @@ const InputControlWithDebounce = withDebounceOnCallback('onChange', 'value')(Inp
 
 const SelectSync = localizedProps('placeholder')(ReactSelect);
 
-// TEMP WORKAROUND FOR labelId "global". It picks up an object value from translation causing app crash
-const replaceGlobal = (labelId) => labelId === "global" ? "Global" : labelId;
-
 function Facet({
     item,
     active,
@@ -240,7 +237,7 @@ function FilterItem({
         const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
             return (
                 <div className="gn-facet-wrapper">
-                    <Facet label={item.labelId ? getMessageById(messages, replaceGlobal(item.labelId)) : <span>{item.label}</span>} item={item} active={active} onChange={onChangeFacet}/>
+                    <Facet label={item.labelId ? getMessageById(messages, item.labelId) : <span>{item.label}</span>} item={item} active={active} onChange={onChangeFacet}/>
                     {item.items && renderChild && <div className="facet-children">{renderChild()}</div>}
                 </div>
             );
@@ -266,7 +263,7 @@ function FilterItem({
                                 value={getFilterValue(item)}
                                 onChange={onChangeFilter}
                             >
-                                {item.labelId ? getMessageById(messages, replaceGlobal(item.labelId)) : item.label}
+                                {item.labelId ? getMessageById(messages, item.labelId) : item.label}
                                 {!isNil(item.count) && <span className="facet-count">{`(${item.count})`}</span>}
                             </Checkbox>
                         }
@@ -301,7 +298,7 @@ function FilterItem({
                         checked={!!active}
                         value={getFilterValue(field)}
                         onChange={onChangeFilterParent}>
-                        {field.labelId ? getMessageById(messages, replaceGlobal(field.labelId)) : field.label}
+                        {field.labelId ? getMessageById(messages, field.labelId) : field.label}
                         {!isNil(field.count) && <span className="facet-count">{`(${field.count})`}</span>}
                         {filterChild()}
                     </Checkbox>
@@ -311,7 +308,7 @@ function FilterItem({
     if (field.type === 'accordion' && !field.facet && field.id) {
         const key = `${id}-${field.id}`;
         return (<Accordion
-            monitorState={values}
+            query={values}
             title={field.labelId ? getMessageById(messages, field.labelId) : field.label}
             identifier={key}
             loadItems={(params) => field.loadItems({...params, ...values})}
@@ -335,7 +332,14 @@ FilterItem.contextTypes = {
 
 function FilterItems({ items, ...props }) {
     return items.map((field, idx) =>
-        <FilterItem key={field.uuid || `${field.id || ''}-${idx}`} {...props} field={field} />
+        <FilterItem
+            key={field.uuid || `${field.id || ''}-${idx}`}
+            {...props}
+            field={{
+                ...field,
+                loadItems: (...args) => field.loadItems(...args, props.filters, props.setFilters)
+            }}
+        />
     );
 }
 
