@@ -141,7 +141,6 @@ function FilterItem({
                             label: selectedFilter ? getLabelValue(selectedFilter) : value
                         };
                     })}
-                    onSelec
                     multi
                     placeholder={field.placeholderId}
                     onChange={(selected) => {
