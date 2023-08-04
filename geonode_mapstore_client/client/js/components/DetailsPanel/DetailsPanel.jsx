@@ -15,7 +15,7 @@ import Spinner from '@js/components/Spinner';
 import Message from '@mapstore/framework/components/I18N/Message';
 import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
 import moment from 'moment';
-import { getResourceTypesInfo, getMetadataDetailUrl } from '@js/utils/ResourceUtils';
+import { getResourceTypesInfo, getMetadataDetailUrl, isExternalDocumentSource } from '@js/utils/ResourceUtils';
 import debounce from 'lodash/debounce';
 import CopyToClipboardCmp from 'react-copy-to-clipboard';
 import ResourceStatus from '@js/components/ResourceStatus';
@@ -75,6 +75,7 @@ const DetailsPanelTools = ({
     enableFavorite,
     favorite,
     downloadUrl,
+    externalUrl,
     onAction,
     onFavorite,
     detailUrl,
@@ -111,6 +112,8 @@ const DetailsPanelTools = ({
         onFavorite(!fav);
     };
 
+    const isExternalSourceType = isExternalDocumentSource(resource);
+
     return (
         <div className="gn-details-panel-tools">
             <ResourceStatus resource={resource} />
@@ -120,10 +123,16 @@ const DetailsPanelTools = ({
                 onClick={debounce(() => handleFavorite(favorite), 500)}>
                 <FaIcon name={favorite ? 'star' : 'star-o'} />
             </Button>}
-            {downloadUrl &&
+            {!isExternalSourceType && downloadUrl &&
             <Button variant="default"
                 onClick={() => onAction(resource)} >
                 <FaIcon name="download" />
+            </Button>}
+            {isExternalSourceType && externalUrl &&
+            <Button variant="default"
+                href={externalUrl}
+                rel="noopener noreferrer" >
+                <FaIcon name="external-link"/>
             </Button>}
 
             <CopyToClipboard
@@ -215,6 +224,7 @@ function DetailsPanel({
     const downloadUrl = (resource?.href && resource?.href.includes('download')) ? resource?.href
         : (resource?.download_url && canDownload) ? resource?.download_url : undefined;
     const metadataDetailUrl = resource?.pk && getMetadataDetailUrl(resource);
+    const externalUrl = resource?.href;
     const tools = (
         <DetailsPanelTools
             name={name}
@@ -222,6 +232,7 @@ function DetailsPanel({
             enableFavorite={enableFavorite}
             favorite={favorite}
             downloadUrl={downloadUrl}
+            externalUrl={externalUrl}
             onAction={onAction}
             onFavorite={onFavorite}
             detailUrl={detailUrl}

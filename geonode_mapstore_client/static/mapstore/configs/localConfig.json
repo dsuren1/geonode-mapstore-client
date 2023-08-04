@@ -602,7 +602,7 @@
                         },
                         {
                             "labelId": "gnviewer.download",
-                            "disablePluginIf": "{!state('selectedLayerPermissions').includes('download_resourcebase')}",
+                            "disableIf": "{!state('selectedLayerPermissions').includes('download_resourcebase') || context.isExternalDocumentSource(state('gnResourceData'))}",
                             "type": "dropdown",
                             "items": [
                                 {
@@ -708,6 +708,12 @@
                                     "query": {
                                         "f": "{context.get(state('gnResourceData'), 'resource_type')}"
                                     }
+                                },
+                                {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
                                 },
                                 {
                                     "type": "query",
@@ -1584,6 +1590,12 @@
                                     }
                                 },
                                 {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
+                                },
+                                {
                                     "type": "query",
                                     "labelId": "gnviewer.category",
                                     "value": "{context.get(state('gnResourceData'), 'category.identifier')}",
@@ -2227,6 +2239,12 @@
                                     }
                                 },
                                 {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
+                                },
+                                {
                                     "type": "query",
                                     "labelId": "gnviewer.category",
                                     "value": "{context.get(state('gnResourceData'), 'category.identifier')}",
@@ -2537,6 +2555,12 @@
                                     }
                                 },
                                 {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
+                                },
+                                {
                                     "type": "query",
                                     "labelId": "gnviewer.category",
                                     "value": "{context.get(state('gnResourceData'), 'category.identifier')}",
@@ -2763,6 +2787,12 @@
                                     "query": {
                                         "f": "{context.get(state('gnResourceData'), 'resource_type')}"
                                     }
+                                },
+                                {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
                                 },
                                 {
                                     "type": "query",
@@ -3284,6 +3314,12 @@
                                     "query": {
                                         "f": "{context.get(state('gnResourceData'), 'resource_type')}"
                                     }
+                                },
+                                {
+                                    "type": "{context.isExternalDocumentSource(state('gnResourceData')) ? 'link' : 'text'}",
+                                    "labelId": "gnviewer.sourceType",
+                                    "value": "{context.get(state('gnResourceData'), 'sourcetype', '').toLowerCase()}",
+                                    "href": "{context.get(state('gnResourceData'), 'href')}"
                                 },
                                 {
                                     "type": "query",
