@@ -10,7 +10,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { createPlugin } from '@mapstore/framework/utils/PluginsUtils';
-import { isExternalDocumentSource } from '@js/utils/ResourceUtils';
+import { isDocumentExternalSource } from '@js/utils/ResourceUtils';
 import Message from '@mapstore/framework/components/I18N/Message';
 import Button from '@js/components/Button';
 import Dropdown from '@js/components/Dropdown';
@@ -26,7 +26,7 @@ function DownloadDocumentButton({
     size
 }) {
     return (
-        !isExternalDocumentSource(resource) ? <Button
+        !isDocumentExternalSource(resource) ? <Button
             download={`${resource?.title}.${resource?.extension}`}
             href={resource?.href}
             variant={variant}
@@ -51,7 +51,7 @@ function DownloadMenuItem({
     onDownload
 }) {
 
-    if (!(resource?.download_url && resource?.perms?.includes('download_resourcebase')) || isExternalDocumentSource(resource)) {
+    if (!(resource?.download_url && resource?.perms?.includes('download_resourcebase')) || isDocumentExternalSource(resource)) {
         return null;
     }
 

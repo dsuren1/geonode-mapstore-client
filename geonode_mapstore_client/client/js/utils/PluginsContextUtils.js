@@ -11,7 +11,7 @@ import {
     getMetadataDetailUrl,
     resourceHasPermission,
     canCopyResource,
-    isExternalDocumentSource
+    isDocumentExternalSource
 } from '@js/utils/ResourceUtils';
 import get from 'lodash/get';
 
@@ -44,5 +44,5 @@ export const getPluginsContext = () => ({
     userHasPermission: (user, perm) => user?.perms?.includes(perm),
     getUserResourceName,
     getUserResourceNames,
-    isExternalDocumentSource
+    isDocumentExternalSource
 });

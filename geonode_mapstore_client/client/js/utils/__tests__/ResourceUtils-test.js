@@ -27,7 +27,7 @@ import {
     getResourceTypesInfo,
     ResourceTypes,
     FEATURE_INFO_FORMAT,
-    isExternalDocumentSource
+    isDocumentExternalSource
 } from '../ResourceUtils';
 
 describe('Test Resource Utils', () => {
@@ -971,16 +971,16 @@ describe('Test Resource Utils', () => {
             expect(formatMetadataUrl(resource)).toBe('/apps/100/metadata');
         });
     });
-    it('isExternalDocumentSource', () => {
+    it('isDocumentExternalSource', () => {
         let resource = { resource_type: "document", sourcetype: "REMOTE" };
-        expect(isExternalDocumentSource(resource)).toBeTruthy();
+        expect(isDocumentExternalSource(resource)).toBeTruthy();
 
         // LOCAL
         resource = {...resource, sourcetype: "LOCAL"};
-        expect(isExternalDocumentSource(resource)).toBeFalsy();
+        expect(isDocumentExternalSource(resource)).toBeFalsy();
 
         // NOT DOCUMENT
         resource = {...resource, resource_type: "dataset"};
-        expect(isExternalDocumentSource(resource)).toBeFalsy();
+        expect(isDocumentExternalSource(resource)).toBeFalsy();
     });
 });

@@ -15,7 +15,7 @@ import Spinner from '@js/components/Spinner';
 import Message from '@mapstore/framework/components/I18N/Message';
 import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
 import moment from 'moment';
-import { getResourceTypesInfo, getMetadataDetailUrl, isExternalDocumentSource } from '@js/utils/ResourceUtils';
+import { getResourceTypesInfo, getMetadataDetailUrl, isDocumentExternalSource } from '@js/utils/ResourceUtils';
 import debounce from 'lodash/debounce';
 import CopyToClipboardCmp from 'react-copy-to-clipboard';
 import ResourceStatus from '@js/components/ResourceStatus';
@@ -112,7 +112,7 @@ const DetailsPanelTools = ({
         onFavorite(!fav);
     };
 
-    const isExternalSourceType = isExternalDocumentSource(resource);
+    const isExternalSourceType = isDocumentExternalSource(resource);
 
     return (
         <div className="gn-details-panel-tools">
