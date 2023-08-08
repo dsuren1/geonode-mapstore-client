@@ -14,12 +14,14 @@ import { FormGroup, Checkbox, FormControl as FormControlRB } from 'react-bootstr
 import ReactSelect from 'react-select';
 
 import Accordion from "@js/components/Accordion";
+import Tabs from "@js/components/Tabs";
 import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll';
 import localizedProps from '@mapstore/framework/components/misc/enhancers/localizedProps';
 import withDebounceOnCallback from '@mapstore/framework/components/misc/enhancers/withDebounceOnCallback';
 import { getMessageById } from '@mapstore/framework/utils/LocaleUtils';
 import FilterByExtent from './FilterByExtent';
 import DateRangeFilter from './DateRangeFilter';
+import FaIcon from '../FaIcon';
 
 const FormControl = localizedProps('placeholder')(FormControlRB);
 function InputControl({ onChange, value, debounceTime, ...props }) {
@@ -29,10 +31,24 @@ const InputControlWithDebounce = withDebounceOnCallback('onChange', 'value')(Inp
 
 const SelectSync = localizedProps('placeholder')(ReactSelect);
 
+function Label({item} = {}, { messages }) {
+    return (
+        <div className="gn-label">
+            <span className="prefix">
+                {item.icon ? <FaIcon name={item.icon}/> : item.image ? <img src={item.image}/> : null}
+                {item.labelId ? getMessageById(messages, item.labelId) : <span>{item.label}</span>}
+            </span>
+            {!isNil(item.count) && <span className="facet-count">{`(${item.count})`}</span>}
+        </div>
+    );
+}
+Label.contextTypes = {
+    messages: PropTypes.object
+};
+
 function Facet({
     item,
     active,
-    label,
     onChange
 }) {
     const filterValue = item.filterValue || item.id;
@@ -46,8 +62,7 @@ function Facet({
                 onKeyDown={(event) => event.key === 'Enter' ? onChange() : null}
                 style={{ display: 'block', width: 0, height: 0, overflow: 'hidden', opacity: 0, padding: 0, margin: 0 }}
             />
-            {label}
-            {!isNil(item.count) && <span className="facet-count">{`(${item.count})`}</span>}
+            <Label item={item}/>
         </div>
     );
 }
@@ -84,7 +99,8 @@ function FilterItem({
     extentProps,
     timeDebounce,
     field,
-    filters
+    filters,
+    setFilters
 }, { messages }) {
 
 
@@ -236,7 +252,7 @@ function FilterItem({
         const renderFacet = ({item, active, onChangeFacet, renderChild}) => {
             return (
                 <div className="gn-facet-wrapper">
-                    <Facet label={item.labelId ? getMessageById(messages, item.labelId) : <span>{item.label}</span>} item={item} active={active} onChange={onChangeFacet}/>
+                    <Facet item={item} active={active} onChange={onChangeFacet}/>
                     {item.items && renderChild && <div className="facet-children">{renderChild()}</div>}
                 </div>
             );
@@ -262,8 +278,7 @@ function FilterItem({
                                 value={getFilterValue(item)}
                                 onChange={onChangeFilter}
                             >
-                                {item.labelId ? getMessageById(messages, item.labelId) : item.label}
-                                {!isNil(item.count) && <span className="facet-count">{`(${item.count})`}</span>}
+                                <Label item={item}/>
                             </Checkbox>
                         }
                     </div>
@@ -297,8 +312,7 @@ function FilterItem({
                         checked={!!active}
                         value={getFilterValue(field)}
                         onChange={onChangeFilterParent}>
-                        {field.labelId ? getMessageById(messages, field.labelId) : field.label}
-                        {!isNil(field.count) && <span className="facet-count">{`(${field.count})`}</span>}
+                        <Label item={field}/>
                         {filterChild()}
                     </Checkbox>
                 </FormGroup>
@@ -318,9 +332,30 @@ function FilterItem({
                     items={accordionItems}
                     values={values}
                     onChange={onChange}
+                    filters={filters}
+                    setFilters={setFilters}
                 />)
             }
         />);
+    }
+    if (field.type === 'tabs') {
+        const key = `${id}-${field.id}`;
+        return (
+            <Tabs
+                identifier={key}
+                tabs={(field?.items || [])?.map((item) => ({
+                    title: item.labelId ? getMessageById(messages, item.labelId) : item.label,
+                    component: <FilterItems
+                        {...item}
+                        items={item.items}
+                        values={values}
+                        filters={filters}
+                        setFilters={setFilters}
+                        onChange={onChange}
+                    />
+                }))}
+            />
+        );
     }
     return null;
 }
