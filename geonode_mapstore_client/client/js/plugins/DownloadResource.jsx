@@ -20,59 +20,59 @@ import {
 } from '@js/selectors/resource';
 import { downloadResource } from '@js/actions/gnresource';
 
-function DownloadDocumentButton({
+const RENDER_TYPE = {
+    "button": Button,
+    "menuItem": Dropdown.Item,
+    "href": Button
+};
+
+const DownloadButton = ({
     resource,
+    resourceData,
     variant,
-    size
-}) {
-    return (
-        !isDocumentExternalSource(resource) ? <Button
-            download={`${resource?.title}.${resource?.extension}`}
-            href={resource?.href}
-            variant={variant}
-            size={size}
-        >
-            <Message msgId="gnviewer.download" />
-        </Button> : null);
-}
+    size,
+    onAction = () => {},
+    renderType = "button",
+    children
+}) => {
+    const Component =  RENDER_TYPE[renderType];
+    const isButton = renderType !== "menuItem";
+    const isHref = renderType === "href";
+    const _resource = resource ?? resourceData;
 
-const ConnectedDownloadResource = connect(
-    createSelector([
-        getResourceData
-    ], (resource) => ({
-        resource
-    })),
-    {
-    }
-)(DownloadDocumentButton);
-
-function DownloadMenuItem({
-    resource,
-    onDownload
-}) {
-
-    if (!(resource?.download_url && resource?.perms?.includes('download_resourcebase')) || isDocumentExternalSource(resource)) {
+    if (!(_resource?.download_url && _resource?.perms?.includes('download_resourcebase')) || (!isButton && isDocumentExternalSource(_resource))) {
         return null;
     }
 
     return (
-        <Dropdown.Item
-            onClick={() =>
-                onDownload(resource)
-            }
+        <Component
+            onClick={() => onAction(_resource)}
+            {...isButton && { variant, size}}
+            {...isHref && {
+                download: `${_resource?.title}.${_resource?.extension}`,
+                href: _resource?.href,
+                rel: "noopener noreferrer"
+            }}
         >
-            <FaIcon name="download" />{' '}
-            <Message msgId="gnviewer.download" />
-        </Dropdown.Item>
+            {children
+                ? children
+                : (
+                    <>
+                        {!isButton ? <><FaIcon name="download" />&nbsp;</> : null}
+                        <Message msgId="gnviewer.download" />
+                    </>
+                )
+            }
+        </Component>
     );
-}
+};
 
-const ConnectedMenuItem = connect(
-    createSelector([], () => ({})),
+const DownloadResource = connect(
+    createSelector([ getResourceData], (resourceData) => ({ resourceData })),
     {
-        onDownload: downloadResource
+        onAction: downloadResource
     }
-)((DownloadMenuItem));
+)(DownloadButton);
 
 /**
 * @module DownloadResource
@@ -87,17 +87,27 @@ const ConnectedMenuItem = connect(
  * }
  */
 export default createPlugin('DownloadResource', {
-    component: ConnectedDownloadResource,
+    component: DownloadResource,
     containers: {
         ActionNavbar: {
             name: 'DownloadResource',
-            Component: ConnectedDownloadResource,
+            Component: (props) => <DownloadResource {...props} renderType="href"/>,
             priority: 1
         },
         ResourcesGrid: {
             name: 'downloadResource',
-            target: 'cardOptions',
-            Component: ConnectedMenuItem,
+            targets: [{
+                target: 'cardOptions',
+                Component: (props) => <DownloadResource {...props} renderType="menuItem"/>
+            }, {
+                target: 'detailsPanel',
+                Component: DownloadResource
+            }],
+            priority: 1
+        },
+        DetailViewer: {
+            name: 'DownloadResource',
+            Component: DownloadResource,
             priority: 1
         }
     },

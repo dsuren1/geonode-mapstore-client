@@ -803,6 +803,9 @@
                 "name": "DeleteResource"
             },
             {
+                "name": "DownloadResource"
+            },
+            {
                 "name": "Map",
                 "cfg": {
                     "shouldLoadFont": false,
@@ -2481,7 +2484,7 @@
                         {
                             "type": "plugin",
                             "name": "DownloadResource",
-                            "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'download_resourcebase')}"
+                            "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'download_resourcebase') || context.isDocumentExternalSource(state('gnResourceData'))}"
                         },
                         {
                             "type": "plugin",
