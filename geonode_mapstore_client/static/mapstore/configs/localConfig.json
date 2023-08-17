@@ -2484,7 +2484,7 @@
                         {
                             "type": "plugin",
                             "name": "DownloadResource",
-                            "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'download_resourcebase') || context.isDocumentExternalSource(state('gnResourceData'))}"
+                            "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'download_resourcebase')}"
                         },
                         {
                             "type": "plugin",

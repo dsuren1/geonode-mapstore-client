@@ -15,7 +15,7 @@ import Spinner from '@js/components/Spinner';
 import Message from '@mapstore/framework/components/I18N/Message';
 import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
 import moment from 'moment';
-import { getResourceTypesInfo, getMetadataDetailUrl, isDocumentExternalSource } from '@js/utils/ResourceUtils';
+import { getResourceTypesInfo, getMetadataDetailUrl } from '@js/utils/ResourceUtils';
 import debounce from 'lodash/debounce';
 import CopyToClipboardCmp from 'react-copy-to-clipboard';
 import ResourceStatus from '@js/components/ResourceStatus';
@@ -81,7 +81,7 @@ const DetailsPanelTools = ({
     canView,
     metadataDetailUrl,
     name,
-    downloadResource
+    toolbarItems = []
 }) => {
 
     const isMounted = useRef();
@@ -110,9 +110,6 @@ const DetailsPanelTools = ({
         onFavorite(!fav);
     };
 
-    const isExternalSourceType = isDocumentExternalSource(resource);
-    const DownloadButton = downloadResource ? downloadResource.Component : null;
-
     return (
         <div className="gn-details-panel-tools">
             <ResourceStatus resource={resource} />
@@ -122,15 +119,9 @@ const DetailsPanelTools = ({
                 onClick={debounce(() => handleFavorite(favorite), 500)}>
                 <FaIcon name={favorite ? 'star' : 'star-o'} />
             </Button>}
-            {}
-            {DownloadButton &&
-            <DownloadButton
-                renderType={isExternalSourceType ? "href" : "button"}
-                resource={resource}
-            >
-                <FaIcon name={isExternalSourceType ? "external-link" : "download"}/>
-            </DownloadButton>}
-
+            {toolbarItems.map(({ Component, name: toolbarItemName }, index) => {
+                return (<Component key={toolbarItemName || index} showIcon />);
+            })}
             <CopyToClipboard
                 tooltipPosition="top"
                 tooltipId={
@@ -197,7 +188,7 @@ function DetailsPanel({
     onClose,
     tabs,
     pathname,
-    downloadResource
+    toolbarItems
 }) {
     const detailsContainerNode = useRef();
     const [titleNodeRef, titleInView] = useInView();
@@ -229,7 +220,7 @@ function DetailsPanel({
             resourceCanPreviewed={resourceCanPreviewed}
             canView={canView}
             metadataDetailUrl={metadataDetailUrl}
-            downloadResource={downloadResource}
+            toolbarItems={toolbarItems}
         />
     );
     return (

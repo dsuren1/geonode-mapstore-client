@@ -13,17 +13,20 @@ import { createPlugin } from '@mapstore/framework/utils/PluginsUtils';
 import { isDocumentExternalSource } from '@js/utils/ResourceUtils';
 import Message from '@mapstore/framework/components/I18N/Message';
 import Button from '@js/components/Button';
+import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
 import Dropdown from '@js/components/Dropdown';
 import FaIcon from '@js/components/FaIcon';
 import {
     getResourceData
 } from '@js/selectors/resource';
 import { downloadResource } from '@js/actions/gnresource';
+import { processingDownload } from '@js/selectors/resourceservice';
+
+const ButtonWithTooltip = tooltip(Button);
 
 const RENDER_TYPE = {
-    "button": Button,
-    "menuItem": Dropdown.Item,
-    "href": Button
+    "button": ButtonWithTooltip,
+    "menuItem": Dropdown.Item
 };
 
 const DownloadButton = ({
@@ -33,42 +36,59 @@ const DownloadButton = ({
     size,
     onAction = () => {},
     renderType = "button",
-    children
+    showIcon,
+    downloading
 }) => {
     const Component =  RENDER_TYPE[renderType];
     const isButton = renderType !== "menuItem";
-    const isHref = renderType === "href";
     const _resource = resource ?? resourceData;
+    const isExternalLink = isDocumentExternalSource(_resource);
 
-    if (!(_resource?.download_url && _resource?.perms?.includes('download_resourcebase')) || (!isButton && isDocumentExternalSource(_resource))) {
+    if (!(_resource?.download_url && _resource?.perms?.includes('download_resourcebase')) || (!isButton && isExternalLink)) {
         return null;
+    }
+
+    if (isExternalLink) {
+        return (
+            <Component
+                {...isButton && { variant, size }}
+                {...showIcon && { tooltipId: "gnviewer.download" }}
+                download={`${_resource?.title}.${_resource?.extension}`}
+                href={_resource?.href}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {showIcon
+                    ? <FaIcon name="external-link" />
+                    : <Message msgId="gnviewer.download" />
+                }
+            </Component>
+        );
     }
 
     return (
         <Component
-            onClick={() => onAction(_resource)}
+            disabled={!!downloading}
+            onClick={() => downloading ? null : onAction(_resource)}
             {...isButton && { variant, size}}
-            {...isHref && {
-                download: `${_resource?.title}.${_resource?.extension}`,
-                href: _resource?.href,
-                rel: "noopener noreferrer"
-            }}
+            {...showIcon && { tooltipId: "gnviewer.download" }}
         >
-            {children
-                ? children
-                : (
-                    <>
-                        {!isButton ? <><FaIcon name="download" />&nbsp;</> : null}
-                        <Message msgId="gnviewer.download" />
-                    </>
-                )
+            {showIcon
+                ? <FaIcon name="download" />
+                : <Message msgId="gnviewer.download" />
             }
         </Component>
     );
 };
 
 const DownloadResource = connect(
-    createSelector([ getResourceData], (resourceData) => ({ resourceData })),
+    createSelector([
+        getResourceData,
+        processingDownload
+    ], (resourceData, downloading) => ({
+        resourceData,
+        downloading
+    })),
     {
         onAction: downloadResource
     }
@@ -91,22 +111,19 @@ export default createPlugin('DownloadResource', {
     containers: {
         ActionNavbar: {
             name: 'DownloadResource',
-            Component: (props) => <DownloadResource {...props} renderType="href"/>,
+            Component: DownloadResource,
             priority: 1
         },
         ResourcesGrid: {
             name: 'downloadResource',
-            targets: [{
-                target: 'cardOptions',
-                Component: (props) => <DownloadResource {...props} renderType="menuItem"/>
-            }, {
-                target: 'detailsPanel',
-                Component: DownloadResource
-            }],
+            target: 'cardOptions',
+            detailsToolbar: true,
+            Component: DownloadResource,
             priority: 1
         },
         DetailViewer: {
             name: 'DownloadResource',
+            target: 'toolbar',
             Component: DownloadResource,
             priority: 1
         }

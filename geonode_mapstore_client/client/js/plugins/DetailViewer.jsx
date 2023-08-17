@@ -216,7 +216,7 @@ function DetailViewer({
 
     const { loadedPlugins } = context;
     const configuredItems = usePluginItems({ items, loadedPlugins }, [resourceId]);
-    const downloadResource = configuredItems.find(item => item.name === "DownloadResource");
+    const toolbarItems = configuredItems.filter(item => item.target === "toolbar");
 
     return (
         <OverlayContainer
@@ -233,7 +233,7 @@ function DetailViewer({
                 formatHref={handleFormatHref}
                 tabs={parsedConfig.tabs}
                 pathname={queryPathname}
-                downloadResource={downloadResource}
+                toolbarItems={toolbarItems}
             />
         </OverlayContainer>
     );

@@ -456,17 +456,16 @@ function ResourcesGrid({
     const { loadedPlugins } = context;
     const configuredItems = usePluginItems({ items, loadedPlugins }, []);
 
-    const cardOptions = [...configuredItems.map(({ name, Component, targets }) => ({
-        type: 'plugin',
-        Component: targets ? targets.find(({target} = {}) => target === "cardOptions")?.Component : Component,
-        action: name
-    }))].sort((a, b) => resourceCardActionsOrder.indexOf(a.action) - resourceCardActionsOrder.indexOf(b.action));
+    const cardOptions = [...configuredItems
+        .filter(item => item.target === 'cardOptions')
+        .map(({ name, Component }) => ({
+            type: 'plugin',
+            Component,
+            action: name
+        }))].sort((a, b) => resourceCardActionsOrder.indexOf(a.action) - resourceCardActionsOrder.indexOf(b.action));
 
-    const [downloadResourceButton] = [...configuredItems
-        .filter(item => item.name === "downloadResource")
-        .map(({ Component, targets }) => ({
-            Component: targets ? targets.find(({target} = {}) => target === "detailsPanel")?.Component : Component
-        }))];
+    const detailsToolbarItems = configuredItems
+        .filter(item => (item.target === "cardOptions" && item.detailsToolbar) || item.target === "detailsToolbar");
 
     const updatedLocation = useRef();
     updatedLocation.current = location;
@@ -673,7 +672,7 @@ function ResourcesGrid({
                     linkHref={closeDetailPanelHref}
                     formatHref={handleFormatHref}
                     tabs={parsedConfig.detailsTabs}
-                    downloadResource={downloadResourceButton}
+                    toolbarItems={detailsToolbarItems}
                 />}
             </div>
         </div>
