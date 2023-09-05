@@ -182,7 +182,9 @@ function DetailViewer({
     items,
     resourceId
 }, context) {
-
+    if (hide) {
+        return null;
+    }
     const parsedConfig = parsePluginConfigExpressions(monitoredState, { tabs });
 
     const handleTitleValue = (val) => {
@@ -209,10 +211,6 @@ function DetailViewer({
             ...options
         });
     };
-
-    if (hide) {
-        return null;
-    }
 
     const { loadedPlugins } = context;
     const configuredItems = usePluginItems({ items, loadedPlugins }, [resourceId]);
