@@ -499,13 +499,14 @@
                 "name": "ActionNavbar",
                 "cfg": {
                     "containerPosition": "header",
-                    "titleItems": [
+                    "disableTitle": true,
+                    "leftMenuItems": [
                         {
                             "type": "plugin",
+                            "variant": "info",
+                            "size": "md",
                             "name": "DetailViewerButton"
-                        }
-                    ],
-                    "leftMenuItems": [
+                        },
                         {
                             "labelId": "gnviewer.save",
                             "showPendingChangesIcon": true,
@@ -528,6 +529,10 @@
                             "type": "dropdown",
                             "items": [
                                 {
+                                    "type": "plugin",
+                                    "name": "DetailViewerButton"
+                                },
+                                {
                                     "type": "link",
                                     "href": "{context.getMetadataDetailUrl(state('gnResourceData'))}",
                                     "labelId": "gnviewer.viewMetadata"
@@ -545,10 +550,6 @@
                             "type": "dropdown",
                             "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'change_resourcebase')}",
                             "items": [
-                                {
-                                    "type": "plugin",
-                                    "name": "DetailViewerButton"
-                                },
                                 {
                                     "type": "link",
                                     "href": "{'#/dataset/' + (state('gnResourceData') || {}).pk + '/edit/data'}",
@@ -1445,13 +1446,14 @@
                 "name": "ActionNavbar",
                 "cfg": {
                     "containerPosition": "header",
-                    "titleItems": [
+                    "disableTitle": true,
+                    "leftMenuItems": [
                         {
                             "type": "plugin",
+                            "variant": "info",
+                            "size": "md",
                             "name": "DetailViewerButton"
-                        }
-                    ],
-                    "leftMenuItems": [
+                        },
                         {
                             "labelId": "gnviewer.save",
                             "showPendingChangesIcon": true,
@@ -1474,10 +1476,6 @@
                             "disableIf": "{state('isNewResource') || !context.resourceHasPermission(state('gnResourceData'), 'change_resourcebase')}",
                             "items": [
                                 {
-                                    "type": "plugin",
-                                    "name": "DetailViewerButton"
-                                },
-                                {
                                     "type": "link",
                                     "href": "{context.getMetadataUrl(state('gnResourceData'))}",
                                     "labelId": "gnviewer.editMetadata"
@@ -1489,6 +1487,10 @@
                             "type": "dropdown",
                             "disableIf": "{state('isNewResource')}",
                             "items": [
+                                {
+                                    "type": "plugin",
+                                    "name": "DetailViewerButton"
+                                },
                                 {
                                     "type": "link",
                                     "href": "{context.getMetadataDetailUrl(state('gnResourceData'))}",
@@ -2110,13 +2112,13 @@
                 "name": "ActionNavbar",
                 "cfg": {
                     "containerPosition": "header",
-                    "titleItems": [
+                    "leftMenuItems": [
                         {
                             "type": "plugin",
+                            "variant": "info",
+                            "size": "md",
                             "name": "DetailViewerButton"
-                        }
-                    ],
-                    "leftMenuItems": [
+                        },
                         {
                             "labelId": "gnviewer.save",
                             "showPendingChangesIcon": true,
@@ -2144,6 +2146,10 @@
                             "disableIf": "{state('isNewResource')}",
                             "items": [
                                 {
+                                    "type": "plugin",
+                                    "name": "DetailViewerButton"
+                                },
+                                {
                                     "type": "link",
                                     "href": "{context.getMetadataDetailUrl(state('gnResourceData'))}",
                                     "labelId": "gnviewer.viewMetadata"
@@ -2155,10 +2161,6 @@
                             "type": "dropdown",
                             "disableIf": "{state('isNewResource') || !context.resourceHasPermission(state('gnResourceData'), 'change_resourcebase')}",
                             "items": [
-                                {
-                                    "type": "plugin",
-                                    "name": "DetailViewerButton"
-                                },
                                 {
                                     "type": "link",
                                     "href": "{context.getMetadataUrl(state('gnResourceData'))}",
@@ -2418,13 +2420,14 @@
                 "name": "ActionNavbar",
                 "cfg": {
                     "containerPosition": "header",
-                    "titleItems": [
+                    "disableTitle": true,
+                    "leftMenuItems": [
                         {
                             "type": "plugin",
+                            "variant": "info",
+                            "size": "md",
                             "name": "DetailViewerButton"
-                        }
-                    ],
-                    "leftMenuItems": [
+                        },
                         {
                             "labelId": "gnviewer.save",
                             "type": "dropdown",
@@ -2447,6 +2450,10 @@
                             "type": "dropdown",
                             "items": [
                                 {
+                                    "type": "plugin",
+                                    "name": "DetailViewerButton"
+                                },
+                                {
                                     "type": "link",
                                     "href": "{context.getMetadataDetailUrl(state('gnResourceData'))}",
                                     "labelId": "gnviewer.viewMetadata"
@@ -2458,10 +2465,6 @@
                             "type": "dropdown",
                             "disableIf": "{!context.resourceHasPermission(state('gnResourceData'), 'change_resourcebase')}",
                             "items": [
-                                {
-                                    "type": "plugin",
-                                    "name": "DetailViewerButton"
-                                },
                                 {
                                     "type": "link",
                                     "href": "{context.getMetadataUrl(state('gnResourceData'))}",
@@ -2656,13 +2659,14 @@
                 "name": "ActionNavbar",
                 "cfg": {
                     "containerPosition": "header",
-                    "titleItems": [
+                    "disableTitle": true,
+                    "leftMenuItems": [
                         {
                             "type": "plugin",
+                            "variant": "info",
+                            "size": "md",
                             "name": "DetailViewerButton"
-                        }
-                    ],
-                    "leftMenuItems": [
+                        },
                         {
                             "labelId": "gnviewer.save",
                             "type": "dropdown",
@@ -2690,6 +2694,10 @@
                             "disableIf": "{state('isNewResource')}",
                             "items": [
                                 {
+                                    "type": "plugin",
+                                    "name": "DetailViewerButton"
+                                },
+                                {
                                     "type": "link",
                                     "href": "{context.getMetadataDetailUrl(state('gnResourceData'))}",
                                     "labelId": "gnviewer.viewMetadata"
@@ -2701,10 +2709,6 @@
                             "type": "dropdown",
                             "disableIf": "{state('isNewResource') || !context.resourceHasPermission(state('gnResourceData'), 'change_resourcebase')}",
                             "items": [
-                                {
-                                    "type": "plugin",
-                                    "name": "DetailViewerButton"
-                                },
                                 {
                                     "type": "link",
                                     "href": "{context.getMetadataUrl(state('gnResourceData'))}",
