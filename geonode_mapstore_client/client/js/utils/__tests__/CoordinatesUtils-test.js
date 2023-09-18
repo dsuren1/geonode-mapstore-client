@@ -19,7 +19,7 @@ describe('Test Coordinates Utils', () => {
             bounds: {minx: -10, miny: -10, maxx: 10, maxy: 10},
             crs: 'EPSG:4326'
         };
-        const bbox = bboxToExtent(_bbox, 'EPSG:4326');
+        const {bbox} = bboxToExtent(_bbox, 'EPSG:4326');
         const {coords, srid} = bbox;
         expect(srid).toBe('EPSG:4326');
         expect(coords).toEqual([-10, -10, 10, 10]);
