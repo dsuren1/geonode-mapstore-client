@@ -16,11 +16,12 @@ const Tabs = ({
     identifier,
     selectedTabId,
     onSelect,
+    activeKey,
     className
 }) => {
     const [eventKeys, setEventKeys] = useLocalStorage('tabSelected', {});
     const persistSelection = isNil(selectedTabId);
-    const selectedKey = !persistSelection ? selectedTabId : (eventKeys[identifier] ?? 0);
+    const selectedKey = activeKey || (!persistSelection ? selectedTabId : (eventKeys[identifier] ?? 0));
 
     const onSelectTab = (key) => {
         const updatedEventKeys = {
@@ -34,7 +35,7 @@ const Tabs = ({
             bsStyle="pills"
             className={className}
             key={identifier}
-            defaultActiveKey={selectedKey}
+            {...onSelect ? {activeKey} : {defaultActiveKey: selectedKey}}
             onSelect={onSelect ? onSelect : onSelectTab}
         >
             {tabs.map((tab, index)=> {

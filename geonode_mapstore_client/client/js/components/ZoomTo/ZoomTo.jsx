@@ -32,11 +32,20 @@ const ZoomTo = ({
             } else {
                 bounds = aBounds;
             }
-            map.getView().fit(bounds, {
-                size: map.getSize(),
-                duration: 300,
-                nearest: true
-            });
+            // ensure when map is contained in tab and
+            // container needs update followed by zoom to extent
+            setTimeout(()=> {
+                map.updateSize();
+            }, 200);
+
+            setTimeout(()=> {
+                map.getView().fit(bounds, {
+                    size: map.getSize(),
+                    duration: 300,
+                    nearest: true
+                });
+            }, 300);
+
             // ensure to avoid other fit action by setting once to true
             once.current = true;
         }

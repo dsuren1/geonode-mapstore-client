@@ -779,6 +779,13 @@
                             ]
                         },
                         {
+                            "type": "locations",
+                            "id": "locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "labelId": "gnviewer.locations",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
+                        },
+                        {
                             "type": "attribute-table",
                             "id": "attributes",
                             "labelId": "gnviewer.attributes",
@@ -1655,6 +1662,13 @@
                             ]
                         },
                         {
+                            "type": "locations",
+                            "id": "locations",
+                            "labelId": "gnviewer.locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
+                        },
+                        {
                             "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.linkedResources",
@@ -2303,6 +2317,13 @@
                             ]
                         },
                         {
+                            "type": "locations",
+                            "id": "locations",
+                            "labelId": "gnviewer.locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
+                        },
+                        {
                             "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.linkedResources",
@@ -2618,6 +2639,13 @@
                             ]
                         },
                         {
+                            "type": "locations",
+                            "id": "locations",
+                            "labelId": "gnviewer.locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
+                        },
+                        {
                             "type": "linked-resources",
                             "id": "related",
                             "labelId": "gnviewer.linkedResources",
@@ -2849,6 +2877,13 @@
                                     "disableIf": "{!context.getMetadataDetailUrl(state('gnResourceData'))}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "locations",
+                            "id": "locations",
+                            "labelId": "gnviewer.locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
                         },
                         {
                             "type": "linked-resources",
@@ -3376,6 +3411,13 @@
                                     "disableIf": "{!context.getMetadataDetailUrl(state('gnResourceData'))}"
                                 }
                             ]
+                        },
+                        {
+                            "type": "locations",
+                            "id": "locations",
+                            "labelId": "gnviewer.locations",
+                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
+                            "items": "{context.get(state('gnResourceData'), 'extent')}"
                         },
                         {
                             "type": "attribute-table",
