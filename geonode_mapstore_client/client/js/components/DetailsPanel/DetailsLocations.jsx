@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import turfCenter from "@turf/center";
 import isEmpty from "lodash/isEmpty";
@@ -98,17 +98,13 @@ const BoundingBoxAndCenter = ({extent, center, expand}) => {
     );
 };
 
-const DetailsLocations = ({ onSetExtent, fields: bbox, allowEdit} = {}) => {
-    const oldExent = useRef();
-    const {coords: extent} = {} = bbox || {};
-
-    useEffect(() => {
-        oldExent.current = extent;
-    }, []);
+const DetailsLocations = ({ onSetExtent, fields, allowEdit} = {}) => {
+    const extent = get(fields, 'extent.coords');
+    const initialExtent = get(fields, 'initialExtent.coords');
 
     const polygon = !isEmpty(extent) ? getPolygonFromExtent(extent) : null;
     const center = !isEmpty(extent) && polygon ? turfCenter(polygon) : null;
-    const isDrawn = !isEqual(isEmpty(oldExent.current) ? extent : oldExent.current, extent);
+    const isDrawn = !isEqual(initialExtent, extent);
 
     return (
         <div className="gn-viewer-extent-map">
