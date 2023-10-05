@@ -169,13 +169,11 @@ function DetailsInfo({
                 Component: tabTypes[tab.type] || tabTypes.tab
             }))
         .filter(tab => !isEmpty(tab?.items));
-    const selectedTabId = filteredTabs?.[0]?.id;
-    const [select, onSelect] = useState(selectedTabId);
+    const [selectedTabId, onSelect] = useState(filteredTabs?.[0]?.id);
     return (
         <Tabs
             className="gn-details-info tabs-underline"
             selectedTabId={selectedTabId}
-            activeKey={select}
             onSelect={onSelect}
             tabs={filteredTabs.map(({Component, ...tab} = {}) => ({
                 title: <DetailInfoFieldLabel field={tab} />,
