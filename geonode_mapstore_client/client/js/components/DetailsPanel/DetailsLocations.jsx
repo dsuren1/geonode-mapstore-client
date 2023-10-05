@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React, { useState, useEffect } from "react";
-import { connect } from 'react-redux';
 import turfCenter from "@turf/center";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
@@ -24,13 +23,12 @@ import tooltip from "@mapstore/framework/components/misc/enhancers/tooltip";
 import CopyToClipboardCmp from 'react-copy-to-clipboard';
 import Button from "@mapstore/framework/components/misc/Button";
 import FaIcon from "@js/components/FaIcon/FaIcon";
-import { setResourceExtent } from "@js/actions/gnresource";
 
 const Map = mapTypeHOC(BaseMap);
 Map.displayName = "Map";
 const CopyToClipboard = tooltip(CopyToClipboardCmp);
 
-const BoundingBoxAndCenter = ({extent, center, expand}) => {
+const BoundingBoxAndCenter = ({extent, center }) => {
     const [minx, miny, maxx, maxy] = extent || [];
     const [copied, setCopied] = useState(false);
     useEffect(() => {
@@ -41,7 +39,7 @@ const BoundingBoxAndCenter = ({extent, center, expand}) => {
         }
     }, [copied]);
     return (
-        <div className={`gn-location-info ${expand ? 'fullWidth' : ''}`}>
+        <div className={`gn-location-info`}>
             <div className="bounds">
                 <div className="title">
                     <Message msgId={"gnviewer.boundingBox"}/>
@@ -98,27 +96,31 @@ const BoundingBoxAndCenter = ({extent, center, expand}) => {
     );
 };
 
-const DetailsLocations = ({ onSetExtent, fields, allowEdit} = {}) => {
+const DetailsLocations = ({ onSetExtent, fields, allowEdit: allowEditProp, resource } = {}) => {
     const extent = get(fields, 'extent.coords');
     const initialExtent = get(fields, 'initialExtent.coords');
 
     const polygon = !isEmpty(extent) ? getPolygonFromExtent(extent) : null;
     const center = !isEmpty(extent) && polygon ? turfCenter(polygon) : null;
-    const isDrawn = !isEqual(initialExtent, extent);
+    const isDrawn = initialExtent !== undefined && !isEqual(initialExtent, extent);
+
+    const allowEdit = onSetExtent && !['map', 'dataset'].includes(resource?.resource_type) && allowEditProp;
 
     return (
         <div className="gn-viewer-extent-map">
-            <BoundingBoxAndCenter center={center} extent={extent} expand={!allowEdit}/>
-            {allowEdit && <Map
+            <BoundingBoxAndCenter center={center} extent={extent} />
+            <Map
                 id="gn-locations-map"
+                key={`${resource?.resource_type}:${resource?.pk}`}
                 mapType={"openlayers"}
                 map={{
                     registerHooks: false,
-                    projection: "EPSG:4326"
+                    projection: 'EPSG:4326'
                 }}
                 styleMap={{
-                    width: "100%",
-                    height: "100%"
+                    position: 'relative',
+                    flex: 1,
+                    height: '100%'
                 }}
                 layers={[
                     {
@@ -161,19 +163,11 @@ const DetailsLocations = ({ onSetExtent, fields, allowEdit} = {}) => {
                         : [])
                 ]}
             >
-                <ZoomTo extent={extent?.join(",")} />
-                <DrawSupport onSetExtent={onSetExtent}/>
+                <ZoomTo extent={extent?.join(",")} nearest={false} />
+                {allowEdit && <DrawSupport onSetExtent={onSetExtent}/>}
             </Map>
-            }
         </div>
     );
 };
 
-const ConnectedDetailsLocations = connect(
-    null,
-    {
-        onSetExtent: setResourceExtent
-    }
-)(DetailsLocations);
-
-export default ConnectedDetailsLocations;
+export default DetailsLocations;

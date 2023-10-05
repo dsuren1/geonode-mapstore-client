@@ -51,7 +51,10 @@
                     .border-bottom-color-var(@theme-vars[main-border-color]);
                 }
             }
-            
+            #gn-locations-map,
+            #gn-locations-map .ol-viewport {
+                .background-color-var(@theme-vars[main-variant-bg]);
+            }
         }
     }
     .card-img-placeholder {
@@ -157,11 +160,10 @@
         height: 300px;
         position: relative;
         display: flex;
+        width: 100%;
         .gn-location-info {
-            width: 500px;
-            &.fullWidth {
-                width: 100%;
-            }
+            font-size: @font-size-small;
+            width: 250px;
             padding-right: 10px;
             .title, .bounds-row, .center-row {
                 display: flex;
@@ -169,7 +171,7 @@
             }
             .title {
                 align-items: center;
-                font-weight: 600;
+                font-weight: lighter;
             }
             .bounds {
                 padding-bottom: 4px;

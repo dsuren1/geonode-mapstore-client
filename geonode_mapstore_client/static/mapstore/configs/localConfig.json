@@ -785,7 +785,6 @@
                         {
                             "type": "locations",
                             "id": "locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "labelId": "gnviewer.locations",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent')})}"
                         },
@@ -1669,7 +1668,6 @@
                             "type": "locations",
                             "id": "locations",
                             "labelId": "gnviewer.locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent')})}"
                         },
                         {
@@ -2324,7 +2322,6 @@
                             "type": "locations",
                             "id": "locations",
                             "labelId": "gnviewer.locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent'), initialExtent: context.get(state('gnResourceInitialData'), 'extent')})}"
                         },
                         {
@@ -2646,7 +2643,6 @@
                             "type": "locations",
                             "id": "locations",
                             "labelId": "gnviewer.locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent'), initialExtent: context.get(state('gnResourceInitialData'), 'extent')})}"
                         },
                         {
@@ -2886,7 +2882,6 @@
                             "type": "locations",
                             "id": "locations",
                             "labelId": "gnviewer.locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent'), initialExtent: context.get(state('gnResourceInitialData'), 'extent')})}"
                         },
                         {
@@ -3420,7 +3415,6 @@
                             "type": "locations",
                             "id": "locations",
                             "labelId": "gnviewer.locations",
-                            "disableIf": "{['dataset', 'map'].includes(context.get(state('gnResourceData'), 'resource_type'))}",
                             "items": "{({extent: context.get(state('gnResourceData'), 'extent')})}"
                         },
                         {

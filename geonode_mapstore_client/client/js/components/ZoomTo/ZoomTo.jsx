@@ -11,7 +11,8 @@ import { reprojectBbox } from '@mapstore/framework/utils/CoordinatesUtils';
 
 const ZoomTo = ({
     map,
-    extent
+    extent,
+    nearest = true
 }) => {
     const once = useRef();
     useEffect(() => {
@@ -32,20 +33,11 @@ const ZoomTo = ({
             } else {
                 bounds = aBounds;
             }
-            // ensure when map is contained in tab and
-            // container needs update followed by zoom to extent
-            setTimeout(()=> {
-                map.updateSize();
-            }, 200);
-
-            setTimeout(()=> {
-                map.getView().fit(bounds, {
-                    size: map.getSize(),
-                    duration: 300,
-                    nearest: true
-                });
-            }, 300);
-
+            map.getView().fit(bounds, {
+                size: map.getSize(),
+                duration: 300,
+                nearest
+            });
             // ensure to avoid other fit action by setting once to true
             once.current = true;
         }

@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import VectorSource from "ol/source/Vector";
 import Draw, { createBox } from "ol/interaction/Draw";
 import PropTypes from 'prop-types';
-import { Fill, Stroke, Style } from "ol/style";
+import { Fill, Stroke, Style, Circle } from "ol/style";
 
 const drawInteraction = new Draw({
     source: new VectorSource({wrapX: false}),
@@ -22,6 +22,16 @@ const drawInteraction = new Draw({
         stroke: new Stroke({
             color: "#ffaa01",
             width: 2
+        }),
+        image: new Circle({
+            stroke: new Stroke({
+                color: "#ffaa01",
+                width: 2
+            }),
+            fill: new Fill({
+                color: "rgba(255, 170, 1, 0.1)"
+            }),
+            radius: 5
         })
     })
 });
