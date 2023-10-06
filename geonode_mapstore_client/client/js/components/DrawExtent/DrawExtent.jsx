@@ -11,23 +11,23 @@ import Draw, { createBox } from "ol/interaction/Draw";
 import { Select, Translate } from "ol/interaction";
 import PropTypes from 'prop-types';
 import { Fill, Stroke, Style } from "ol/style";
+import { click, shiftKeyOnly, singleClick } from "ol/events/condition";
 import { reprojectBbox } from '@mapstore/framework/utils/CoordinatesUtils';
 
+const fill = new Fill({ color: "rgba(255, 170, 1, 0.1)" });
+const stroke = (color) => new Stroke({ color, width: 2 });
+const STYLE = {
+    FEATURE: new Style({ fill, stroke: stroke("#ffaa01") }),
+    SELECT: new Style({ fill, stroke: stroke("white") })
+};
+
 const drawInteraction = new Draw({
+    condition: (event) => click(event) && shiftKeyOnly(event),
     source: new VectorSource({wrapX: false}),
     type: 'Circle',
     geometryFunction: createBox(),
-    style: new Style({
-        fill: new Fill({
-            color: "rgba(255, 170, 1, 0.1)"
-        }),
-        stroke: new Stroke({
-            color: "#ffaa01",
-            width: 2
-        })
-    })
+    style: STYLE.FEATURE
 });
-
 const getFeatureExtent = (evt) => {
     let geometry;
     if (evt.type === 'drawend') {
@@ -63,7 +63,19 @@ const DrawExtext = ({map, onSetExtent, translateInteraction = true} = {}) => {
             if (translateInteraction) {
                 select = new Select({
                     multi: true,
-                    condition: (event) => event.type === 'pointermove' && !event.dragging
+                    condition: (event) => singleClick(event)
+                });
+                select.on('select', function(evt) {
+                    evt.selected.forEach(function(ft) {
+                        if (ft.getGeometry().getType() === "Polygon") {
+                            ft.setStyle(STYLE.SELECT);
+                        }
+                    });
+                    evt.deselected.forEach(function(ft) {
+                        if (ft.getGeometry().getType() === "Polygon") {
+                            ft.setStyle(STYLE.FEATURE);
+                        }
+                    });
                 });
                 translate = new Translate({features: select.getFeatures()});
                 translate.on('translateend', (evt) => {
@@ -71,6 +83,7 @@ const DrawExtext = ({map, onSetExtent, translateInteraction = true} = {}) => {
                     if (extent) {
                         onSetExtent(reprojectBbox(extent, projection, 'EPSG:4326'));
                     }
+                    select.getFeatures().clear(); // after translation clear all selected features
                 });
                 map.addInteraction(select);
                 map.addInteraction(translate);
