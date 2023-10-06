@@ -350,7 +350,7 @@
             "maxLon": "Max Lon",
             "centerLat": "Centro Lat",
             "centerLon": "Centro Lon",
-            "mapExtentHelpText": "Puede editar la posición y la extensión del recurso haciendo (shift) haciendo clic y arrastrando para dibujar un área, o haciendo un solo clic en el marcador y luego haciendo clic y arrastrando el marcador"
+            "mapExtentHelpText": "<b>Puedes editar la extensión y posición de este recurso</b>. Shift-clic y arrastre para dibujar una nueva extensión, haga clic en el marcador y luego haga clic y arrastre para establecer su posición"
         }
     }
 }

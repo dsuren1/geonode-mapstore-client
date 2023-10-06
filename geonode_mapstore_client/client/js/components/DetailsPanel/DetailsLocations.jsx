@@ -19,6 +19,7 @@ import ZoomTo from "@js/components/ZoomTo/ZoomTo";
 import { getPolygonFromExtent, bboxToFeatureGeometry } from "@mapstore/framework/utils/CoordinatesUtils";
 import DrawSupport from "@js/components/DrawExtent";
 import Message from "@mapstore/framework/components/I18N/Message";
+import HTML from "@mapstore/framework/components/I18N/HTML";
 import tooltip from "@mapstore/framework/components/misc/enhancers/tooltip";
 import CopyToClipboardCmp from 'react-copy-to-clipboard';
 import Button from "@mapstore/framework/components/misc/Button";
@@ -179,7 +180,7 @@ const DetailsLocations = ({ onSetExtent, fields, allowEdit: allowEditProp, resou
                     <ZoomTo extent={extent?.join(",")} nearest={false} />
                     {allowEdit && <DrawSupport onSetExtent={onSetExtent}/>}
                 </Map>
-                {allowEdit && <Message msgId="gnviewer.mapExtentHelpText"/>}
+                {allowEdit && <HTML msgId="gnviewer.mapExtentHelpText"/>}
             </div>
         </div>
     );

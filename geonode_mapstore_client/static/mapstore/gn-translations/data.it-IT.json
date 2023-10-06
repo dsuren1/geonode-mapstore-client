@@ -353,7 +353,7 @@
             "maxLon": "Max Lon",
             "centerLat": "Centro Lat",
             "centerLon": "Centro Lon",
-            "mapExtentHelpText": "È possibile modificare la posizione e l'estensione della risorsa facendo clic (shift) e trascinando per disegnare un'area oppure facendo clic una volta sul marcatore, quindi facendo clic e trascinando il marcatore"
+            "mapExtentHelpText": "<b>Puoi modificare l'estensione e la posizione di questa risorsa</b>. Shift-clic e trascina per disegnare una nuova estensione, fare clic sul marcatore, quindi fare clic e trascinare per impostarne la posizione"
         }
     }
 }

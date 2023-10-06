@@ -351,7 +351,7 @@
             "maxLon": "Max Lon",
             "centerLat": "Center Lat",
             "centerLon": "Center Lon",
-            "mapExtentHelpText": "Sie können die Position und Ausdehnung der Ressource bearbeiten, indem Sie (shift) klicken und ziehen, um einen Bereich zu zeichnen, oder einfach auf die Markierung klicken und dann auf die Markierung klicken und sie ziehen"
+            "mapExtentHelpText": "<b>Sie können die Ausdehnung und Position dieser Ressource bearbeiten</b>. Shift-Klick und ziehen Sie, um eine neue Ausdehnung zu zeichnen, klicken Sie auf die Markierung und klicken und ziehen Sie dann, um ihre Position festzulegen"
         }
     }
 }
