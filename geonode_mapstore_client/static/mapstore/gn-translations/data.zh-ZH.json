@@ -318,7 +318,8 @@
             "maxLat": "Max Lat",
             "maxLon": "Max Lon",
             "centerLat": "Center Lat",
-            "centerLon": "Center Lon"
+            "centerLon": "Center Lon",
+            "mapExtentHelpText": "You can edit the position and extent of the resource by (shift) clicking and dragging to draw an area, or clicking and dragging the marker"
         }
     }
 }
