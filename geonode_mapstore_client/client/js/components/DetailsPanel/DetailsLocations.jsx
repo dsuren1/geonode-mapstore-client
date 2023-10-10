@@ -114,10 +114,9 @@ const getFeatureStyle = (type, isDrawn) => {
         anchorXUnits: "fraction",
         anchorYUnits: "fraction",
         fillColor: isDrawn ? "#ffaa01" : "#397AAB",
-        opacity: 1,
+        opacity: 0,
         size: 16,
         fillOpacity: 1,
-        shape: "plus",
         symbolUrl: '/static/mapstore/symbols/plus.svg'
     };
 };
@@ -144,7 +143,7 @@ const DetailsLocations = ({ onSetExtent, fields, allowEdit: allowEditProp, resou
                         registerHooks: false,
                         projection: "EPSG:3857"
                     }}
-                    options={{interactive: allowEdit}}
+                    options={{interactive: !!allowEdit}}
                     styleMap={{
                         height: '100%'
                     }}
