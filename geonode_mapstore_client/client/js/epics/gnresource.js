@@ -220,6 +220,7 @@ const resourceTypes = {
                             }
                             : mapConfig),
                         ...(extent
+                            // Add duration to allow map config to be properly updated with zoom on fitBounds action
                             ? [ setControlProperties('fitBounds', 'geometry', extent, "duration", 400) ]
                             : []),
                         setControlProperty('toolbar', 'expanded', false)
