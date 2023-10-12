@@ -431,7 +431,7 @@ export const gnCatalogHomeRedirect = (action$) =>
         .filter((action) => isCatalogPage(get(action, 'payload.location.pathname')))
         .switchMap((action) => {
             const catalogHomeRedirectsTo = getGeoNodeLocalConfig('catalogHomeRedirectsTo');
-            if (isEmpty(catalogHomeRedirectsTo)) {
+            if (!isEmpty(catalogHomeRedirectsTo)) {
                 const search = get(action, 'payload.location.search');
                 window.location.href = `/${catalogHomeRedirectsTo}/#/${search}`;
             }
