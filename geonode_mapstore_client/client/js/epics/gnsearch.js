@@ -12,6 +12,7 @@ import isEmpty from 'lodash/isEmpty';
 import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import pick from 'lodash/pick';
+import get from 'lodash/get';
 import {
     getResources,
     getFeaturedResources,
@@ -61,6 +62,7 @@ import { matchPath } from 'react-router-dom';
 import { CATALOGUE_ROUTES } from '@js/utils/AppRoutesUtils';
 import { getFacetsByKey, getQueryParams } from '@js/api/geonode/v2/index';
 import { getFacetsItems } from '@js/selectors/search';
+import { getGeoNodeLocalConfig } from '@js/utils/APIUtils';
 
 const UPDATE_RESOURCES_REQUEST = 'GEONODE_SEARCH:UPDATE_RESOURCES_REQUEST';
 const updateResourcesRequest = (payload, reset) => ({
@@ -413,6 +415,29 @@ export const gnGetFacetItems = (action$, {getState = () => {}}) =>
             );
         });
 
+// checks if location change is made to a catalogue page
+const isCatalogPage = (currentPath) => {
+    if (currentPath === '/') return true;
+    const match = CATALOGUE_ROUTES.filter(route => !route.shouldNotRequestResources).some(route => {
+        return route.path.some(path => matchPath(currentPath, path)?.isExact);
+    });
+    return match;
+};
+/**
+ * Redirect to catalog home when configured
+ */
+export const gnCatalogHomeRedirect = (action$) =>
+    action$.ofType(LOCATION_CHANGE)
+        .filter((action) => isCatalogPage(get(action, 'payload.location.pathname')))
+        .switchMap((action) => {
+            const catalogHomeRedirectsTo = getGeoNodeLocalConfig('catalogHomeRedirectsTo');
+            if (isEmpty(catalogHomeRedirectsTo)) {
+                const search = get(action, 'payload.location.search');
+                window.location.href = `/${catalogHomeRedirectsTo}/#/${search}`;
+            }
+            return Observable.emtpty();
+        });
+
 export default {
     gnsSearchResourcesEpic,
     gnsSearchResourcesOnLocationChangeEpic,
@@ -421,5 +446,6 @@ export default {
     gnWatchStopCopyProcessOnSearch,
     gnsRequestResourceOnLocationChange,
     gnGetFacetItems,
-    gnSetFacetFilter
+    gnSetFacetFilter,
+    gnCatalogHomeRedirect
 };
