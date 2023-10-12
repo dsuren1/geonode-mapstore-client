@@ -435,7 +435,7 @@ export const gnCatalogHomeRedirect = (action$) =>
                 const search = get(action, 'payload.location.search');
                 window.location.href = `/${catalogHomeRedirectsTo}/#/${search}`;
             }
-            return Observable.emtpty();
+            return Observable.empty();
         });
 
 export default {
