@@ -10,10 +10,10 @@
  * Epics needed to adapt mapstore2 to geonode backend
  */
 import Rx from "rxjs";
-import { matchPath } from 'react-router-dom';
-import { LOCATION_CHANGE } from 'connected-react-router';
-import isEmpty from 'lodash/isEmpty';
-import get from 'lodash/get';
+// import { matchPath } from 'react-router-dom';
+// import { LOCATION_CHANGE } from 'connected-react-router';
+// import isEmpty from 'lodash/isEmpty';
+// import get from 'lodash/get';
 
 import { setEditPermissionStyleEditor, INIT_STYLE_SERVICE } from "@mapstore/framework/actions/styleeditor";
 import { getSelectedLayer, layersSelector } from "@mapstore/framework/selectors/layers";
@@ -24,8 +24,8 @@ import { setPermission } from '@mapstore/framework/actions/featuregrid';
 import { SELECT_NODE, updateNode, ADD_LAYER } from '@mapstore/framework/actions/layers';
 import { setSelectedDatasetPermissions } from '@js/actions/gnresource';
 import { updateMapLayoutEpic as msUpdateMapLayoutEpic } from '@mapstore/framework/epics/maplayout';
-import { CATALOGUE_ROUTES } from '@js/utils/AppRoutesUtils';
-import { getGeoNodeLocalConfig } from "@js/utils/APIUtils";
+// import { CATALOGUE_ROUTES } from '@js/utils/AppRoutesUtils';
+// import { getGeoNodeLocalConfig } from "@js/utils/APIUtils";
 
 // We need to include missing epics. The plugins that normally include this epic is not used.
 
@@ -87,32 +87,32 @@ export const gnSetDatasetsPermissions = (actions$, { getState = () => {}} = {}) 
 
 export const updateMapLayoutEpic = msUpdateMapLayoutEpic;
 
-// checks if location change is made to a catalogue page
-const isCatalogPage = (currentPath) => {
-    if (currentPath === '/') return true;
-    const match = CATALOGUE_ROUTES.filter(route => !route.shouldNotRequestResources).some(route => {
-        return route.path.some(path => matchPath(currentPath, path)?.isExact);
-    });
-    return match;
-};
-/**
- * Redirect to catalog home when configured
- */
-export const gnCatalogHomeRedirect = (action$) =>
-    action$.ofType(LOCATION_CHANGE)
-        .filter((action) => isCatalogPage(get(action, 'payload.location.pathname')))
-        .switchMap((action) => {
-            const catalogHomeRedirectsTo = getGeoNodeLocalConfig('geoNodeSettings.catalogHomeRedirectsTo');
-            if (!isEmpty(catalogHomeRedirectsTo)) {
-                const search = get(action, 'payload.location.search');
-                window.location.href = `${catalogHomeRedirectsTo}#/${search}`;
-            }
-            return Rx.Observable.empty();
-        });
+// // checks if location change is made to a catalogue page
+// const isCatalogPage = (currentPath) => {
+//     if (currentPath === '/') return true;
+//     const match = CATALOGUE_ROUTES.filter(route => !route.shouldNotRequestResources).some(route => {
+//         return route.path.some(path => matchPath(currentPath, path)?.isExact);
+//     });
+//     return match;
+// };
+// /**
+//  * Redirect to catalog home when configured
+//  */
+// export const gnCatalogHomeRedirect = (action$) =>
+//     action$.ofType(LOCATION_CHANGE)
+//         .filter((action) => isCatalogPage(get(action, 'payload.location.pathname')))
+//         .switchMap((action) => {
+//             const catalogHomeRedirectsTo = getGeoNodeLocalConfig('geoNodeSettings.catalogHomeRedirectsTo');
+//             if (!isEmpty(catalogHomeRedirectsTo)) {
+//                 const search = get(action, 'payload.location.search');
+//                 window.location.href = `${catalogHomeRedirectsTo}#/${search}`;
+//             }
+//             return Rx.Observable.empty();
+//         });
 
 export default {
     gnCheckSelectedDatasetPermissions,
     updateMapLayoutEpic,
-    gnSetDatasetsPermissions,
-    gnCatalogHomeRedirect
+    gnSetDatasetsPermissions
+    // gnCatalogHomeRedirect
 };

@@ -28,7 +28,6 @@ import withExtensions from '@mapstore/framework/components/app/withExtensions';
 import gnsettings from '@js/reducers/gnsettings';
 import { updateGeoNodeSettings } from '@js/actions/gnsettings';
 import { COMPONENTS_ROUTES, appRouteComponentTypes } from '@js/utils/AppRoutesUtils';
-import { gnCatalogHomeRedirect } from '@js/epics';
 
 const requires = {};
 
@@ -64,8 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }) => {
 
                         const appEpics = {
-                            ...configEpics,
-                            gnCatalogHomeRedirect
+                            ...configEpics
                         };
 
                         storeEpicsNamesToExclude(appEpics);

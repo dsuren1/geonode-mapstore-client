@@ -65,7 +65,6 @@ import { updateGeoNodeSettings } from '@js/actions/gnsettings';
 import {
     gnCheckSelectedDatasetPermissions,
     gnSetDatasetsPermissions,
-    gnCatalogHomeRedirect,
     // to make the current layout work we need this epic
     // we should improve the layout to avoid the use of side effect to manage the page structure
     updateMapLayoutEpic
@@ -107,7 +106,6 @@ const viewers = {
     [appRouteComponentTypes.DATASET_UPLOAD]: UploadDatasetRoute,
     [appRouteComponentTypes.DOCUMENT_UPLOAD]: UploadDocumentRoute
 };
-
 const routes = CATALOGUE_ROUTES.map(({ component, ...config }) => ({ ...config, component: viewers[component] }));
 
 initializeApp();
@@ -148,7 +146,6 @@ getEndpoints()
                         ...gnsearchEpics,
                         ...favoriteEpics,
                         updateMapLayoutEpic,
-                        gnCatalogHomeRedirect,
                         // needed to initialize the correct time range
                         ...timelineEpics
                     };
