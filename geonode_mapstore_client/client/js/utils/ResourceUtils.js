@@ -696,3 +696,18 @@ export const getResourceImageSource = (image) => {
 export const isDocumentExternalSource = (resource) => {
     return resource && resource.resource_type === ResourceTypes.DOCUMENT && resource.sourcetype === 'REMOTE';
 };
+
+export const getDownloadUrlInfo = (resource) => {
+    let downloadUrlInfo;
+    if (!isEmpty(resource?.download_urls)) {
+        const downloadData = resource.download_urls.length === 1
+            ? resource.download_urls[0]
+            : resource.download_urls.find((d) => d.default);
+        if (!isEmpty(downloadData)) {
+            downloadUrlInfo = { url: downloadData.url, ajaxSafe: downloadData.ajax_safe };
+        }
+    } else {
+        downloadUrlInfo = { url: resource?.href, ajaxSafe: false };
+    }
+    return downloadUrlInfo;
+};
