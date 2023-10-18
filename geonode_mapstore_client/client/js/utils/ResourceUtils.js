@@ -698,16 +698,16 @@ export const isDocumentExternalSource = (resource) => {
 };
 
 export const getDownloadUrlInfo = (resource) => {
-    let downloadUrlInfo;
-    if (!isEmpty(resource?.download_urls)) {
+    const hrefUrl = { url: resource?.href, ajaxSafe: false };
+    if (isDocumentExternalSource(resource)) {
+        return hrefUrl;
+    } else if (!isEmpty(resource?.download_urls)) {
         const downloadData = resource.download_urls.length === 1
             ? resource.download_urls[0]
             : resource.download_urls.find((d) => d.default);
         if (!isEmpty(downloadData)) {
-            downloadUrlInfo = { url: downloadData.url, ajaxSafe: downloadData.ajax_safe };
+            return { url: downloadData.url, ajaxSafe: downloadData.ajax_safe };
         }
-    } else {
-        downloadUrlInfo = { url: resource?.href, ajaxSafe: false };
     }
-    return downloadUrlInfo;
+    return hrefUrl;
 };

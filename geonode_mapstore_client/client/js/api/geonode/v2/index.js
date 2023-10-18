@@ -647,6 +647,7 @@ export const copyResource = (resource) => {
 export const downloadResource = (resource) => {
     const { url, ajaxSafe } = getDownloadUrlInfo(resource);
     if (!ajaxSafe) {
+        window.open(url, '_blank');
         return Promise.reject(new Error("Not ajax safe"));
     }
     return axios.get(url, {

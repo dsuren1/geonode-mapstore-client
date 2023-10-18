@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import isEmpty from 'lodash/isEmpty';
 import { createPlugin } from '@mapstore/framework/utils/PluginsUtils';
-import { getDownloadUrlInfo, isDocumentExternalSource } from '@js/utils/ResourceUtils';
+import { getDownloadUrlInfo } from '@js/utils/ResourceUtils';
 import Message from '@mapstore/framework/components/I18N/Message';
 import Button from '@js/components/Button';
 import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
@@ -45,19 +45,18 @@ const DownloadButton = ({
     const _resource = resource ?? resourceData;
     const downloadInfo = getDownloadUrlInfo(_resource);
     const isNotAjaxSafe = !Boolean(downloadInfo?.ajaxSafe);
-    const isExternalLink = isDocumentExternalSource(_resource);
 
-    if ((isEmpty(_resource?.download_urls) && !_resource?.perms?.includes('download_resourcebase')) || (!isButton && isExternalLink)) {
+    if ((isEmpty(_resource?.download_urls) && !_resource?.perms?.includes('download_resourcebase')) || (!isButton && isNotAjaxSafe)) {
         return null;
     }
 
-    if (isExternalLink || isNotAjaxSafe) {
+    if (!isNotAjaxSafe) {
         return (
             <Component
                 {...isButton && { variant, size }}
                 {...showIcon && { tooltipId: "gnviewer.download" }}
                 download={`${_resource?.title}.${_resource?.extension}`}
-                href={isExternalLink ? _resource?.href : downloadInfo.url }
+                href={ downloadInfo.url }
                 target="_blank"
                 rel="noopener noreferrer"
             >

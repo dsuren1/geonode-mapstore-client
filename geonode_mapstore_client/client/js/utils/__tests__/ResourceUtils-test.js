@@ -989,9 +989,15 @@ describe('Test Resource Utils', () => {
     it('getDownloadUrlInfo', () => {
         const downloadData = {url: "/someurl", ajax_safe: true };
 
-        // AJAX SAFE
-        let resource = { download_urls: [downloadData]};
+        // EXTERNAL SOURCE
+        let resource = { download_urls: [downloadData], href: "/somehref", resource_type: "document", sourcetype: "REMOTE"};
         let downloadInfo = getDownloadUrlInfo(resource);
+        expect(downloadInfo.url).toBe("/somehref");
+        expect(downloadInfo.ajaxSafe).toBeFalsy();
+
+        // AJAX SAFE
+        resource = { download_urls: [downloadData]};
+        downloadInfo = getDownloadUrlInfo(resource);
         expect(downloadInfo.url).toBe(downloadData.url);
         expect(downloadInfo.ajaxSafe).toBeTruthy();
 
