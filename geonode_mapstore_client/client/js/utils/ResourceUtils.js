@@ -701,7 +701,8 @@ export const getDownloadUrlInfo = (resource) => {
     const hrefUrl = { url: resource?.href, ajaxSafe: false };
     if (isDocumentExternalSource(resource)) {
         return hrefUrl;
-    } else if (!isEmpty(resource?.download_urls)) {
+    }
+    if (!isEmpty(resource?.download_urls)) {
         const downloadData = resource.download_urls.length === 1
             ? resource.download_urls[0]
             : resource.download_urls.find((d) => d.default);
