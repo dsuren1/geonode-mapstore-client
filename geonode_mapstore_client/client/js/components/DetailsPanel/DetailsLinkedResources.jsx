@@ -40,12 +40,12 @@ const DetailsLinkedResources = ({ fields, resourceTypesInfo }) => {
             type: 'linkedTo'
         },
         {
-            resources: linkedToFields.filter(resource => resource.internal) ?? [],
-            type: 'uses'
-        },
-        {
             resources: linkedByFields?.filter(resource => !resource.internal) ?? [],
             type: 'linkedBy'
+        },
+        {
+            resources: linkedToFields.filter(resource => resource.internal) ?? [],
+            type: 'uses'
         },
         {
             resources: linkedByFields.filter(resource => resource.internal) ?? [],
