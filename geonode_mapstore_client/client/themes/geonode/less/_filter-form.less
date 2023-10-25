@@ -232,6 +232,7 @@
             flex: 1;
             display: flex;
             padding-right: 1rem;
+            padding-left: 0.1rem;
         }
         button {
             display: block;
@@ -300,6 +301,11 @@
         img {
             object-fit: contain;
             width: 1.5rem;
+        }
+        > span {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
     .facet-count {
