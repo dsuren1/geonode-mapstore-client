@@ -326,6 +326,8 @@ function FilterItem({
             identifier={key}
             loadItems={(params) => field.loadItems({...params, ...values})}
             items={field.items}
+            {...!isNil(field.expanded) && {expanded: field.expanded}}
+            {...!isNil(field.defaultExpanded) && {defaultExpanded: field.defaultExpanded}}
             content={(accordionItems) => (
                 <FilterItems
                     id={id}
@@ -347,6 +349,8 @@ function FilterItem({
                     title: item.labelId ? getMessageById(messages, item.labelId) : item.label,
                     component: <FilterItems
                         {...item}
+                        extentProps={extentProps}
+                        timeDebounce={timeDebounce}
                         items={item.items}
                         values={values}
                         filters={filters}

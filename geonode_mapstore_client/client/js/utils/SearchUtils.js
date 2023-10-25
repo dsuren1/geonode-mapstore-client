@@ -9,6 +9,7 @@
 import url from 'url';
 import castArray from 'lodash/castArray';
 import omit from 'lodash/omit';
+import isNil from 'lodash/isNil';
 import uuid from 'uuid/v1';
 
 export const hashLocationToHref = ({
@@ -96,6 +97,8 @@ export const updateFilterFormItemsWithFacet = ({formItems, facetItems}) => {
                             id: name,
                             type,
                             style,
+                            ...(!isNil(formItem.expanded) && {expanded: formItem.expanded}),
+                            ...(!isNil(formItem.defaultExpanded) && {defaultExpanded: formItem.defaultExpanded}),
                             ...(isLocalized ? { labelId: label } : { label }),
                             loadItems: (params, filters, setFilters) => loadItems({ name, style, filterKey, filters, setFilters }, params)
                         };
