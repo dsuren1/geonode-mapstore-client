@@ -61,6 +61,7 @@ import { matchPath } from 'react-router-dom';
 import { CATALOGUE_ROUTES } from '@js/utils/AppRoutesUtils';
 import { getFacetsByKey, getQueryParams } from '@js/api/geonode/v2/index';
 import { getFacetsItems } from '@js/selectors/search';
+import { uniqBy } from 'lodash';
 
 const UPDATE_RESOURCES_REQUEST = 'GEONODE_SEARCH:UPDATE_RESOURCES_REQUEST';
 const updateResourcesRequest = (payload, reset) => ({
@@ -359,8 +360,12 @@ export const gnWatchStopCopyProcessOnSearch = (action$, store) =>
                 });
         });
 
-const isKeyPresent = (filterKey, filterValue) =>
-    filterKey === (typeof filterKey === "string" ? filterValue : Number(filterValue));
+const isKeyPresent = (filterKey, filterValue) => {
+    if (Array.isArray(filterValue)) {
+        return filterValue.some(v => isKeyPresent(filterKey, v));
+    }
+    return filterKey === (typeof filterKey === "string" ? filterValue : Number(filterValue));
+};
 /**
  * Set facet filter from topic items based on the query applied
  */
@@ -384,7 +389,10 @@ export const gnSetFacetFilter = (action$, {getState = () => {}}) =>
                 facetNames.map(({facet, key} = {}) => Observable.defer(() => getFacetsByKey(facet, {...queries, key})))
             ).switchMap((topics) => {
                 let filters = {};
-                const updatedTopics = (topics ?? [])?.reduce((a, t) => t?.items?.concat(a), []);
+                let updatedTopics = (topics ?? [])?.reduce((a, t) => t?.items?.concat(a), []);
+                if (!isEmpty(updatedTopics)) {
+                    updatedTopics = uniqBy(updatedTopics, 'key');
+                }
                 const facetFilters = facets?.map((facet) => ({filter: facet.filter, value: query?.[facet.filter]}))?.filter(f => !isEmpty(f.value));
 
                 facetFilters.forEach(({filter, value} = {}) => {
