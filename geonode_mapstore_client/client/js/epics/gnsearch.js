@@ -12,6 +12,7 @@ import isEmpty from 'lodash/isEmpty';
 import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import pick from 'lodash/pick';
+import uniqBy from 'lodash/uniqBy';
 import {
     getResources,
     getFeaturedResources,
@@ -61,7 +62,6 @@ import { matchPath } from 'react-router-dom';
 import { CATALOGUE_ROUTES } from '@js/utils/AppRoutesUtils';
 import { getFacetsByKey, getQueryParams } from '@js/api/geonode/v2/index';
 import { getFacetsItems } from '@js/selectors/search';
-import { uniqBy } from 'lodash';
 
 const UPDATE_RESOURCES_REQUEST = 'GEONODE_SEARCH:UPDATE_RESOURCES_REQUEST';
 const updateResourcesRequest = (payload, reset) => ({
