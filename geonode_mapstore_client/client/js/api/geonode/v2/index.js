@@ -818,7 +818,7 @@ export const getFacetsByKey = (facet, filterParams) => {
         .get(parseDevHostname(endpoints[FACETS] + `/${facet}`), {params: {...filterParams}, paramsSerializer})
         .then(({ data } = {}) => ({
             ...data?.topics,
-            ...(data?.topics?.items && {items: data?.topics?.items?.map(item => ({...item, facetName: facet}))})
+            items: data?.topics?.items?.map(item => ({...item, facetName: facet}))
         }));
 };
 
