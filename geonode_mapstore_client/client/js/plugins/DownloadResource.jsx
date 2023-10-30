@@ -46,7 +46,10 @@ const DownloadButton = ({
     const downloadInfo = getDownloadUrlInfo(_resource);
     const isNotAjaxSafe = !Boolean(downloadInfo?.ajaxSafe);
 
-    if ((isEmpty(_resource?.download_urls) && !_resource?.perms?.includes('download_resourcebase')) || (!isButton && isNotAjaxSafe)) {
+    if ((isEmpty(_resource?.download_urls) && !_resource?.perms?.includes('download_resourcebase'))
+        || !_resource?.perms?.includes('download_resourcebase')
+        || (!isButton && isNotAjaxSafe)
+    ) {
         return null;
     }
 
