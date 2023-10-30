@@ -20,7 +20,6 @@ import useDeepCompareEffect from "@js/hooks/useDeepCompareEffect";
 
 const AccordionTitle = ({
     expanded,
-    hideIcon,
     onClick,
     loading,
     children
@@ -34,7 +33,7 @@ const AccordionTitle = ({
             </div>
             {loading
                 ? <Spinner/>
-                : !hideIcon && <FaIcon name={`caret-${expanded ? "down" : "left"}`}/>
+                : <FaIcon name={`caret-${expanded ? "down" : "left"}`}/>
             }
         </div>
     );
@@ -61,35 +60,20 @@ const Accordion = ({
     content,
     loadItems,
     items,
-    query,
-    defaultExpanded,
-    expanded: keepExpanded
+    query
 }) => {
     const isMounted = useIsMounted();
-    const clickRef = useRef();
 
     const [accordionsExpanded, setAccordionsExpanded] = useLocalStorage('accordionsExpanded', []);
     const [accordionItems, setAccordionItems] = useState(items);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if ((defaultExpanded || keepExpanded)
-            && !clickRef.current
-            && (isEmpty(accordionsExpanded) || !accordionsExpanded.includes(identifier))
-        ) {
-            isMounted(() => setAccordionsExpanded(uniq(accordionsExpanded.concat(identifier))));
-        }
-    }, [defaultExpanded, keepExpanded, accordionItems, accordionsExpanded]);
-
     const isExpanded = accordionsExpanded.includes(identifier);
 
     const onClick = () => {
-        clickRef.current = true;
-        const expandedList = keepExpanded
-            ? accordionsExpanded
-            : isExpanded
-                ? accordionsExpanded.filter(accordionExpanded => accordionExpanded !== identifier)
-                : uniq(accordionsExpanded.concat(identifier));
+        const expandedList = isExpanded
+            ? accordionsExpanded.filter(accordionExpanded => accordionExpanded !== identifier)
+            : uniq(accordionsExpanded.concat(identifier));
         setAccordionsExpanded(expandedList);
     };
 
@@ -112,7 +96,6 @@ const Accordion = ({
                 expanded={isExpanded}
                 onClick={onClick}
                 loading={loading}
-                hideIcon={keepExpanded}
             >
                 {titleId ? <Message msgId={titleId}/> : title}
             </AccordionTitle>
@@ -136,15 +119,13 @@ Accordion.propTypes = {
     content: PropTypes.func,
     loadItems: PropTypes.func,
     items: PropTypes.array,
-    query: PropTypes.object,
-    defaultExpanded: PropTypes.bool,
-    expanded: PropTypes.bool
+    query: PropTypes.object
 };
 
 Accordion.defaultProps = {
     title: null,
     identifier: "",
     content: () => null,
-    noItemsMsgId: "gnhome.emptyAccordion"
+    noItemsMsgId: "gnhome.emptyFilterItems"
 };
 export default Accordion;

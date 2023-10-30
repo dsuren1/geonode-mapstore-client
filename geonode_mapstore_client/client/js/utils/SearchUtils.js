@@ -9,7 +9,6 @@
 import url from 'url';
 import castArray from 'lodash/castArray';
 import omit from 'lodash/omit';
-import isNil from 'lodash/isNil';
 import uuid from 'uuid/v1';
 
 export const hashLocationToHref = ({
@@ -83,6 +82,7 @@ export const updateFilterFormItemsWithFacet = ({formItems, facetItems}) => {
         if (!!formItem.facet) {
             const filteredFacetItems = (facetItems || [])
                 .filter(f => f.type === formItem.facet)
+                .filter(f => formItem.include ? formItem.include?.includes(f.name) : formItem.exclude ? !formItem.exclude?.includes(f.name) : true)
                 .sort((a, b) => a.order - b.order);
             return [
                 ...acc,
@@ -97,8 +97,6 @@ export const updateFilterFormItemsWithFacet = ({formItems, facetItems}) => {
                             id: name,
                             type,
                             style,
-                            ...(!isNil(formItem.expanded) && {expanded: formItem.expanded}),
-                            ...(!isNil(formItem.defaultExpanded) && {defaultExpanded: formItem.defaultExpanded}),
                             ...(isLocalized ? { labelId: label } : { label }),
                             loadItems: (params, filters, setFilters) => loadItems({ name, style, filterKey, filters, setFilters }, params)
                         };
