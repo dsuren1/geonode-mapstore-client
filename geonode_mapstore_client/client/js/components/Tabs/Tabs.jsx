@@ -19,7 +19,7 @@ import useLocalStorage from '@js/hooks/useLocalStorage';
  * (Note: `selectedTabId` works in tandem with `eventKey` on Tab). Hence it is mandatory to supply `eventKey` on Tab component
  * @param {function} onSelect custom function to select the tab key (controlled)
  * @param {string} className custom class name
- * @param {boolean} persistSelection flag determines the persisting of the tab selection
+ * @param {boolean} persistSelection flag determines the persisting of the tab selection. By default the selection is not persisted
  */
 const Tabs = ({
     tabs = [],
@@ -87,7 +87,7 @@ Tabs.propTypes = {
 Tabs.defaultProps = {
     tabs: [],
     className: "gn-tabs tabs-underline",
-    persistSelection: true
+    persistSelection: false
 };
 
 export default Tabs;
