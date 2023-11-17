@@ -1161,9 +1161,6 @@
                 }
             },
             {
-                "name": "SearchServicesConfig"
-            },
-            {
                 "name": "FullScreen",
                 "override": {
                     "Toolbar": {
