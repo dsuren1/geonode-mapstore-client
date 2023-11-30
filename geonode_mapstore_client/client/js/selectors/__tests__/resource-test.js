@@ -87,5 +87,6 @@ describe('resource selector', () => {
         expect(canManageResourcePermissions(state)).toBeTruthy();
         state.gnresource.data.perms = ['change_resourcebase', 'view_resourcebase'];
         expect(canManageResourcePermissions(state)).toBeFalsy();
+        state.gnresource.data.perms = undefined;
     });
 });
