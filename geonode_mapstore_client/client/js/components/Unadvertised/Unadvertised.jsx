@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import isNil from 'lodash/isNil';
 
 import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
 import FaIcon from '@js/components/FaIcon/FaIcon';
@@ -18,7 +19,7 @@ const Icon = (props) => {
 const IconWithTooltip = tooltip(Icon);
 
 const Unadvertised = ({resource}) => {
-    if (resource.advertised) {
+    if (isNil(resource.advertised) || resource.advertised) {
         return null;
     }
     return (

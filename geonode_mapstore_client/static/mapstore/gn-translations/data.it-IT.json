@@ -361,7 +361,7 @@
             "centerLat": "Lat",
             "centerLon": "Lon",
             "mapExtentHelpText": "<b>Puoi modificare l'estensione e la posizione di questa risorsa</b>. Shift-clic e trascina per disegnare una nuova estensione, fare clic sul marcatore, quindi fare clic e trascinare per impostarne la posizione",
-            "unadvertised": "La risorsa non è pubblicizzata. È nascosto dal catalogo e dai risultati della ricerca"
+            "unadvertised": "La risorsa non è pubblicizzata. E' nascosta dal catalogo e dai risultati della ricerca"
         }
     }
 }
