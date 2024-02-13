@@ -373,7 +373,8 @@
             "editMapConfiguration": "Editar configuración del mapa",
             "deleteResourceWarning": {
                 "mapviewer": "Este visor podría ser utilizado por algunos mapas. Puede ver la lista de mapas dentro de la pestaña Recursos vinculados de este visor de mapas."
-            }
+            },
+            "unadvertised": "El recurso no se anuncia. Está oculto en el catálogo y en los resultados de búsqueda."
         }
     }
 }
