@@ -282,7 +282,7 @@ export const gnsRequestResourceOnLocationChange = (action$, store) =>
             const { query } = url.parse(location?.search || '', true);
             const resource = getResourceData(state) || { pk: '', resource_type: '' };
             const [pk, resourceType] = (query?.d || '').split(';');
-            if (`${resource?.pk ?? ""}` === pk && `${resource?.resource_type}` === resourceType) {
+            if (`${resource?.pk}` === pk && `${resource?.resource_type}` === resourceType) {
                 return Observable.empty();
             }
             return Observable.of(requestResource(pk ? pk : undefined, resourceType));
