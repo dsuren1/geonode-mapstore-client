@@ -125,6 +125,12 @@ export const paramsSerializer = (params) => {
     return queryParams;
 };
 
+export const API_PRESET = {
+    CATALOG_LIST: 'catalog_list',
+    DATASETS: 'datasets',
+    DOCUMENTS: 'documents'
+};
+
 export default {
     parseDevHostname,
     paramsSerializer
