@@ -142,7 +142,7 @@ export const getResources = ({
         page,
         page_size: pageSize,
         'filter{metadata_only}': false, // exclude resources such as services
-        api_preset: API_PRESET.CATALOG_LIST
+        api_preset: API_PRESET.CATALOGS
     };
     return axios.get(parseDevHostname(endpoints[RESOURCES]), {
         params: _params,
@@ -180,7 +180,7 @@ export const getMaps = ({
                     ...(sort && { sort: isArray(sort) ? sort : [ sort ]}),
                     page,
                     page_size: pageSize,
-                    api_preset: API_PRESET.CATALOG_LIST
+                    api_preset: API_PRESET.MAPS
                 },
                 paramsSerializer
             })
@@ -288,7 +288,7 @@ export const setFavoriteResource = (pk, favorite) => {
 export const getResourceByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[RESOURCES]}/${pk}`), {
         params: {
-            include: ['executions']
+            api_preset: API_PRESET.VIEWER_COMMON
         }
     })
         .then(({ data }) => data.resource);
@@ -308,21 +308,25 @@ export const getResourceByUuid = (uuid) => {
     return axios.get(parseDevHostname(`${endpoints[RESOURCES]}`), {
         params: {
             'filter{uuid}': uuid,
-            api_preset: API_PRESET.CATALOG_LIST
+            api_preset: API_PRESET.VIEWER_COMMON
         }
     })
         .then(({ data }) => data?.resources?.[0]);
 };
 
 export const getDatasetByPk = (pk) => {
-    return axios.get(parseDevHostname(`${endpoints[DATASETS]}/${pk}`))
+    return axios.get(parseDevHostname(`${endpoints[DATASETS]}/${pk}`), {
+        params: {
+            api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.DATASET]
+        }
+    })
         .then(({ data }) => data.dataset);
 };
 
 export const getDocumentByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[DOCUMENTS]}/${pk}`), {
         params: {
-            include: ['executions']
+            api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.DOCUMENT]
         }
     })
         .then(({ data }) => data.document);
@@ -333,7 +337,8 @@ export const getDocumentsByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[DOCUMENTS]}/`), {
         params: {
             'filter{pk.in}': pks,
-            page_size: pks.length
+            page_size: pks.length,
+            api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.DOCUMENT]
         },
         paramsSerializer
     })
@@ -353,6 +358,7 @@ export const getGeoAppByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[GEOAPPS]}/${pk}`), {
         params: {
             full: true,
+            api_preset: API_PRESET.VIEWER_COMMON,
             include: ['data']
         }
     })
@@ -598,7 +604,7 @@ export const getMapByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[MAPS]}/${pk}/`),
         {
             params: {
-                include: ['data']
+                api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.MAP]
             }
         })
         .then(({ data }) => data?.map);
@@ -611,7 +617,7 @@ export const getMapsByPk = (pk) => {
             params: {
                 'filter{pk.in}': pks,
                 page_size: pks.length,
-                api_preset: API_PRESET.CATALOG_LIST
+                api_preset: API_PRESET.MAPS
             },
             paramsSerializer
         })
@@ -624,7 +630,7 @@ export const getFeaturedResources = (page = 1, page_size =  4) => {
             page_size,
             page,
             'filter{featured}': true,
-            api_preset: API_PRESET.CATALOG_LIST
+            api_preset: API_PRESET.CATALOGS
         }
     }).then(({data}) => data);
 };

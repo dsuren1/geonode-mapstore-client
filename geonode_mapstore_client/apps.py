@@ -93,7 +93,6 @@ def run_setup_hooks(*args, **kwargs):
         "TIMEOUT": 300,
         "OPTIONS": {"MAX_ENTRIES": 10000},
     }
-
     settings.REST_API_PRESETS["catalog_list"] = {
         "exclude[]": ["*"],
         "include[]": [
@@ -109,12 +108,11 @@ def run_setup_hooks(*args, **kwargs):
             "resource_type",
             "subtype",
             "title",
-            "data",
             "executions",
             "thumbnail_url"
         ],
     }
-    settings.REST_API_PRESETS["datasets"] = {
+    settings.REST_API_PRESETS["dataset_list"] = {
         "exclude[]": ["*"],
         "include[]": [
             "advertised",
@@ -135,10 +133,32 @@ def run_setup_hooks(*args, **kwargs):
             "has_time",
             "default_style",
             "ptype",
-            "extent"
+            "extent",
+            "is_approved",
+            "is_published"
         ],
     }
-    settings.REST_API_PRESETS["documents"] = {
+    settings.REST_API_PRESETS["map_list"] = {
+        "exclude[]": ["*"],
+        "include[]": [
+            "advertised",
+            "detail_url",
+            "data",
+            "is_approved",
+            "is_copyable",
+            "is_published",
+            "owner",
+            "perms",
+            "pk",
+            "raw_abstract",
+            "resource_type",
+            "subtype",
+            "title",
+            "executions",
+            "thumbnail_url"
+        ],
+    }
+    settings.REST_API_PRESETS["document_list"] = {
         "exclude[]": ["*"],
         "include[]": [
             "pk",
@@ -154,46 +174,40 @@ def run_setup_hooks(*args, **kwargs):
             "href"
         ],
     }
-    settings.REST_API_PRESETS["detail"] = {
+    settings.REST_API_PRESETS["viewer_common"] = {
         "exclude[]": ["*"],
         "include[]": [
             "abstract",
             "advertised",
             "alternate",
-            "attribute_set",
             "attribution",
             "category",
             "created",
-            "dataset_ows_url",
-            "data",
             "date",
             "date_type",
             "detail_url",
             "download_urls",
             "embed_url",
-            "extension",
+            "executions",
             "extent",
             "favorite",
-            "href",
-            "internal",
+            "group",
             "is_approved",
+            "is_copyable",
             "is_published",
             "keywords",
             "language",
             "last_updated",
             "linked_resources",
             "links",
-            "output",
             "owner",
             "perms",
             "pk",
             "poc",
-            "ptype",
             "raw_abstract",
             "regions",
             "resource_type",
             "sourcetype",
-            "store",
             "subtype",
             "supplemental_information",
             "temporal_extent_end",
@@ -203,61 +217,28 @@ def run_setup_hooks(*args, **kwargs):
             "uuid"
         ],
     }
-    settings.REST_API_PRESETS["viewer"] = {
-        "exclude[]": ["*"],
+    settings.REST_API_PRESETS["map_viewer"] = {
         "include[]": [
-            "abstract",
-            "advertised",
-            "alternate",
-            "attribute_set",
-            "attribution",
-            "category",
-            "created",
             "data",
-            "dataset_ows_url",
-            "date",
-            "date_type",
-            "date_type",
-            "detail_url",
-            "default_style",
-            "download_urls",
-            "embed_url",
-            "executions",
-            "extension",
-            "extent",
-            "favorite",
-            "group",
+            "maplayers"
+        ]
+    }
+    settings.REST_API_PRESETS["document_viewer"] = {
+        "include[]": [
             "href",
-            "internal",
-            "is_approved",
-            "is_copyable",
-            "is_published",
-            "keywords",
-            "language",
-            "last_updated",
-            "linked_resources",
-            "links",
-            "output",
-            "owner",
-            "perms",
-            "pk",
-            "poc",
+            "extension"
+        ]
+    }
+    settings.REST_API_PRESETS["dataset_viewer"] = {
+        "include[]": [
+            "featureinfo_custom_template",            
+            "dataset_ows_url",
+            "default_style",
             "ptype",
-            "raw_abstract",
-            "regions",
-            "resource_type",
-            "sourcetype",
             "store",
-            "subtype",
-            "supplemental_information",
-            "temporal_extent_end",
-            "temporal_extent_start",
-            "thumbnail_url",
-            "title",
-            "uuid",
             "has_time",
-            "featureinfo_custom_template"
-        ],
+            "attribute_set"
+        ]
     }
 
 
