@@ -318,7 +318,8 @@ export const getDatasetByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[DATASETS]}/${pk}`), {
         params: {
             api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.DATASET]
-        }
+        },
+        paramsSerializer
     })
         .then(({ data }) => data.dataset);
 };
@@ -327,7 +328,8 @@ export const getDocumentByPk = (pk) => {
     return axios.get(parseDevHostname(`${endpoints[DOCUMENTS]}/${pk}`), {
         params: {
             api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.DOCUMENT]
-        }
+        },
+        paramsSerializer
     })
         .then(({ data }) => data.document);
 };
@@ -605,7 +607,8 @@ export const getMapByPk = (pk) => {
         {
             params: {
                 api_preset: [API_PRESET.VIEWER_COMMON, API_PRESET.MAP]
-            }
+            },
+            paramsSerializer
         })
         .then(({ data }) => data?.map);
 };
