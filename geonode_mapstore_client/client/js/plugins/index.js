@@ -119,22 +119,7 @@ export const plugins = {
     ),
     FilterLayerPlugin: toModulePlugin(
         'FilterLayer',
-        () => import(/* webpackChunkName: 'plugins/filter-layer-plugin' */ '@mapstore/framework/plugins/FilterLayer'),
-        {
-            overrides: {
-                containers: {
-                    ActionNavbar: {
-                        name: 'FilterLayer',
-                        Component: FilterLayerActionButton,
-                        priority: 1
-                    },
-                    TOC: {
-                        name: "FilterLayer",
-                        priority: 2
-                    }
-                }
-            }
-        }
+        () => import(/* webpackChunkName: 'plugins/filter-layer-plugin' */ '@mapstore/framework/plugins/FilterLayer')
     ),
     MeasurePlugin: toModulePlugin(
         'Measure',
