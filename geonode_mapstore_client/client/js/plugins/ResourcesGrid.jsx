@@ -54,6 +54,7 @@ import Button from '@js/components/Button';
 import useLocalStorage from '@js/hooks/useLocalStorage';
 import MainLoader from '@js/components/MainLoader';
 import detailViewerEpics from '@js/epics/detailviewer';
+import { CATALOG_PAGES_ROUTES } from '@js/utils/AppRoutesUtils';
 
 const ConnectedDetailsPanel = connect(
     createSelector([
@@ -117,6 +118,30 @@ function PaginationCustom({
         />
     );
 }
+
+const withConfigUpdate = (Component) => {
+    return (props) => {
+        const [init, setInit] = useState(false);
+        const [pageConfigProps, setPageConfigProps] = useState({});
+
+        useEffect(() => {
+            setInit(false);
+            const pathname = props.location.pathname;
+            if (pathname === '/maps') {
+                setPageConfigProps((prevProps) => ({...prevProps, ...(props.mapsConfig ?? {})}));
+            }
+            if (pathname === "/documents") {
+                setPageConfigProps((prevProps) => ({...prevProps, ...(props.documentsConfig ?? {})}));
+            }
+            // Add other pages specific configs
+
+        }, [props.location.pathname]);
+
+        useEffect(() => { setInit(true); }, [JSON.stringify(pageConfigProps)]);
+
+        return <Component {...props} {...pageConfigProps} init={init} setInit={setInit} />;
+    };
+};
 
 /**
 * @module ResourcesGrid
@@ -445,7 +470,9 @@ function ResourcesGrid({
     onGetFacets,
     facets,
     filters,
-    setFilters
+    setFilters,
+    init,
+    setInit
 }, context) {
 
     const [_cardLayoutStyleState, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', defaultCardLayoutStyle);
@@ -516,15 +543,13 @@ function ResourcesGrid({
         onSearch({
             ...omit(query, ['page']),
             ...newParams
-        }, pathname);
+        }, pathname ?? location.pathname);
     }
 
     function handleClear() {
         const newParams = clearQueryParams(location);
         handleUpdate(newParams);
     }
-
-    const [init, setInit] = useState(false);
 
     // check if page query exist
     // if the pagination is undefined
@@ -556,7 +581,7 @@ function ResourcesGrid({
             onSearch({
                 ...query,
                 ...(page && { page })
-            }, undefined, true);
+            }, location.pathname, true);
         }
     }, [init, isPaginated]);
 
@@ -604,11 +629,10 @@ function ResourcesGrid({
             ].find((path) => matchPath(pathname, { path, exact: true }));
             if (matchedPath) {
                 const options = matchPath(pathname, { path: matchedPath, exact: true });
-                onReplaceLocation('' + (location.search || ''));
+                !CATALOG_PAGES_ROUTES.includes(options.path) && onReplaceLocation('' + (location.search || ''));
                 switch (options.path) {
                 case '/search':
                 case '/detail/:pk': {
-                    //
                     break;
                 }
                 case '/search/filter': {
@@ -824,7 +848,7 @@ const ResourcesGridPlugin = connect(
         onGetFacets: getFacetItems,
         setFilters: setFiltersAction
     }
-)(withResizeDetector(ResourcesGrid));
+)(withResizeDetector(withConfigUpdate(ResourcesGrid)));
 
 export default createPlugin('ResourcesGrid', {
     component: ResourcesGridPlugin,
