@@ -10,7 +10,6 @@ import uniq from 'lodash/uniq';
 import {
     LayerDownloadActionButton,
     FullScreenActionButton,
-    FilterLayerActionButton,
     AddWidgetActionButton
 } from '@js/plugins/actionnavbar/buttons';
 import { getPluginsContext } from '@js/utils/PluginsContextUtils';
