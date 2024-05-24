@@ -54,6 +54,7 @@ import Button from '@js/components/Button';
 import useLocalStorage from '@js/hooks/useLocalStorage';
 import MainLoader from '@js/components/MainLoader';
 import detailViewerEpics from '@js/epics/detailviewer';
+import { CATALOG_PAGES_ROUTES } from '@js/utils/AppRoutesUtils';
 
 const ConnectedDetailsPanel = connect(
     createSelector([
@@ -117,6 +118,37 @@ function PaginationCustom({
         />
     );
 }
+
+const removeMenuHighlight = () => {
+    // Remove previous higlighted menu
+    const menuHiglighted = document.querySelector('#gn-topbar .highlight-menu');
+    menuHiglighted?.classList.remove('highlight-menu');
+};
+
+const withPageConfig = (Component) => {
+    return (props) => {
+        useEffect(() => {
+            // highlight topbar menu item based on catalog page
+            const pathname = props.location.pathname;
+
+            if (CATALOG_PAGES_ROUTES.includes(pathname)) {
+                removeMenuHighlight();
+
+                const topbarMenu = document.querySelector(`#gn-topbar #${pathname.replace('/', '')}`);
+                topbarMenu?.classList.add('highlight-menu');
+            } else {
+                removeMenuHighlight();
+            }
+        }, [props.location.pathname]);
+
+        const getPageConfigs = () => {
+            const pathname = props.location.pathname?.replace('/', '');
+            return {...props, ...props?.[`${pathname}Page`]};
+        };
+
+        return <Component {...getPageConfigs()} />;
+    };
+};
 
 /**
 * @module ResourcesGrid
@@ -227,7 +259,7 @@ function ResourcesGrid({
     menuItems = [
         {
             labelId: 'gnhome.addResource',
-            disableIf: "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource')) ? true : false}",
+            disableIf: "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource'))}",
             type: 'dropdown',
             variant: 'primary',
             responsive: true,
@@ -432,7 +464,7 @@ function ResourcesGrid({
     pagination,
     disableDetailPanel,
     disableFilters,
-    filterPagePath = getCataloguePath('/catalogue/#/search/filter'),
+    filterPagePath = '/catalogue/#/search/filter',
     resourceCardActionsOrder = [
         ProcessTypes.DELETE_RESOURCE,
         ProcessTypes.COPY_RESOURCE,
@@ -501,7 +533,7 @@ function ResourcesGrid({
 
     const handleShowFilterForm = (show) => {
         if (show && disableFilters) {
-            simulateAClick(filterPagePath);
+            simulateAClick(getCataloguePath(filterPagePath));
         } else {
             if (!isEmpty(resource)) {
                 const href = closeDetailPanelHref();
@@ -511,12 +543,30 @@ function ResourcesGrid({
         }
     };
 
+    const getMatchPath = () => {
+        const pathname = location.pathname;
+        const matchedPath = [
+            '/search',
+            '/search/filter',
+            '/detail/:pk',
+            '/detail/:resourceType/:pk'
+        ].find((path) => matchPath(pathname, { path, exact: true }));
+        return matchedPath;
+    };
+    const getUpdatedPathName = (pathname) => {
+        const isCatalogPage = CATALOG_PAGES_ROUTES.includes(location.pathname);
+        if (isEmpty(pathname) && isCatalogPage) {
+            return location.pathname;
+        }
+        return pathname;
+    };
+
     function handleUpdate(newParams, pathname) {
         const { query } = url.parse(location.search, true);
         onSearch({
             ...omit(query, ['page']),
             ...newParams
-        }, pathname);
+        }, getUpdatedPathName(pathname));
     }
 
     function handleClear() {
@@ -539,7 +589,13 @@ function ResourcesGrid({
     }, [cardLayoutStyle]);
 
     useEffect(() => {
-        if (init) {
+        let pathname = location.pathname;
+        const initialize = pathname === '/'
+        || !isEmpty(getMatchPath())
+        || CATALOG_PAGES_ROUTES.includes(pathname) && init;
+
+        if (initialize) {
+            pathname = getUpdatedPathName();
             onInit({
                 defaultQuery,
                 pageSize,
@@ -556,9 +612,9 @@ function ResourcesGrid({
             onSearch({
                 ...query,
                 ...(page && { page })
-            }, undefined, true);
+            }, pathname, true);
         }
-    }, [init, isPaginated]);
+    }, [init, isPaginated, location.pathname]);
 
     const [top, setTop] = useState(0);
     const [bottom, setBottom] = useState(0);
@@ -596,19 +652,13 @@ function ResourcesGrid({
     useEffect(() => {
         if (!panel) {
             const pathname = location.pathname;
-            const matchedPath = [
-                '/search',
-                '/search/filter',
-                '/detail/:pk',
-                '/detail/:resourceType/:pk'
-            ].find((path) => matchPath(pathname, { path, exact: true }));
+            const matchedPath = getMatchPath();
             if (matchedPath) {
                 const options = matchPath(pathname, { path: matchedPath, exact: true });
-                onReplaceLocation('' + (location.search || ''));
+                !CATALOG_PAGES_ROUTES.includes(options.path) && onReplaceLocation('' + (location.search || ''));
                 switch (options.path) {
                 case '/search':
                 case '/detail/:pk': {
-                    //
                     break;
                 }
                 case '/search/filter': {
@@ -824,7 +874,7 @@ const ResourcesGridPlugin = connect(
         onGetFacets: getFacetItems,
         setFilters: setFiltersAction
     }
-)(withResizeDetector(ResourcesGrid));
+)(withResizeDetector(withPageConfig(ResourcesGrid)));
 
 export default createPlugin('ResourcesGrid', {
     component: ResourcesGridPlugin,
