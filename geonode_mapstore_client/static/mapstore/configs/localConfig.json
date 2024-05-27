@@ -3550,7 +3550,7 @@
                         "menuItems": [
                             {
                                 "disableIf": "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource')) ? true : false}",
-                                "labelId": "gnhome.createMap",
+                                "labelId": "gnhome.new",
                                 "value": "map",
                                 "type": "link",
                                 "variant": "primary",
@@ -3644,7 +3644,7 @@
                           {
                             "disableIf": "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource')) ? true : false}",
                             "variant": "primary",
-                            "labelId": "gnhome.uploadDocument",
+                            "labelId": "gnhome.new",
                             "value": "document",
                             "type": "link",
                             "href": "{context.getCataloguePath('/catalogue/#/upload/document')}"
@@ -3737,7 +3737,7 @@
                           {
                             "disableIf": "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource'))}",
                             "variant": "primary",
-                            "labelId": "gnhome.createDashboard",
+                            "labelId": "gnhome.new",
                             "value": "dashboard",
                             "type": "link",
                             "href": "{context.getCataloguePath('/catalogue/#/dashboard/new')}"
@@ -3828,7 +3828,7 @@
                         },
                         "menuItems": [
                             {
-                                "labelId": "gnhome.addResource",
+                                "labelId": "gnhome.new",
                                 "disableIf": "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource'))}",
                                 "type": "dropdown",
                                 "variant": "primary",
@@ -3964,7 +3964,7 @@
                           {
                             "disableIf": "{(state('settings') && state('settings').isMobile) || !(state('user') && state('user').perms && state('user').perms.includes('add_resource'))}",
                             "variant": "primary",
-                            "labelId": "gnhome.createGeostory",
+                            "labelId": "gnhome.new",
                             "value": "geostory",
                             "type": "link",
                             "href": "{context.getCataloguePath('/catalogue/#/geostory/new')}"

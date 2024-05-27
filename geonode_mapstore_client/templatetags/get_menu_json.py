@@ -36,7 +36,7 @@ def get_base_left_topbar_menu():
         {
             "type": "link",
             "href": "/catalogue/#/all",
-            "label": "All Resources",
+            "label": "All resources",
         },
         {
             "type": "link",
