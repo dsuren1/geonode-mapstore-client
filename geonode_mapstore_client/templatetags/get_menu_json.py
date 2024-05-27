@@ -105,7 +105,7 @@ def get_base_right_topbar_menu(context):
                 else None,
             ]
         )
-    return [home, about]
+    return [about]
 
 
 @register.simple_tag(takes_context=True)
