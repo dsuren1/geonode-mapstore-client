@@ -38,6 +38,7 @@ export const SET_RESOURCE_EXTENT = 'GEONODE_SET_RESOURCE_EXTENT';
 export const SET_RESOURCE_PATH_PARAMETERS = 'GEONODE:SET_RESOURCE_PATH_PARAMETERS';
 export const SET_MAP_VIEWER_LINKED_RESOURCE = 'GEONODE:SET_MAP_VIEWER_LINKED_RESOURCE';
 export const MANAGE_LINKED_RESOURCE = 'GEONODE:MANAGE_LINKED_RESOURCE';
+export const SET_DEFAULT_VIEWER_PLUGINS = 'GEONODE:SET_DEFAULT_VIEWER_PLUGINS';
 
 /**
 * Actions for GeoNode resource
@@ -347,5 +348,15 @@ export function setMapViewerLinkedResource(resource) {
     return {
         type: SET_MAP_VIEWER_LINKED_RESOURCE,
         resource
+    };
+}
+
+/**
+ * Set default viewer plugins
+ */
+export function setDefaultViewerPlugins(plugins) {
+    return {
+        type: SET_DEFAULT_VIEWER_PLUGINS,
+        plugins
     };
 }
