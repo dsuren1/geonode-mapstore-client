@@ -54,7 +54,6 @@ import Button from '@js/components/Button';
 import useLocalStorage from '@js/hooks/useLocalStorage';
 import MainLoader from '@js/components/MainLoader';
 import detailViewerEpics from '@js/epics/detailviewer';
-import { CATALOG_PAGES_ROUTES } from '@js/utils/AppRoutesUtils';
 
 const ConnectedDetailsPanel = connect(
     createSelector([
@@ -124,29 +123,32 @@ const removeMenuHighlight = () => {
     const menuHiglighted = document.querySelector('#gn-topbar .highlight-menu');
     menuHiglighted?.classList.remove('highlight-menu');
 };
-
+const getCatalogPage = (pathname) => {
+    const {params: {page} = {}} = matchPath(pathname, { path: "/:page", exact: true }) ?? {};
+    return page;
+};
 const withPageConfig = (Component) => {
     return (props) => {
         useEffect(() => {
             // highlight topbar menu item based on catalog page
-            const pathname = props.location.pathname;
+            const page = getCatalogPage(props.location.pathname);
 
-            if (CATALOG_PAGES_ROUTES.includes(pathname)) {
+            if (page) {
                 removeMenuHighlight();
 
-                const topbarMenu = document.querySelector(`#gn-topbar #${pathname.replace('/', '')}`);
+                const topbarMenu = document.querySelector(`#gn-topbar #${page}`);
                 topbarMenu?.classList.add('highlight-menu');
             } else {
                 removeMenuHighlight();
             }
         }, [props.location.pathname]);
 
-        const getPageConfigs = () => {
-            const pathname = props.location.pathname?.replace('/', '');
-            return {...props, ...props?.[`${pathname}Page`]};
+        const mergePropsWithPageConfigs = () => {
+            const pageName = getCatalogPage(props.location.pathname, props);
+            return {...props, ...props?.[`${pageName}Page`]};
         };
 
-        return <Component {...getPageConfigs()} />;
+        return <Component {...mergePropsWithPageConfigs()} />;
     };
 };
 
@@ -477,7 +479,8 @@ function ResourcesGrid({
     onGetFacets,
     facets,
     filters,
-    setFilters
+    setFilters,
+    ...props
 }, context) {
 
     const [_cardLayoutStyleState, setCardLayoutStyle] = useLocalStorage('layoutCardsStyle', defaultCardLayoutStyle);
@@ -543,20 +546,28 @@ function ResourcesGrid({
         }
     };
 
+    const isCatalogPage = (pathname) => {
+        const isConfigPresent = !isEmpty(props?.[`${pathname.replace('/', '')}Page`]);
+
+        // to be a catalog page it should have configuration
+        return getCatalogPage(pathname) && isConfigPresent;
+    };
+
     const getMatchPath = () => {
         const pathname = location.pathname;
         const matchedPath = [
             '/search',
             '/search/filter',
             '/detail/:pk',
-            '/detail/:resourceType/:pk'
+            '/detail/:resourceType/:pk',
+            '/:page'
         ].find((path) => matchPath(pathname, { path, exact: true }));
         return matchedPath;
     };
+
     const getUpdatedPathName = (pathname) => {
-        const isCatalogPage = CATALOG_PAGES_ROUTES.includes(location.pathname);
-        if (isEmpty(pathname) && isCatalogPage) {
-            return location.pathname;
+        if (isEmpty(pathname)) {
+            return isCatalogPage(location.pathname) ? location.pathname : '/';
         }
         return pathname;
     };
@@ -590,9 +601,9 @@ function ResourcesGrid({
 
     useEffect(() => {
         let pathname = location.pathname;
-        const initialize = pathname === '/'
+        const initialize = (pathname === '/'
         || !isEmpty(getMatchPath())
-        || CATALOG_PAGES_ROUTES.includes(pathname) && init;
+        || isCatalogPage(pathname)) && init;
 
         if (initialize) {
             pathname = getUpdatedPathName();
@@ -655,7 +666,7 @@ function ResourcesGrid({
             const matchedPath = getMatchPath();
             if (matchedPath) {
                 const options = matchPath(pathname, { path: matchedPath, exact: true });
-                !CATALOG_PAGES_ROUTES.includes(options.path) && onReplaceLocation('' + (location.search || ''));
+                !isCatalogPage(location.pathname) && onReplaceLocation('' + (location.search || ''));
                 switch (options.path) {
                 case '/search':
                 case '/detail/:pk': {

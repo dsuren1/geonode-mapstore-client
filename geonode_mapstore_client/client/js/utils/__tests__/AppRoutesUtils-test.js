@@ -103,7 +103,7 @@ describe('Test App Routes Utils', () => {
             '/search/filter',
             '/detail/:pk',
             '/detail/:ctype/:pk',
-            ...routeUtils.CATALOG_PAGES_ROUTES
+            '/:page'
         ]);
         expect(catalogueRoute.name).toEqual('catalogue');
         expect(uploadDatasetRoute.path).toEqual(['/upload/dataset']);

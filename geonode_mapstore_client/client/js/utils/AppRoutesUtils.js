@@ -71,7 +71,6 @@ export const GEOSTORY_ROUTES = [{
     shouldNotRequestResources: true
 }];
 
-export const CATALOG_PAGES_ROUTES = ['/all', '/maps', '/documents', '/geostories', '/dashboards', '/datasets'];
 export const CATALOGUE_ROUTES = [
     {
         name: 'dataset_viewer',
@@ -180,7 +179,7 @@ export const CATALOGUE_ROUTES = [
             '/search/filter',
             '/detail/:pk',
             '/detail/:ctype/:pk',
-            ...CATALOG_PAGES_ROUTES
+            '/:page'
         ],
         component: appRouteComponentTypes.CATALOGUE
     },
