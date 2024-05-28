@@ -547,7 +547,7 @@ function ResourcesGrid({
     };
 
     const isCatalogPage = (pathname) => {
-        const isConfigPresent = !isEmpty(props?.[`${pathname.replace('/', '')}Page`]);
+        const isConfigPresent = !!props?.[`${pathname.replace('/', '')}Page`];
 
         // to be a catalog page it should have configuration
         return getCatalogPage(pathname) && isConfigPresent;
