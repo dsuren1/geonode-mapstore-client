@@ -10,5 +10,6 @@ import ObjectFieldTemplate from './ObjectFieldTemplate';
 
 export default {
     ObjectFieldTemplate,
-    ErrorListTemplate: () => null
+    ErrorListTemplate: () => null,
+    DescriptionFieldTemplate: () => null
 };

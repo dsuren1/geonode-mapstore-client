@@ -35,11 +35,6 @@ function ArrayField(props) {
         return (
             <>
                 <label className="control-label" htmlFor={idSchema.$id}>{schema?.title || name}</label>
-                {schema?.description ? (
-                    <p id={`${idSchema.$id}__description`} className="field-description">
-                        {schema?.description}
-                    </p>
-                ) : null}
                 <SelectInfiniteScroll
                     id={idSchema.$id}
                     value={formData.map((entry) => {
