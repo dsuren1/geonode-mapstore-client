@@ -62,7 +62,7 @@ function ArrayField(props) {
                         })
                             .then(({ data }) => {
                                 return {
-                                    isNextPageAvailable: false,
+                                    isNextPageAvailable: !!data.pagination?.more,
                                     results: data?.[resultsKey].map((result) => {
                                         return {
                                             selectOption: {
