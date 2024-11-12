@@ -9,6 +9,7 @@
 import React from 'react';
 import axios from '@mapstore/framework/libs/ajax';
 import isString from 'lodash/isString';
+import isEmpty from 'lodash/isEmpty';
 import Autocomplete from '@js/components/Autocomplete/Autocomplete';
 import DefaultSchemaField from '@rjsf/core/lib/components/fields/SchemaField';
 
@@ -28,8 +29,8 @@ const SchemaField = (props) => {
         uiSchema
     } = props;
     const autocomplete = uiSchema?.['ui:options']?.['geonode-ui:autocomplete'];
-    const isMultiSelect =  schema?.items?.type === 'object' && schema?.items?.properties;
-    const isSingleSelect = schema?.type === 'object' && schema?.properties;
+    const isMultiSelect =  schema?.items?.type === 'object' && !isEmpty(schema?.items?.properties);
+    const isSingleSelect = schema?.type === 'object' && !isEmpty(schema?.properties);
 
     if (autocomplete && (isMultiSelect || isSingleSelect)) {
         const autocompleteOptions = isString(autocomplete)
