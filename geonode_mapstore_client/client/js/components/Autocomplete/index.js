@@ -6,8 +6,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import SchemaField from './SchemaField';
-
-export default {
-    SchemaField
-};
+export { default } from './Autocomplete';
