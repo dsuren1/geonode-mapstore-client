@@ -12,6 +12,12 @@ import isString from 'lodash/isString';
 import Autocomplete from '@js/components/Autocomplete/Autocomplete';
 import DefaultSchemaField from '@rjsf/core/lib/components/fields/SchemaField';
 
+/**
+ * `SchemaField` is an enhanced component that overrides `@rjsf`'s default `SchemaField`
+ * - Customizes the rendering of object and array fields with custom functionality, such as support for autocomplete fields.
+ * - Provides `onChange` handlers to update `formData` dynamically.
+ * - Fallback to the default `SchemaField` from `@rjsf` when no custom rendering is needed.
+ */
 const SchemaField = (props) => {
     const {
         onChange,
