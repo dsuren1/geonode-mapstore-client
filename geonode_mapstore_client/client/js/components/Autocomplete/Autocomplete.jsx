@@ -14,17 +14,12 @@ import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll/SelectInfi
 
 const Autocomplete = ({
     className,
-    clearable = false,
     id,
     labelKey,
-    multi = false,
     name,
     title,
     value,
     valueKey,
-    placeholder,
-    onChange,
-    onLoadOptions,
     ...props
 }) => {
     const getValue = () => {
@@ -39,6 +34,12 @@ const Autocomplete = ({
         }
         return value;
     };
+
+    const defaultNewOptionCreator  = (option) => ({
+        [valueKey]: option.label,
+        [labelKey]: option.label
+    });
+
     return (
         <div className={`autocomplete${className ? " " + className : ""}`}>
             <label className="control-label" htmlFor={id}>{title || name}</label>
@@ -46,11 +47,9 @@ const Autocomplete = ({
                 {...props}
                 id={id}
                 value={getValue()}
-                multi={multi}
-                clearable={clearable}
-                placeholder={placeholder}
-                loadOptions={onLoadOptions}
-                onChange={onChange}
+                {...props.creatable && {
+                    newOptionCreator: props.newOptionCreator ?? defaultNewOptionCreator}
+                }
             />
         </div>
     );
@@ -58,17 +57,12 @@ const Autocomplete = ({
 
 Autocomplete.propTypes = {
     className: PropTypes.string,
-    clearable: PropTypes.bool,
     id: PropTypes.string.isRequired,
     labelKey: PropTypes.string,
-    multi: PropTypes.bool,
     name: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.any.isRequired,
-    valueKey: PropTypes.string,
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    onLoadOptions: PropTypes.func.isRequired
+    valueKey: PropTypes.string
 };
 
 export default Autocomplete;

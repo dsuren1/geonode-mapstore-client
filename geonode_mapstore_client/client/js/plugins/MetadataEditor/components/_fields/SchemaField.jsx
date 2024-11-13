@@ -42,17 +42,20 @@ const SchemaField = (props) => {
         const valueKey = autocompleteOptions?.valueKey || 'id';
         const labelKey = autocompleteOptions?.labelKey || 'label';
         const placeholder = autocompleteOptions?.placeholder ?? '...';
+        const creatable = !!autocompleteOptions?.creatable;
 
         let autoCompleteProps = {
+            className: "form-group gn-metadata-autocomplete",
+            clearable: !isMultiSelect,
+            creatable,
             id: idSchema.$id,
+            labelKey,
+            multi: isMultiSelect,
             name,
+            placeholder,
             title: schema.title,
             value: formData,
             valueKey,
-            labelKey,
-            placeholder,
-            multi: isMultiSelect,
-            clearable: !isMultiSelect,
             onChange: (selected) => {
                 let _selected = selected?.result ?? null;
                 if (isMultiSelect) {
@@ -67,39 +70,34 @@ const SchemaField = (props) => {
                     });
                 }
                 onChange(_selected);
+            },
+            loadOptions: ({ q, config, ...params }) => {
+                return axios.get(autocompleteUrl, {
+                    ...config,
+                    params: {
+                        ...params,
+                        ...(q && { [queryKey]: q }),
+                        page: params.page
+                    }
+                })
+                    .then(({ data }) => {
+                        return {
+                            isNextPageAvailable: !!data.pagination?.more,
+                            results: data?.[resultsKey].map((result) => {
+                                return {
+                                    selectOption: {
+                                        result,
+                                        value: result[valueKey],
+                                        label: result[labelKey]
+                                    }
+                                };
+                            })
+                        };
+                    });
             }
         };
 
-        return (
-            <Autocomplete
-                {...autoCompleteProps}
-                className={"form-group gn-metadata-autocomplete"}
-                onLoadOptions={({ q, config, ...params }) => {
-                    return axios.get(autocompleteUrl, {
-                        ...config,
-                        params: {
-                            ...params,
-                            ...(q && { [queryKey]: q }),
-                            page: params.page
-                        }
-                    })
-                        .then(({ data }) => {
-                            return {
-                                isNextPageAvailable: !!data.pagination?.more,
-                                results: data?.[resultsKey].map((result) => {
-                                    return {
-                                        selectOption: {
-                                            result,
-                                            value: result[valueKey],
-                                            label: result[labelKey]
-                                        }
-                                    };
-                                })
-                            };
-                        });
-                }}
-            />
-        );
+        return <Autocomplete {...autoCompleteProps}/>;
     }
     return <DefaultSchemaField {...props}/>;
 };

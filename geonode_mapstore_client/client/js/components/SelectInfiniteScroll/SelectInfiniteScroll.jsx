@@ -9,10 +9,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from '@mapstore/framework/libs/ajax';
 import debounce from 'lodash/debounce';
-import ReactSelect from 'react-select';
+import Select from 'react-select';
 import localizedProps from '@mapstore/framework/components/misc/enhancers/localizedProps';
 
-const SelectSync = localizedProps('placeholder')(ReactSelect);
+const ReactSelect = localizedProps(['placeholder'])(Select);
+const ReactSelectCreatable = localizedProps(['placeholder'])(Select.Creatable);
 
 function SelectInfiniteScroll({
     loadOptions,
@@ -106,22 +107,24 @@ function SelectInfiniteScroll({
         }
     }, [page]);
 
+    const SelectComponent = props.creatable ? ReactSelectCreatable : ReactSelect;
+
     return (
-        <SelectSync
+        <SelectComponent
             {...props}
             isLoading={loading}
             options={options}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
-            filterOptions={(currentOptions) => {
-                return currentOptions;
-            }}
-            onInputChange={(q) => handleInputChange(q)}
             onMenuScrollToBottom={() => {
                 if (!loading && isNextPageAvailable) {
                     setPage(page + 1);
                 }
             }}
+            {...!props.creatable && ({
+                filterOptions: (currentOptions) => currentOptions,
+                onInputChange: handleInputChange
+            })}
         />
     );
 }
