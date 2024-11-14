@@ -47,9 +47,11 @@ const Autocomplete = ({
                 {...props}
                 id={id}
                 value={getValue()}
+                valueKey={valueKey}
+                labelKey={labelKey}
                 {...props.creatable && {
-                    newOptionCreator: props.newOptionCreator ?? defaultNewOptionCreator}
-                }
+                    newOptionCreator: props.newOptionCreator ?? defaultNewOptionCreator
+                }}
             />
         </div>
     );
