@@ -45,7 +45,7 @@ const SchemaField = (props) => {
         const creatable = !!autocompleteOptions?.creatable;
 
         let autoCompleteProps = {
-            className: "form-group gn-metadata-autocomplete",
+            className: "gn-metadata-autocomplete",
             clearable: !isMultiSelect,
             creatable,
             id: idSchema.$id,
@@ -56,6 +56,8 @@ const SchemaField = (props) => {
             title: schema.title,
             value: formData,
             valueKey,
+            helpTitleIcon: true,
+            description: schema.description,
             onChange: (selected) => {
                 let _selected = selected?.result ?? null;
                 if (isMultiSelect) {

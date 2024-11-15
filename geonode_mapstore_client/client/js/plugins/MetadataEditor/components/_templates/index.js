@@ -7,8 +7,12 @@
  */
 
 import ObjectFieldTemplate from './ObjectFieldTemplate';
+import DescriptionFieldTemplate from './DescriptionFieldTemplate';
+import TitleFieldTemplate from './TitleFieldTemplate';
 
 export default {
     ObjectFieldTemplate,
+    TitleFieldTemplate,
+    DescriptionFieldTemplate,
     ErrorListTemplate: () => null
 };

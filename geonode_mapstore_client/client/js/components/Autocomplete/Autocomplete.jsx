@@ -8,12 +8,19 @@
 
 import React from 'react';
 import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 
 import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll/SelectInfiniteScroll';
+import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
+import FaIcon from '@js/components/FaIcon/FaIcon';
+
+const IconWithTooltip = tooltip((props) => <div {...props}><FaIcon name="info-circle" /></div>);
 
 const Autocomplete = ({
     className,
+    description,
+    helpTitleIcon,
     id,
     labelKey,
     name,
@@ -42,7 +49,10 @@ const Autocomplete = ({
 
     return (
         <div className={`autocomplete${className ? " " + className : ""}`}>
-            <label className="control-label" htmlFor={id}>{title || name}</label>
+            <div className="title-container">
+                <label className="control-label" htmlFor={id}>{title || name}</label>
+                {helpTitleIcon && !isEmpty(description) && <IconWithTooltip className="help-title" tooltip={description} tooltipPosition={"right"} />}
+            </div>
             <SelectInfiniteScroll
                 {...props}
                 id={id}
@@ -59,6 +69,8 @@ const Autocomplete = ({
 
 Autocomplete.propTypes = {
     className: PropTypes.string,
+    description: PropTypes.string,
+    helpTitleIcon: PropTypes.bool,
     id: PropTypes.string.isRequired,
     labelKey: PropTypes.string,
     name: PropTypes.string,
