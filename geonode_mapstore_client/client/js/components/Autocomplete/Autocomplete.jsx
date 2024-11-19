@@ -8,23 +8,25 @@
 
 import React from 'react';
 import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 
 import SelectInfiniteScroll from '@js/components/SelectInfiniteScroll/SelectInfiniteScroll';
+import tooltip from '@mapstore/framework/components/misc/enhancers/tooltip';
+import FaIcon from '@js/components/FaIcon/FaIcon';
+
+const IconWithTooltip = tooltip((props) => <div {...props}><FaIcon name="info-circle" /></div>);
 
 const Autocomplete = ({
     className,
-    clearable = false,
+    description,
+    helpTitleIcon,
     id,
     labelKey,
-    multi = false,
     name,
     title,
     value,
     valueKey,
-    placeholder,
-    onChange,
-    onLoadOptions,
     ...props
 }) => {
     const getValue = () => {
@@ -39,18 +41,27 @@ const Autocomplete = ({
         }
         return value;
     };
+
+    const defaultNewOptionCreator  = (option) => ({
+        [valueKey]: option.label,
+        [labelKey]: option.label
+    });
+
     return (
         <div className={`autocomplete${className ? " " + className : ""}`}>
-            <label className="control-label" htmlFor={id}>{title || name}</label>
+            <div className="title-container">
+                <label className="control-label" htmlFor={id}>{title || name}</label>
+                {helpTitleIcon && !isEmpty(description) && <IconWithTooltip className="help-title" tooltip={description} tooltipPosition={"right"} />}
+            </div>
             <SelectInfiniteScroll
                 {...props}
                 id={id}
                 value={getValue()}
-                multi={multi}
-                clearable={clearable}
-                placeholder={placeholder}
-                loadOptions={onLoadOptions}
-                onChange={onChange}
+                valueKey={valueKey}
+                labelKey={labelKey}
+                {...props.creatable && {
+                    newOptionCreator: props.newOptionCreator ?? defaultNewOptionCreator
+                }}
             />
         </div>
     );
@@ -58,17 +69,14 @@ const Autocomplete = ({
 
 Autocomplete.propTypes = {
     className: PropTypes.string,
-    clearable: PropTypes.bool,
+    description: PropTypes.string,
+    helpTitleIcon: PropTypes.bool,
     id: PropTypes.string.isRequired,
     labelKey: PropTypes.string,
-    multi: PropTypes.bool,
     name: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.any.isRequired,
-    valueKey: PropTypes.string,
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    onLoadOptions: PropTypes.func.isRequired
+    valueKey: PropTypes.string
 };
 
 export default Autocomplete;

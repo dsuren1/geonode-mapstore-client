@@ -159,6 +159,7 @@
         padding: 0.75rem;
         border: 1px solid transparent;
         border-radius: 8px;
+        margin: 0.75rem;
     }
     legend {
         font-weight: bold;
@@ -196,10 +197,44 @@
     }
     .gn-metadata-autocomplete {
         padding: 0 0.75rem;
+        width: 100%;
+        margin-bottom: 15px;
+        .title-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
         .Select--multi {
             .Select-value {
                 margin-top: 3px;
                 margin-bottom: 3px;
+            }
+        }
+        .help-title {
+            margin-bottom: 5px;
+        }
+    }
+    .gn-metadata-group {
+        .form-group.field {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 0.5rem;
+            text-transform: capitalize;
+            align-items: center;
+            .gn-metadata-form-description {
+                margin-bottom: 5px;
+            }
+            fieldset {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                width: 100%;
+                .gn-metadata-autocomplete {
+                    margin-bottom: 0;
+                }
+            }
+            .gn-metadata-form-title {
+                font-weight: 700;
             }
         }
     }
