@@ -29,7 +29,9 @@ const SchemaField = (props) => {
         uiSchema
     } = props;
     const autocomplete = uiSchema?.['ui:options']?.['geonode-ui:autocomplete'];
-    const isMultiSelect =  schema?.items?.type === 'object' && !isEmpty(schema?.items?.properties);
+    const isMultiSelect = schema?.type === 'array' && (schema?.items?.type === 'string' ||
+        (schema?.items?.type === 'object' && !isEmpty(schema?.items?.properties))
+    );
     const isSingleSelect = schema?.type === 'object' && !isEmpty(schema?.properties);
 
     if (autocomplete && (isMultiSelect || isSingleSelect)) {
