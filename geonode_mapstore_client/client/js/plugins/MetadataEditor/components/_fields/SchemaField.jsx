@@ -8,10 +8,9 @@
 
 import React from 'react';
 import axios from '@mapstore/framework/libs/ajax';
-import isArray from 'lodash/isArray';
+import castArray from 'lodash/castArray';
 import isEmpty from 'lodash/isEmpty';
 import isString from 'lodash/isString';
-import get from 'lodash/get';
 import Autocomplete from '@js/components/Autocomplete/Autocomplete';
 import DefaultSchemaField from '@rjsf/core/lib/components/fields/SchemaField';
 
@@ -41,9 +40,19 @@ const SchemaField = (props) => {
     const isSingleSelect = schema?.type === 'object' && !isEmpty(schema?.properties);
 
     if (autocomplete && (isMultiSelect || isSingleSelect)) {
-        const errors = !hideError ? isArray(errorSchema)
-            ? errorSchema.map(error => get(error, 'id.__errors', [])).flat()
-            : get(errorSchema, '__errors', []) : [];
+        const errors = (!hideError ? castArray(errorSchema) : [])
+            .reduce((acc, errorEntry) => {
+                if (errorEntry?.__errors) {
+                    acc.push({ messages: errorEntry.__errors });
+                } else {
+                    Object.keys(errorEntry || {}).forEach((key) => {
+                        if (errorEntry[key]?.__errors) {
+                            acc.push({ key, messages: errorEntry[key].__errors });
+                        }
+                    });
+                }
+                return acc;
+            }, []);
         const autocompleteOptions = isString(autocomplete)
             ? { url: autocomplete }
             : autocomplete;
@@ -112,15 +121,17 @@ const SchemaField = (props) => {
                         };
                     });
             },
-            error: isEmpty(errors) ? null : <ul>
-                {errors.map((error, idx) => {
+            error: isEmpty(errors) ? null : <>
+                {errors.map((entry, idx) => {
                     return (
-                        <li key={idx} className="gn-error-message">
-                            {error}
-                        </li>
+                        <ul key={idx} className="text-danger">
+                            {castArray(entry.messages).map((message, mIdx) => {
+                                return <li key={mIdx}>{entry.key ? `${entry.key}: ` : ''}{message}</li>;
+                            })}
+                        </ul>
                     );
                 })}
-            </ul>
+            </>
         };
 
         return <Autocomplete {...autoCompleteProps}/>;
