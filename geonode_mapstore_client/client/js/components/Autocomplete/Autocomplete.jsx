@@ -29,6 +29,8 @@ const Autocomplete = ({
     title,
     value,
     valueKey = "value",
+    showLabel = true,
+    style,
     ...props
 }) => {
     const getValue = () => {
@@ -45,11 +47,11 @@ const Autocomplete = ({
     };
 
     return (
-        <div className={`autocomplete${className ? " " + className : ""}${!!error ? " " + "has-error" : ""}`}>
-            <div className="title-container">
+        <div style={style} className={`autocomplete${className ? " " + className : ""}${!!error ? " " + "has-error" : ""}`}>
+            {showLabel && <div className="title-container">
                 <label className="control-label" htmlFor={id}>{title || name}</label>
                 {helpTitleIcon && !isEmpty(description) && <IconWithTooltip className="help-title" tooltip={description} tooltipPosition={"right"} />}
-            </div>
+            </div>}
             <SelectInfiniteScroll
                 {...props}
                 id={id}
@@ -72,7 +74,9 @@ Autocomplete.propTypes = {
     name: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.any.isRequired,
-    valueKey: PropTypes.string
+    valueKey: PropTypes.string,
+    showLabel: PropTypes.bool,
+    style: PropTypes.object
 };
 
 export default Autocomplete;
