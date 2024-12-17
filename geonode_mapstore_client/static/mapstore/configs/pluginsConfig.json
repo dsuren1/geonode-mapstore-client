@@ -276,7 +276,15 @@
       "title": "plugins.Print.title",
       "description": "plugins.Print.description",
       "dependencies": [
-        "SidebarMenu",
+        "SidebarMenu"
+      ],
+      "children": [
+        "PrintScale",
+        "PrintGraticule",
+        "PrintAuthor",
+        "PrintCopyright"
+      ],
+      "autoEnableChildren": [
         "PrintScale",
         "PrintAuthor",
         "PrintCopyright"
