@@ -14,7 +14,7 @@ import { getConfigProp, convertFromLegacy, normalizeConfig } from '@mapstore/fra
 import { getGeoNodeLocalConfig, parseDevHostname } from '@js/utils/APIUtils';
 import { ProcessTypes, ProcessStatus } from '@js/utils/ResourceServiceUtils';
 import { uniqBy, orderBy, isString, isObject } from 'lodash';
-import { excludeGoogleBackground, extractTileMatrixFromSources } from '@mapstore/framework/utils/LayersUtils';
+import { excludeGoogleBackground, extractTileMatrixFromSources, ServerTypes } from '@mapstore/framework/utils/LayersUtils';
 import { determineResourceType } from '@js/utils/FileUtils';
 import { isImageServerUrl } from '@mapstore/framework/utils/ArcGISUtils';
 
@@ -167,7 +167,8 @@ export const resourceToLayerConfig = (resource) => {
             ...(bbox && { bbox }),
             title,
             visibility: true,
-            extendedParams
+            extendedParams,
+            serverType: ServerTypes.NO_VENDOR
         };
     }
     default:
@@ -219,7 +220,8 @@ export const resourceToLayerConfig = (resource) => {
             ...(params && { params }),
             ...(dimensions.length > 0 && ({ dimensions })),
             extendedParams,
-            ...(fields && { fields })
+            ...(fields && { fields }),
+            serverType: ServerTypes.GEOSERVER
         };
     }
 };
