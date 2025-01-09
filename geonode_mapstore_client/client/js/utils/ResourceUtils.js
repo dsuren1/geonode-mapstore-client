@@ -117,7 +117,8 @@ export const resourceToLayerConfig = (resource) => {
         has_time: hasTime,
         default_style: defaultStyle,
         ptype,
-        subtype
+        subtype,
+        sourcetype
     } = resource;
 
     const bbox = getExtentFromResource(resource);
@@ -167,8 +168,7 @@ export const resourceToLayerConfig = (resource) => {
             ...(bbox && { bbox }),
             title,
             visibility: true,
-            extendedParams,
-            serverType: ServerTypes.NO_VENDOR
+            extendedParams
         };
     }
     default:
@@ -221,7 +221,7 @@ export const resourceToLayerConfig = (resource) => {
             ...(dimensions.length > 0 && ({ dimensions })),
             extendedParams,
             ...(fields && { fields }),
-            serverType: ServerTypes.GEOSERVER
+            serverType: sourcetype === 'LOCAL' || wmsUrl.includes('/geoserver/') ? ServerTypes.GEOSERVER : ServerTypes.NO_VENDOR
         };
     }
 };
