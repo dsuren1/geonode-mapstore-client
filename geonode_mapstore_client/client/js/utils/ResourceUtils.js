@@ -221,7 +221,9 @@ export const resourceToLayerConfig = (resource) => {
             ...(dimensions.length > 0 && ({ dimensions })),
             extendedParams,
             ...(fields && { fields }),
-            serverType: sourcetype === 'LOCAL' || wmsUrl.includes('/geoserver/') ? ServerTypes.GEOSERVER : ServerTypes.NO_VENDOR
+            ...(sourcetype === 'REMOTE' && !wmsUrl.includes('/geoserver/') && {
+                serverType: ServerTypes.NO_VENDOR
+            })
         };
     }
 };
