@@ -82,7 +82,6 @@ const LayerDownloadActionButtonComponent = ({
         return status === statusTypes.LAYER ? (
             <>
                 <Dropdown
-                    pullRight
                     style={{ position: 'absolute' }}
                 >
                     <Dropdown.Toggle
