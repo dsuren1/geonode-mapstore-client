@@ -1,1 +1,1 @@
-nested_schema_v1.0
+geonode-mapstore-client-v4.0.0-2a21693a7355fcafc172a9f17fe369835585edd2
