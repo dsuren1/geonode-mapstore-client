@@ -484,6 +484,8 @@ function ResourcesGrid({
     facets,
     filters,
     setFilters,
+    filterTargerSelector = 'body > div',
+    detailTargerSelector = 'body > div',
     ...props
 }, context) {
 
@@ -779,7 +781,7 @@ function ResourcesGrid({
                                         order={query?.sort}
                                         onClear={handleClear}
                                         onClick={handleShowFilterForm.bind(null, true)}
-                                        orderConfig={parsedConfig.order}
+                                        orderConfig={parsedConfig.order ?? {options: []}}
                                         totalResources={totalResources}
                                         totalFilters={queryFilters.length}
                                         filtersActive={!!(queryFilters.length > 0)}
@@ -847,8 +849,8 @@ function ResourcesGrid({
                 </>
             </Portal>
             {!panel && <>
-                {createPortal(filterForm, document.querySelector('body > div'))}
-                {createPortal(detailPanel, document.querySelector('body > div'))}
+                {document.querySelector(filterTargerSelector) ? createPortal(filterForm, document.querySelector(filterTargerSelector)) : null}
+                {document.querySelector(detailTargerSelector) ? createPortal(detailPanel, document.querySelector(detailTargerSelector)) : null}
             </>}
         </>
     );
