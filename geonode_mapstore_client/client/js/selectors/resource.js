@@ -323,10 +323,37 @@ export const isNewMapViewerResource = (state) => {
     return isNew && isMapViewer;
 };
 
+export const isNewGeoStoryResource = (state) => {
+    const isNew = state?.gnresource?.params?.pk === "new";
+    const isGeoStory = state?.gnresource?.type === ResourceTypes.GEOSTORY;
+    return isNew && isGeoStory;
+};
+
+export const isNewGeoStoryDirty = (state) => {
+    const currentData = getDataPayload(state, ResourceTypes.GEOSTORY);
+    if (!currentData) return false;
+
+    const defaultConfig = currentStorySelector(state)?.defaultGeoStoryConfig ?? {};
+    return (
+        currentData.sections?.length > 1 || // More than the default title section
+        currentData.sections?.[0]?.contents?.[0]?.html?.trim() || // Title section has content
+        currentData.sections?.[0]?.title !== defaultConfig.sections?.[0]?.title || // Title changed from default
+        currentData.resources?.length > 0 || // Has resources
+        !isEqual( // Settings changed from default
+            omitBy(currentData.settings || {}, isNil),
+            omitBy(defaultConfig.settings || {}, isNil)
+        )
+    );
+};
+
 export const getResourceDirtyState = (state) => {
     if (isNewMapViewerResource(state)) {
         return true;
     }
+    if (isNewGeoStoryResource(state)) {
+        return isNewGeoStoryDirty(state);
+    }
+
     const canEdit = canEditPermissions(state);
     const isDeleting = getCurrentResourceDeleteLoading(state);
     const isCopying = getCurrentResourceCopyLoading(state);
