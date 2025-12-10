@@ -130,6 +130,40 @@
     }
 }
 
+// Reset MapStore's global selectors that affect ALL grids
+// These cancel out the global behavior from _resources-panel-wrapper.less
+:has(.ms-resources-filter._visible) {
+    .ms-resources-grid:not(._panel) {
+        margin-left: 0;
+    }
+}
+
+:has(.ms-resource-detail._visible) {
+    .ms-resources-grid:not(._panel) {
+        width: auto;
+    }
+}
+
+// Re-apply scoped per .ms-plugin container
+// to only affect grids within the same container as the visible panel
+.ms-plugin:has(> .ms-resources-panel-wrapper .ms-resources-filter._visible) {
+    > .ms-resources-grid:not(._panel) {
+        margin-left: var(--ms-resources-filter-width);
+    }
+}
+
+.ms-plugin:has(> .ms-resources-panel-wrapper .ms-resource-detail._visible) {
+    > .ms-resources-grid:not(._panel) {
+        width: calc(100% - var(--ms-resource-detail-width));
+    }
+    &:has(> .ms-resources-panel-wrapper .ms-resources-filter._visible) {
+        > .ms-resources-grid:not(._panel) {
+            width: calc(100% - var(--ms-resource-detail-width) - var(--ms-resources-filter-width));
+        }
+    }
+}
+
+// GeoNode specific section styling
 :has(.ms-resources-filter._visible) {
     .gn-resource-page-catalog-section:not(._panel) {
         margin-left: var(--ms-resources-filter-width);

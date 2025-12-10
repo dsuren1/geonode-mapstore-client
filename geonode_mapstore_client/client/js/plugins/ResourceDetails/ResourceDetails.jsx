@@ -386,12 +386,12 @@ const ResourceDetails = ({ defaultOpen, ...props }) => {
 };
 
 const ResourceDetailsPlugin = connect(
-    createStructuredSelector({
-        resource: getResourceData,
-        show: getShowDetails,
-        loading: getResourceLoading,
-        canEdit: canEditPermissions,
-        pendingChanges: getResourceDirtyState
+    (state, ownProps) => ({
+        resource: getResourceData(state),
+        show: getShowDetails(state, ownProps),
+        loading: getResourceLoading(state),
+        canEdit: canEditPermissions(state),
+        pendingChanges: getResourceDirtyState(state)
     }),
     {
         onShow: setShowDetails,
