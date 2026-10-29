@@ -76,9 +76,9 @@ def run_setup_hooks(*args, **kwargs):
     except Exception:
         pass
 
+    urlpatterns.insert(0, re_path(r"^catalogue/uuid/(?P<uuid>[^/?#]+)/?$", views.resolve_uuid, name="gn_resolve_uuid"))
+
     urlpatterns += [
-        path(r"uuid/<uuid>", views.resolve_uuid, name="resolve_uuid"),
-        
         re_path("/client/extensions", views.ExtensionsView.as_view(), name="mapstore-extension"),
         re_path("/client/pluginsconfig", views.PluginsConfigView.as_view(), name="mapstore-pluginsconfig"),
 
